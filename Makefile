@@ -6,10 +6,10 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/12 11:39:15 by ncotte            #+#    #+#              #
-#    Updated: 2022/10/13 11:00:00 by ncotte           ###   ########.fr        #
+#    Updated: 2022/12/08 17:34:57 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
+#
 SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
 					builtins/unset.c	utils/error.c		utils/free.c \
 					utils/init.c		main.c
@@ -29,6 +29,8 @@ OBJS			:= $(addprefix $(OBJS_DIR),$(OBJS_FILES))
 LIBFT_DIR		:= ./libft
 
 INC_DIR			:= ./inc/
+INC				:= minishell.h
+HEADERS = $(addprefix $(INC_DIR),$(INC))
 
 CC				:= gcc
 CFLAGS			:= -Wall -Wextra -Werror -I $(INC_DIR)
@@ -40,7 +42,7 @@ NAME			:= minishell
 
 all:			$(NAME)
 
-${OBJS_DIR}%.o:	${SRCS_DIR}%.c
+${OBJS_DIR}%.o:	${SRCS_DIR}%.c $(HEADERS)
 				@mkdir -p $(OBJS_DIR) $(OBJS_SUB_DIR)
 				$(CC) $(CFLAGS) -c $< -o $@
 
@@ -70,4 +72,4 @@ debug:			$(OBJS)
 				make -C $(LIBFT_DIR) debug
 				$(CC) $(CFLAGS) $(LIB) -o $(NAME) $(OBJS)
 
-.PHONY:			all clean fclean re leaks run debug
+.PHONY:			all clean fclean re leaks run debugg

@@ -6,11 +6,11 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:34:31 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/08 16:34:32 by ncotte           ###   ########.fr       */
+/*   Updated: 2022/12/08 17:35:45 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "minishell.h"
 
 int	unset(char *str)
 {
