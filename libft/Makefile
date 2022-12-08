@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/12 11:39:15 by ncotte            #+#    #+#              #
-#    Updated: 2022/10/28 16:26:38 by ncotte           ###   ########.fr        #
+#    Updated: 2022/12/08 20:22:30 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,17 +33,18 @@ SRCS			=	ft_atoi.c		ft_bzero.c		ft_calloc.c \
 
 OBJS			= $(SRCS:.c=.o)
 
-CC				= gcc
+CC				= @gcc
 CFLAGS			= -Wall -Wextra -Werror -I.
-RM				= rm -f
-LIB				= ar rcs
+RM				= @rm -f
+LIB				= @ar rcs
 DEBUG			= -g3 -fsanitize=address
 
 NAME			= libft.a
 
 all:			$(NAME)
 
-.c.o:			
+.c.o:		
+				@echo "\033[1;32mCompiling $<\033[0m"  #Ajout de la ligne pour afficher le pourcentage de compilation en couleur.
 				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
 
 $(NAME):		$(OBJS)
