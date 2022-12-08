@@ -34,6 +34,10 @@ int	execute(char *instr)
 		return (env());
 	if (!ft_strncmp(instr, "pwd", 3))
 		return (pwd());
+	if (!ft_strncmp(instr, "export", 6))
+		return (export(instr + 7));
+	if (!ft_strncmp(instr, "unset", 5))
+		return (unset(instr + 6));
 	return (0);
 }
 

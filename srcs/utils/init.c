@@ -16,6 +16,7 @@ int	init(char *envp[])
 {
 	int		i;
 	t_list	*list;
+	char	*tmp;
 
 	i = 0;
 	g_var.envp = ft_lstnew(ft_strdup(envp[i++]));
@@ -28,7 +29,10 @@ int	init(char *envp[])
 			return (1);
 		ft_lstadd_back(&(g_var.envp), list);
 	}
-	return (export(prompt()));
+	tmp = prompt();
+	i = export(tmp);
+	free(tmp);
+	return (i);
 }
 
 char	*prompt(void)

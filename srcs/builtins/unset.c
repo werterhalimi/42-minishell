@@ -26,7 +26,7 @@ int	unset(char *str)
 		ft_lstdelone(list, free);
 		return (0);
 	}
-	while (list && list->next && !ft_strncmp(list->next->content, str, length))
+	while (list && list->next && ft_strncmp(list->next->content, str, length))
 		list = list->next;
 	if (list && list->next)
 	{

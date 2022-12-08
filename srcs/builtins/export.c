@@ -16,6 +16,7 @@ int	export(char *str)
 {
 	int		i;
 	t_list	*list;
+	char	*tmp;
 
 	i = 0;
 	list = g_var.envp;
@@ -28,11 +29,16 @@ int	export(char *str)
 		if (list && list->next)
 		{
 			free(list->content);
-			list->content = str;
+			list->content = ft_strdup(str);
+			if (!list->content)
+				return (1);
 		}
 		else if (list && !list->next)
 		{
-			list->next = ft_lstnew(str);
+			tmp = ft_strdup(str);
+			if (!tmp)
+				return (1);
+			list->next = ft_lstnew(tmp);
 			if (!list->next)
 				return (1);
 		}
