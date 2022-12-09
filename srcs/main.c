@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/08 17:35:44 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/09 22:29:25 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,24 +26,43 @@ char	*var_value(char const *var_name)
 	return ("");
 }
 
-int	execute(char *instr)
+int	execute(t_command instr, char *envp[])
 {
-	if (!ft_strncmp(instr, "exit", 4))
+	char	**paths;
+	char	**command;
+	char	*path;
+	int		pid;
+
+	if (!ft_strncmp(instr.command, "exit", 4))
 		return (-1);
-	if (!ft_strncmp(instr, "env", 3))
+	if (!ft_strncmp(instr.command, "env", 3))
 		return (env());
-	if (!ft_strncmp(instr, "pwd", 3))
+	if (!ft_strncmp(instr.command, "pwd", 3))
 		return (pwd());
-	if (!ft_strncmp(instr, "export", 6))
-		return (export(instr + 7));
-	if (!ft_strncmp(instr, "unset", 5))
-		return (unset(instr + 6));
+	if (!ft_strncmp(instr.command, "export", 6))
+		return (export(instr.args[1]));
+	if (!ft_strncmp(instr.command, "unset", 5))
+		return (unset(instr.args[1]));
+	
+	pid = fork();
+	if (!pid)
+	{
+		paths = env_to_paths(envp);
+		command = instr.args;
+		path = get_path(paths, instr.command);
+		printf("command:%s\nargs[0]:%s\nargs[1]:%s\nargs[2] == 0:%i\n", instr.command, instr.args[0], instr.args[1], instr.args[2] == 0);
+		execve(path, command, envp);
+		printf("La command n'existe pas\n");
+	}
+	wait(&pid);
+
 	return (0);
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
-	char	*buf;
+	char		*buf = "";
+	t_command	command;
 
 	(void) argv;
 	if (argc != 1)
@@ -53,10 +72,11 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		buf = readline(var_value("PROMPT"));
+		command = parse(buf);
 		if (buf && *buf)
 		{
 			add_history(buf);
-			if (execute(buf) == -1)
+			if (execute(command, envp) == -1)
 				return (free_all(buf));
 		}
 		free(buf);

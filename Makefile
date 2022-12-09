@@ -6,13 +6,14 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/12 11:39:15 by ncotte            #+#    #+#              #
-#    Updated: 2022/12/08 20:16:51 by shalimi          ###   ########.fr        #
+#    Updated: 2022/12/09 22:15:52 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-#
+
 SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
 					builtins/unset.c	utils/error.c		utils/free.c \
-					utils/init.c		main.c				parse/parse.c
+					utils/init.c		main.c				parse/parse.c \
+					utils/exec.c
 
 SRCS_DIR		:= ./srcs/
 
@@ -30,10 +31,10 @@ LIBFT_DIR		:= ./libft
 
 INC_DIR			:= ./inc/
 INC				:= minishell.h
-HEADERS = $(addprefix $(INC_DIR),$(INC))
+HEADERS 		:= $(addprefix $(INC_DIR),$(INC))
 
 CC				:= @gcc
-CFLAGS			:= -Wall -Wextra -Werror -I $(INC_DIR)
+CFLAGS			:= -g -Wall -Wextra -Werror -I $(INC_DIR)
 RM				:= @rm -f
 LIB				:= -L $(LIBFT_DIR) -lft -lreadline
 DEBUG			:= -g3 -fsanitize=address
@@ -48,7 +49,7 @@ ${OBJS_DIR}%.o:	${SRCS_DIR}%.c $(HEADERS)
 				$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME):		$(OBJS)
-				@make -C $(LIBFT_DIR) all
+				@make -sC $(LIBFT_DIR) all
 				$(CC) $(CFLAGS) $(LIB) -o $(NAME) $(OBJS)
 
 clean:

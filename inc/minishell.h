@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/07 12:58:30 by ncotte           ###   ########.fr       */
+/*   Updated: 2022/12/09 22:20:11 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,28 +40,45 @@
 typedef struct s_global
 {
 	t_list	*envp;
+	void	**alloc;
 }	t_global;
+
+typedef struct s_command
+{
+	char	*command;
+	char	**args;
+	int		argc;
+}	t_command;
 
 t_global	g_var;
 
 /* builtins */
 
-int		env(void);
+int			env(void);
 
-int		pwd(void);
+int			pwd(void);
 
-int		export(char *str);
+int			export(char *str);
 
-int		unset(char *str);
+int			unset(char *str);
 
 /* utils */
 
-int		init(char *envp[]);
+int			init(char *envp[]);
 
-char	*prompt(void);
+char		*prompt(void);
 
-int		free_all(char *buf);
+int			free_all(char *buf);
 
-int		print_error(char *error_msg);
+int			print_error(char *error_msg);
 
+/* parse */
+
+t_command	parse(char *line);
+
+/* Exec */
+
+int		ft_find_paths_index(char **str);
+char	*get_path(char **str, char *command);
+char	**env_to_paths(char **env);
 #endif
