@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/09 22:29:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/12 22:20:25 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,7 @@ int	execute(t_command instr, char *envp[])
 		paths = env_to_paths(envp);
 		command = instr.args;
 		path = get_path(paths, instr.command);
-		printf("command:%s\nargs[0]:%s\nargs[1]:%s\nargs[2] == 0:%i\n", instr.command, instr.args[0], instr.args[1], instr.args[2] == 0);
 		execve(path, command, envp);
-		printf("La command n'existe pas\n");
 	}
 	wait(&pid);
 
@@ -79,6 +77,6 @@ int	main(int argc, char *argv[], char *envp[])
 			if (execute(command, envp) == -1)
 				return (free_all(buf));
 		}
-		free(buf);
+		free_buffer(g_var.parse_alloc);
 	}
 }

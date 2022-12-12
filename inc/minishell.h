@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/09 22:20:11 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/12 22:19:36 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 typedef struct s_global
 {
 	t_list	*envp;
-	void	**alloc;
+	t_list	**parse_alloc;
 }	t_global;
 
 typedef struct s_command
@@ -51,6 +51,11 @@ typedef struct s_command
 }	t_command;
 
 t_global	g_var;
+
+/* Alloc */
+
+void	*ft_alloc(int size, int len, t_list **buff);
+int		free_buffer(t_list **buffer);
 
 /* builtins */
 
@@ -75,6 +80,7 @@ int			print_error(char *error_msg);
 /* parse */
 
 t_command	parse(char *line);
+int			ft_countchar(const char *str, char c);
 
 /* Exec */
 

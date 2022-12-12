@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   alloc.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
+/*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/08 16:44:10 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/12 22:20:17 by shalimi          ###   ########.fr       */
+/*   Created: 2022/12/12 22:10:03 by shalimi           #+#    #+#             */
+/*   Updated: 2022/12/12 22:17:01 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	free_all(char *buf)
+void	*ft_alloc(int size, int len, t_list **buff)
 {
-	free(buf);
-	ft_lstclear(&(g_var.envp), free);
-	return (0);
-}
+	void	*ret;
 
-int	free_buffer(t_list **buffer)
-{
-	ft_lstclear(buffer, free);
-	return (0);
+	ret = ft_calloc(size, len);
+	ft_lstadd_back(buff, ft_lstnew(ret));
+	return (ret);
 }
