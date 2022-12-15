@@ -6,14 +6,15 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/12 11:39:15 by ncotte            #+#    #+#              #
-#    Updated: 2022/12/12 22:15:04 by shalimi          ###   ########.fr        #
+#    Updated: 2022/12/15 16:15:39 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
 					builtins/unset.c	utils/error.c		utils/free.c \
 					utils/init.c		main.c				parse/parse.c \
-					utils/exec.c		utils/alloc.c
+					utils/exec.c		utils/alloc.c		utils/ft_isbuiltin.c \
+					pipe/pipex.c
 
 SRCS_DIR		:= ./srcs/
 
@@ -23,7 +24,7 @@ OBJS_FILES		:= $(SRCS_FILES:.c=.o)
 
 OBJS_DIR		:= ./bin/
 
-OBJS_SUB_DIR	:=	$(OBJS_DIR)builtins	$(OBJS_DIR)utils $(OBJS_DIR)parse
+OBJS_SUB_DIR	:=	$(OBJS_DIR)builtins	$(OBJS_DIR)utils $(OBJS_DIR)parse $(OBJS_DIR)pipe
 
 OBJS			:= $(addprefix $(OBJS_DIR),$(OBJS_FILES))
 

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/12 22:15:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/15 16:55:54 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ t_command	parse(char *line)
 	int			i;
 	int			y;
 
-	len = ft_countchar(line, ' ') + 1;
+	len = ft_countchar(ft_strtrim(line, " "), ' ') + 1;
 	split = ft_split(line, ' ');
 	ret.args = ft_alloc(sizeof(*(ret.args)), len, g_var.parse_alloc);
 	i = 0;

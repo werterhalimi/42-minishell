@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/12 22:19:36 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/15 16:18:22 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ int		free_buffer(t_list **buffer);
 
 /* builtins */
 
+int			ft_isbuiltin(char *cmd);
+
 int			env(void);
 
 int			pwd(void);
@@ -87,4 +89,7 @@ int			ft_countchar(const char *str, char c);
 int		ft_find_paths_index(char **str);
 char	*get_path(char **str, char *command);
 char	**env_to_paths(char **env);
+void	launch_pipex(int argc, char **argv, char **env, int files[2]);
+int		execute(t_command instr, char *envp[]);
+
 #endif

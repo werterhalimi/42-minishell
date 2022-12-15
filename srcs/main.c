@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/12 22:20:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/15 16:35:35 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,7 @@ char	*var_value(char const *var_name)
 
 int	execute(t_command instr, char *envp[])
 {
-	char	**paths;
-	char	**command;
-	char	*path;
-	int		pid;
-
+	(void) envp;
 	if (!ft_strncmp(instr.command, "exit", 4))
 		return (-1);
 	if (!ft_strncmp(instr.command, "env", 3))
@@ -43,17 +39,7 @@ int	execute(t_command instr, char *envp[])
 		return (export(instr.args[1]));
 	if (!ft_strncmp(instr.command, "unset", 5))
 		return (unset(instr.args[1]));
-	
-	pid = fork();
-	if (!pid)
-	{
-		paths = env_to_paths(envp);
-		command = instr.args;
-		path = get_path(paths, instr.command);
-		execve(path, command, envp);
-	}
-	wait(&pid);
-
+	exit (0);
 	return (0);
 }
 
@@ -74,8 +60,10 @@ int	main(int argc, char *argv[], char *envp[])
 		if (buf && *buf)
 		{
 			add_history(buf);
+			launch_pipex(ft_countchar(buf, '|'), ft_split(buf, '|'), envp, (int[2]) {0, 1});
+			/*
 			if (execute(command, envp) == -1)
-				return (free_all(buf));
+				return (free_all(buf));*/
 		}
 		free_buffer(g_var.parse_alloc);
 	}
