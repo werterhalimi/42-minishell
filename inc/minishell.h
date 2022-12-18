@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/15 16:18:22 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/18 02:23:24 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_command
 	char	*command;
 	char	**args;
 	int		argc;
+	int		fd[2];
 }	t_command;
 
 t_global	g_var;
@@ -81,7 +82,8 @@ int			print_error(char *error_msg);
 
 /* parse */
 
-t_command	parse(char *line);
+t_command	parse(char *line, int fd[2]);
+char		*get_string(char **split, char *current, int *i, int len);
 int			ft_countchar(const char *str, char c);
 
 /* Exec */

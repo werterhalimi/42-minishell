@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/12 11:39:15 by ncotte            #+#    #+#              #
-#    Updated: 2022/12/15 16:15:39 by shalimi          ###   ########.fr        #
+#    Updated: 2022/12/19 00:24:37 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,20 +38,24 @@ CC				:= @gcc
 CFLAGS			:= -g -Wall -Wextra -Werror -I $(INC_DIR)
 RM				:= @rm -f
 LIB				:= -L $(LIBFT_DIR) -lft -lreadline
-DEBUG			:= -g3 -fsanitize=address
-
+DEBUG			:= -g3# -fsanitize=address
+UNIT			:= ""
 NAME			:= minishell
-
 all:			$(NAME)
+
 
 ${OBJS_DIR}%.o:	${SRCS_DIR}%.c $(HEADERS)
 				@mkdir -p $(OBJS_DIR) $(OBJS_SUB_DIR)
 				@echo "\033[1;32mCompiling $<\033[0m"  #Ajout de la ligne pour afficher le pourcentage de compilation en couleur.
-				$(CC) $(CFLAGS) -c $< -o $@
+				$(CC) $(UNIT) $(CFLAGS) -c $< -o $@
 
 $(NAME):		$(OBJS)
 				@make -sC $(LIBFT_DIR) all
 				$(CC) $(CFLAGS) $(LIB) -o $(NAME) $(OBJS)
+
+unit:			clean		
+				echo salut
+				make UNIT="-D UNIT"
 
 clean:
 				$(RM) $(OBJS)
@@ -75,4 +79,4 @@ debug:			$(OBJS)
 				@make -C $(LIBFT_DIR) debug
 				$(CC) $(CFLAGS) $(LIB) -o $(NAME) $(OBJS)
 
-.PHONY:			all clean fclean re leaks run debugg
+.PHONY:			all clean fclean re leaks run debugg test

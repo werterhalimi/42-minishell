@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/15 16:35:35 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/19 00:22:44 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ int	execute(t_command instr, char *envp[])
 	return (0);
 }
 
+#ifndef UNIT
 int	main(int argc, char *argv[], char *envp[])
 {
 	char		*buf = "";
-	t_command	command;
 
 	(void) argv;
 	if (argc != 1)
@@ -56,7 +56,6 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		buf = readline(var_value("PROMPT"));
-		command = parse(buf);
 		if (buf && *buf)
 		{
 			add_history(buf);
@@ -68,3 +67,13 @@ int	main(int argc, char *argv[], char *envp[])
 		free_buffer(g_var.parse_alloc);
 	}
 }
+#endif 
+
+#ifdef UNIT
+
+int	main(void)
+{
+	int i = 0;
+	printf("%i", i);
+}
+#endif

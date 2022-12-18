@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/15 16:42:35 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/19 00:13:33 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,20 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 int	middle_process(int in[2], int out[2], char *args, char **env)
 {
 	char			**paths;
+	char			*tmp;
 	int				pid;
 	t_command		cmd;
 
 	pid = fork();
 	if (!pid)
 	{
-		cmd = parse(args);
+		tmp = args;
+		args = ft_strtrim(args, " 	");
+		cmd = parse(args, (int[2]) {in[0], out[1]});
+		free(args);
 		paths = env_to_paths(env);
-		dup2(in[0], 0);
-		dup2(out[1], 1);
+		dup2(cmd.fd[0], 0);
+		dup2(cmd.fd[1], 1);
 		if (ft_isbuiltin(cmd.command))
 			execute(cmd, env);
 		else
@@ -101,40 +105,6 @@ void	launch_pipex(int argc, char **argv, char **env, int files[2])
 		}
 		j++;
 	}
-/*	pid[0] = first_process(files[0], in, argv[2], env);
-	if (argc == 5)
-		int_swap(out, in);
-	j = 3;
-	while (j != argc - 2)
-	{
-		if (j > 3)
-			int_swap(in, out);
-		pid[j - 2] = launch_process(in, out, argv[j], env);
-		j++;
-	}
-	pid[j] = final_process(out, files[1], argv[argc - 2], env);*/
 	close_wait(in, out, j - 1, pid);
+	free(argv);
 }
-/*
-int	main(int argc, char **argv, char **env)
-{
-	int	files[2];
-
-	if (argc < 5)
-	{
-		ft_putendl_fd("Mauvaise execution de la commande", 1);
-		exit(1);
-	}
-	files[0] = open(argv[1], O_RDONLY);
-	files[1] = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (files[0] < 0 || files[1] < 0)
-	{
-		ft_putendl_fd("T'as fais dla merde bg du coup je quitte.", 1);
-		ft_putendl_fd("Je n'arrive pas a lire l'input ou creer l'output", 1);
-		ft_putendl_fd("Bisou", 1);
-		ft_putendl_fd("PIPEX OVER", 1);
-		exit(1);
-	}
-	launch_pipex(argc - 3, argv + 2, env, files);
-	return (0);
-}*/
