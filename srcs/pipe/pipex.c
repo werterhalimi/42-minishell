@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/19 00:13:33 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/19 00:38:38 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ int	middle_process(int in[2], int out[2], char *args, char **env)
 	t_command		cmd;
 
 	pid = fork();
+	if (ft_strncmp(args, "exit", 4) == 0)
+		exit(0);
 	if (!pid)
 	{
 		tmp = args;
