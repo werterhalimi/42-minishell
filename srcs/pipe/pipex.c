@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/19 23:27:57 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 00:46:21 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ int	middle_process(int in[2], int out[2], char *args, char **env)
 		exit(0);
 	if (!pid)
 	{
+		if (cmd.fd[0] < 0)
+		{
+			printf("Ce fichier n'existe pas.\n");
+			exit(1);
+		}
 		c(out[0]);
 		paths = env_to_paths(env);
 		dup2(cmd.fd[0], 0);

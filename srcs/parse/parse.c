@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/19 23:23:52 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 00:52:14 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,22 @@ void	handle_input(char *line, int *fd)
 		free(split);
 		free(line);
 	}
+	else
+	{
+		line = &line[1];
+		while (*line == ' ') line++;
+		split = ft_split(line, ' ');
+		line = ft_strtrim(line, "	 ");
+		fd[0] = open(get_string(split, line, 0, ft_strlen(line)), O_RDONLY);
+		f[0] = 0;
+		while (f[0] < (int) ft_strlen(tmp))
+		{
+			tmp[f[0]] = ' ';
+			f[0]++;
+		}
+		free(line);
+		free(split);
+	}
 }
 
 void	handle_line(char *line, t_command *cmd, int fd[2])
@@ -202,6 +218,7 @@ t_command	parse(char *line, int fd[2])
 	int			y;
 
 	handle_line(line, &ret, fd);
+	line = ft_strtrim(line, "	 ");
 	len = ft_countchar(line, ' ') + 1;
 	split = ft_split(line, ' ');
 	ret.args = ft_alloc(sizeof(*(ret.args)), len, g_var.parse_alloc);
