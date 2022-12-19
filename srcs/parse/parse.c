@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/19 00:38:09 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/19 23:23:52 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ void	handle_input(char *line, int *fd)
 		pipe(f);
 		while (1)
 		{
+			printf("%s", sep);
 			buff = readline(">");
 			if (!ft_strncmp(buff, sep, ft_strlen(buff)))
 				break ;
@@ -166,7 +167,6 @@ void	handle_input(char *line, int *fd)
 		free(split);
 		free(line);
 	}
-
 }
 
 void	handle_line(char *line, t_command *cmd, int fd[2])

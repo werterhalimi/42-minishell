@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/18 02:23:24 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/19 23:24:40 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 # include <unistd.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -41,6 +42,7 @@ typedef struct s_global
 {
 	t_list	*envp;
 	t_list	**parse_alloc;
+	int		*last_er;
 }	t_global;
 
 typedef struct s_command

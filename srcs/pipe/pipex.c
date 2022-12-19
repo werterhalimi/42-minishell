@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/19 00:38:38 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/19 23:27:57 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,20 @@ void	c(int i)
 
 void	close_wait(int fd[2], int out[2], int j, int *pid)
 {
+	int	i;
+
 	c(fd[0]);
 	c(fd[1]);
 	c(out[0]);
 	c(out[1]);
 	(void) j;
-	while (wait(0) != -1)
+	i = 0;
+	while (i < j)
+	{
+		waitpid(pid[i], g_var.last_er, 0);
+		i++;
+	}
+	while (wait(&i) != -1)
 		continue ;
 	free(pid);
 }
@@ -51,20 +59,23 @@ int	middle_process(int in[2], int out[2], char *args, char **env)
 	int				pid;
 	t_command		cmd;
 
+	tmp = args;
+	args = ft_strtrim(args, " 	");
+	cmd = parse(args, (int[2]) {in[0], out[1]});
+	free(args);
 	pid = fork();
 	if (ft_strncmp(args, "exit", 4) == 0)
 		exit(0);
 	if (!pid)
 	{
-		tmp = args;
-		args = ft_strtrim(args, " 	");
-		cmd = parse(args, (int[2]) {in[0], out[1]});
-		free(args);
+		c(out[0]);
 		paths = env_to_paths(env);
 		dup2(cmd.fd[0], 0);
 		dup2(cmd.fd[1], 1);
 		if (ft_isbuiltin(cmd.command))
 			execute(cmd, env);
+		else if(get_path(paths, cmd.command) == 0)
+			exit(127);
 		else
 			execve(get_path(paths, cmd.command), cmd.args, env);
 	}
@@ -86,7 +97,7 @@ void	launch_pipex(int argc, char **argv, char **env, int files[2])
 		return ;
 	j = 0;
 	pipe(in);
-	if (argc == 1)
+	if(argc == 1)
 		int_swap(in, files);
 	while (j < argc)
 	{
@@ -107,6 +118,6 @@ void	launch_pipex(int argc, char **argv, char **env, int files[2])
 		}
 		j++;
 	}
-	close_wait(in, out, j - 1, pid);
+	close_wait(in, out, j, pid);
 	free(argv);
 }
