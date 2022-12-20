@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 00:52:14 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 19:09:17 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,71 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 	cmd->fd[1] = fd[1];
 }
 
+void	remove_quote(char *str)
+{
+	int	i;
+	int	no_double;
+	int	no_single;
+	int	final_len;
+
+	i = 0;
+	no_double = 0;
+	no_single = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && no_double % 2 == 0)
+			no_single++;
+		if (str[i] == '"' && no_single % 2 == 0)
+			no_double++;
+		i++;
+	}
+	no_double -= no_double % 2;
+	no_single -= no_single % 2;
+	final_len = ft_strlen(str) - no_double - no_single;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '"')
+		{
+			if (no_double == 0)
+			{
+				i++;
+				continue;
+			}
+			no_double--;
+			ft_memmove(str + i, str+ 1 + i, ft_strlen(str + 1 + i));
+			str[ft_strlen(str) - 1] = 0;
+			continue ;
+		}
+		if (str[i] == '\'')
+		{
+			if (no_single == 0)
+			{
+				i++;
+				continue;
+			}
+			no_single--;
+			ft_memmove(str +i, str + 1 + i, ft_strlen(str + 1 + i));
+			str[ft_strlen(str) - 1] = 0;
+			continue ;
+		}
+		i++;
+	}
+	str[final_len] = 0;
+}
+
+void	handle_quote(char **split, int len)
+{
+	int	i;
+
+	remove_quote(split[0]);
+	i = 1;
+	while  (i < len)
+	{
+		remove_quote(split[i]);
+		i++;
+	}
+}
 
 t_command	parse(char *line, int fd[2])
 {
@@ -221,6 +286,7 @@ t_command	parse(char *line, int fd[2])
 	line = ft_strtrim(line, "	 ");
 	len = ft_countchar(line, ' ') + 1;
 	split = ft_split(line, ' ');
+	handle_quote(split, len);
 	ret.args = ft_alloc(sizeof(*(ret.args)), len, g_var.parse_alloc);
 	i = 0;
 	y = 0;
