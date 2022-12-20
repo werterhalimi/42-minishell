@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 22:13:33 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 22:57:26 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void	handle_output(char *line, int *fd)
 	if (!append)
 		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else
-		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0644);
+		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT |  O_APPEND, 0644);
 	while (i < (int) ft_strlen(tmp))
 	{
 		tmp[i] = ' ';
