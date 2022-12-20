@@ -12,9 +12,10 @@
 
 SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
 					builtins/unset.c	utils/error.c		utils/free.c \
-					utils/init.c		main.c				parse/parse.c \
+					env/init.c			main.c				parse/parse.c \
 					utils/exec.c		utils/alloc.c		utils/ft_isbuiltin.c \
-					pipe/pipex.c
+					pipe/pipex.c		builtins/echo.c		builtins/cd.c \
+					env/var_value.c		builtins/exit.c		utils/sort.c
 
 SRCS_DIR		:= ./srcs/
 
@@ -24,7 +25,7 @@ OBJS_FILES		:= $(SRCS_FILES:.c=.o)
 
 OBJS_DIR		:= ./bin/
 
-OBJS_SUB_DIR	:=	$(OBJS_DIR)builtins	$(OBJS_DIR)utils $(OBJS_DIR)parse $(OBJS_DIR)pipe
+OBJS_SUB_DIR	:=	$(OBJS_DIR)builtins	$(OBJS_DIR)utils $(OBJS_DIR)parse $(OBJS_DIR)pipe $(OBJS_DIR)env
 
 OBJS			:= $(addprefix $(OBJS_DIR),$(OBJS_FILES))
 
@@ -41,8 +42,8 @@ LIB				:= -L $(LIBFT_DIR) -lft -lreadline
 DEBUG			:= -g3# -fsanitize=address
 UNIT			:= ""
 NAME			:= minishell
-all:			$(NAME)
 
+all:			$(NAME)
 
 ${OBJS_DIR}%.o:	${SRCS_DIR}%.c $(HEADERS)
 				@mkdir -p $(OBJS_DIR) $(OBJS_SUB_DIR)
@@ -79,4 +80,4 @@ debug:			$(OBJS)
 				@make -C $(LIBFT_DIR) debug
 				$(CC) $(CFLAGS) $(LIB) -o $(NAME) $(OBJS)
 
-.PHONY:			all clean fclean re leaks run debugg test
+.PHONY:			all clean fclean re leaks run debug test unit

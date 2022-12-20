@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/08 16:34:13 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/08 17:35:45 by shalimi          ###   ########.fr       */
+/*   Created: 2022/12/20 10:23:11 by ncotte            #+#    #+#             */
+/*   Updated: 2022/12/20 10:23:14 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	env(void)
+int	echo(char *argv[])
 {
-	t_list	*list;
+	int	i;
+	int	n_option;
 
-	list = g_var.envp;
-	while (list)
+	i = 1;
+	n_option = 0;
+	if (argv[i])
 	{
-		if (ft_strchr(list->content, '='))
-			ft_putendl_fd(list->content, STDOUT_FILENO);
-		list = list->next;
+		while (argv[i] && ft_strncmp(argv[i], "-n", 2) == 0 && i++)
+			n_option = 1;
+		while (argv[i])
+		{
+			ft_putstr_fd(argv[i], 1);
+			if (argv[i + 1] && argv[i][0] != '\0')
+				write(1, " ", 1);
+			i++;
+		}
 	}
-	return (0);
+	if (!n_option)
+		write(1, "\n", 1);
+	return (SUCCESS);
 }

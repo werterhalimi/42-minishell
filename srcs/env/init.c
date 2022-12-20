@@ -12,30 +12,7 @@
 
 #include "minishell.h"
 
-int	init(char *envp[])
-{
-	int		i;
-	t_list	*list;
-	char	*tmp;
-
-	i = 0;
-	g_var.envp = ft_lstnew(ft_strdup(envp[i++]));
-	if (!g_var.envp)
-		return (1);
-	while (envp[i])
-	{
-		list = ft_lstnew(ft_strdup(envp[i++]));
-		if (!list)
-			return (1);
-		ft_lstadd_back(&(g_var.envp), list);
-	}
-	tmp = prompt();
-	i = export(tmp);
-	free(tmp);
-	return (i);
-}
-
-char	*prompt(void)
+static char	*prompt(void)
 {
 	char	*prompt1;
 	char	*prompt2;
@@ -52,4 +29,32 @@ char	*prompt(void)
 	if (!prompt1)
 		return ("> ");
 	return (prompt1);
+}
+
+int	init(char *envp[])
+{
+	int		i;
+	t_list	*list;
+	char	*tmp;
+
+	i = 0;
+	g_var.exit = 0;
+	g_var.envp = ft_lstnew(ft_strdup(envp[i]));
+	if (!g_var.envp)
+		return (1);
+	while (envp[++i])
+	{
+		if (!ft_strncmp(envp[i], "OLDPWD", 6) && \
+			(!envp[i][6] || envp[i][6] == '='))
+			list = ft_lstnew("OLDPWD");
+		else
+			list = ft_lstnew(ft_strdup(envp[i]));
+		if (!list)
+			return (1);
+		ft_lstadd_back(&(g_var.envp), list);
+	}
+	tmp = prompt();
+	i = export(tmp);
+	free(tmp);
+	return (i);
 }
