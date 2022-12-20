@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 16:52:31 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 18:55:19 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,9 +219,9 @@ void	remove_quote(char *str)
 	no_single = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'')
+		if (str[i] == '\'' && no_double % 2 == 0)
 			no_single++;
-		if (str[i] == '"')
+		if (str[i] == '"' && no_single % 2 == 0)
 			no_double++;
 		i++;
 	}
@@ -229,7 +229,7 @@ void	remove_quote(char *str)
 	no_single -= no_single % 2;
 	final_len = ft_strlen(str) - no_double - no_single;
 	i = 0;
-	while (str[i])
+	while (str[i] && i < final_len)
 	{
 		if (str[i] == '"')
 		{
@@ -239,6 +239,7 @@ void	remove_quote(char *str)
 				continue;
 			}
 			no_double--;
+			str[ft_strlen(str)] = 0;
 			ft_memmove(str + i, str+ 1 + i, ft_strlen(str + 1 + i));
 		}
 		if (str[i] == '\'')
@@ -249,7 +250,8 @@ void	remove_quote(char *str)
 				continue;
 			}
 			no_single--;
-			ft_memmove(str +i, str + 1 + i, ft_strlen(str + 2 + i));
+			str[ft_strlen(str)] = 0;
+			ft_memmove(str +i, str + 1 + i, ft_strlen(str + 1 + i));
 		}
 		i++;
 	}
