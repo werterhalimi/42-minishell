@@ -6,14 +6,17 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 22:04:11 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/19 22:36:27 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 19:31:59 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**env_to_paths(char **env)
+char	**env_to_paths()
 {
+	char	**env;
+	
+	env = g_var.envp;
 	return (ft_split(&(env[ft_find_paths_index(env)][5]), ':'));
 }
 
