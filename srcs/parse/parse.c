@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 18:55:19 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 19:09:17 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ void	remove_quote(char *str)
 	no_single -= no_single % 2;
 	final_len = ft_strlen(str) - no_double - no_single;
 	i = 0;
-	while (str[i] && i < final_len)
+	while (str[i])
 	{
 		if (str[i] == '"')
 		{
@@ -239,8 +239,9 @@ void	remove_quote(char *str)
 				continue;
 			}
 			no_double--;
-			str[ft_strlen(str)] = 0;
 			ft_memmove(str + i, str+ 1 + i, ft_strlen(str + 1 + i));
+			str[ft_strlen(str) - 1] = 0;
+			continue ;
 		}
 		if (str[i] == '\'')
 		{
@@ -250,8 +251,9 @@ void	remove_quote(char *str)
 				continue;
 			}
 			no_single--;
-			str[ft_strlen(str)] = 0;
 			ft_memmove(str +i, str + 1 + i, ft_strlen(str + 1 + i));
+			str[ft_strlen(str) - 1] = 0;
+			continue ;
 		}
 		i++;
 	}
