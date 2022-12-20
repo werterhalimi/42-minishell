@@ -12,25 +12,11 @@
 
 #include "minishell.h"
 
-char	*var_value(char const *var_name)
-{
-	t_list	*list;
-	int		length;
-
-	list = g_var.envp;
-	length = ft_strlen(var_name);
-	while (list && ft_strncmp(list->content, var_name, length))
-		list = list->next;
-	if (list)
-		return (list->content + length + 1);
-	return ("");
-}
-
 int	execute(t_command instr, char *envp[])
 {
 	(void) envp;
 	if (!ft_strncmp(instr.command, "exit", 4))
-		return (-1);
+		return (ft_exit());
 	if (!ft_strncmp(instr.command, "env", 3))
 		return (env());
 	if (!ft_strncmp(instr.command, "pwd", 3))
@@ -39,7 +25,11 @@ int	execute(t_command instr, char *envp[])
 		return (export(instr.args[1]));
 	if (!ft_strncmp(instr.command, "unset", 5))
 		return (unset(instr.args[1]));
-	exit (0);
+	if (!ft_strncmp(instr.command, "cd", 2))
+		return (cd(instr.args));
+	if (!ft_strncmp(instr.command, "echo", 4))
+		return (echo(instr.args));
+//	exit (0);
 	return (0);
 }
 
@@ -53,7 +43,7 @@ int	main(int argc, char *argv[], char *envp[])
 		return (print_error("Invalid number of arguments"));
 	if (init(envp))
 		return (free_all(NULL));
-	while (1)
+	while (!g_var.exit)
 	{
 		buf = readline(var_value("PROMPT"));
 		if (buf && *buf)
@@ -66,6 +56,7 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		free_buffer(g_var.parse_alloc);
 	}
+	return (0);
 }
 #endif 
 

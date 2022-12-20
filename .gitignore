@@ -2,4 +2,5 @@
 *.sh
 *.a
 minishell
+.idea
 

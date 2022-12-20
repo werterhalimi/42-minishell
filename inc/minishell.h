@@ -15,6 +15,9 @@
 
 # include "../libft/libft.h"
 # include <unistd.h>
+# include <stdio.h>
+# include <string.h>
+# include <errno.h>
 # include <fcntl.h>
 # include <signal.h>
 # include <readline/readline.h>
@@ -38,11 +41,15 @@
 # define BOLD_CYAN		"\033[1m\033[36m"
 # define BOLD_WHITE		"\033[1m\033[37m"
 
+# define SUCCESS	0
+# define ERROR		1
+
 typedef struct s_global
 {
 	t_list	*envp;
 	t_list	**parse_alloc;
 	int		*last_er;
+	int		exit;
 }	t_global;
 
 typedef struct s_command
@@ -57,8 +64,8 @@ t_global	g_var;
 
 /* Alloc */
 
-void	*ft_alloc(int size, int len, t_list **buff);
-int		free_buffer(t_list **buffer);
+void		*ft_alloc(int size, int len, t_list **buff);
+int			free_buffer(t_list **buffer);
 
 /* builtins */
 
@@ -72,15 +79,25 @@ int			export(char *str);
 
 int			unset(char *str);
 
+int			echo(char *argv[]);
+
+int			cd(char *argv[]);
+
+int			ft_exit(void);
+
 /* utils */
-
-int			init(char *envp[]);
-
-char		*prompt(void);
 
 int			free_all(char *buf);
 
 int			print_error(char *error_msg);
+
+void		sort(char *argv[], long size);
+
+/* env */
+
+int			init(char *envp[]);
+
+char		*var_value(char const *var_name);
 
 /* parse */
 
@@ -90,10 +107,10 @@ int			ft_countchar(const char *str, char c);
 
 /* Exec */
 
-int		ft_find_paths_index(char **str);
-char	*get_path(char **str, char *command);
-char	**env_to_paths(char **env);
-void	launch_pipex(int argc, char **argv, char **env, int files[2]);
-int		execute(t_command instr, char *envp[]);
+int			ft_find_paths_index(char **str);
+char		*get_path(char **str, char *command);
+char		**env_to_paths(char **env);
+void		launch_pipex(int argc, char **argv, char **env, int files[2]);
+int			execute(t_command instr, char *envp[]);
 
 #endif

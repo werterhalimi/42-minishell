@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   var_value.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/08 16:34:13 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/08 17:35:45 by shalimi          ###   ########.fr       */
+/*   Created: 2022/12/20 10:39:36 by ncotte            #+#    #+#             */
+/*   Updated: 2022/12/20 10:39:39 by ncotte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	env(void)
+char	*var_value(char const *var_name)
 {
 	t_list	*list;
+	size_t	length;
 
 	list = g_var.envp;
-	while (list)
-	{
-		if (ft_strchr(list->content, '='))
-			ft_putendl_fd(list->content, STDOUT_FILENO);
+	length = ft_strlen(var_name);
+	while (list && ft_strncmp(list->content, var_name, length))
 		list = list->next;
-	}
-	return (0);
+	if (list)
+		return (list->content + length + 1);
+	return ("");
 }
