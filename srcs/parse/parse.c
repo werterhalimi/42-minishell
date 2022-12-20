@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 19:09:17 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 19:59:23 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,38 @@ void	handle_input(char *line, int *fd)
 	}
 }
 
+void	handle_output(char *line, int *fd)
+{
+	int		append;
+	char	**split;
+	int		i;
+	char	*tmp;
+
+	tmp = line;
+	i = 0;
+	append = 0;
+	if (line[1] == '>')
+	{
+		append = 1;
+		line += 1;
+	}
+	line = &line[1];
+	while (*line == ' ') line++;
+	split = ft_split(line, ' ');
+	line = ft_strtrim(line, " 	");
+	if (!append)
+		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else
+		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0644);
+	while (i < (int) ft_strlen(tmp))
+	{
+		tmp[i] = ' ';
+		i++;
+	}
+	free(line);
+	free(split);
+}
+
 void	handle_line(char *line, t_command *cmd, int fd[2])
 {
 	int		len;
@@ -200,6 +232,13 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 				handle_input(&line[--len], fd);
 			else
 				handle_input(&line[len], fd);
+		}
+		if (c == '>')
+		{
+			if (line[len - 1] == '>')
+				handle_output(&line[--len], fd);
+			else
+				handle_output(&line[len], fd);
 		}
 		len--;
 	}
