@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 19:59:23 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 22:13:33 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ char	*get_string(char **split, char *current, int *index, int len)
 		i = 0;
 	else
 		i = *index;
+	if (ft_strlen(current) == 1 && i < len - 1)
+		current = ft_strjoin(current, split[++i]);
 	if (current[0] == '\'' || current[0] == '"')
 		while (current[ft_strlen(current) - 1] != current[0] && i < len)
 		{

@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/20 19:33:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/20 22:01:06 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	main(int argc, char *argv[], char *envp[])
 		return (free_all(NULL));
 	while (!g_var.exit)
 	{
-		buf = readline(var_value("PROMPT"));
+		buf = readline("minishell>");//var_value("PROMPT"));
 		if (buf && *buf)
 		{
 			add_history(buf);
