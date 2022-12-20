@@ -46,7 +46,8 @@
 
 typedef struct s_global
 {
-	t_list	*envp;
+//	t_list	*envp;
+	char 	**envp;
 	t_list	**parse_alloc;
 	int		*last_er;
 	int		exit;
@@ -87,11 +88,15 @@ int			ft_exit(void);
 
 /* utils */
 
+void		free_envp(void);
+
 int			free_all(char *buf);
 
 int			print_error(char *error_msg);
 
 void		sort(char *argv[], long size);
+
+char		**array_copy(char *src[], int size);
 
 /* env */
 

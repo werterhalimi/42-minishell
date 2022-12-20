@@ -14,14 +14,14 @@
 
 char	*var_value(char const *var_name)
 {
-	t_list	*list;
 	size_t	length;
+	int		i;
 
-	list = g_var.envp;
+	i = 0;
 	length = ft_strlen(var_name);
-	while (list && ft_strncmp(list->content, var_name, length))
-		list = list->next;
-	if (list)
-		return (list->content + length + 1);
-	return ("");
+	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], var_name, length))
+		i++;
+	if (g_var.envp[i])
+		return (g_var.envp[i] + length + 1);
+	return (NULL);
 }

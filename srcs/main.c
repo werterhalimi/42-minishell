@@ -56,7 +56,8 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		free_buffer(g_var.parse_alloc);
 	}
-	return (0);
+	free_all(buf);
+	return (SUCCESS);
 }
 #endif 
 

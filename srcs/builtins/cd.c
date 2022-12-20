@@ -37,6 +37,8 @@ static int	update_env(char *new_dir)
 	char	*str;
 
 	str = var_value("PWD");
+	if (!str)
+		return (ERROR);
 	str = ft_strjoin("OLDPWD=", str);
 	if (!str)
 		return (ERROR);
@@ -57,13 +59,13 @@ int	cd(char *argv[])
 	if (!argv[1])
 	{
 		new_dir = var_value("HOME");
-		if (!new_dir[0])
+		if (!new_dir || !new_dir[0])
 			return (error_msg("minishell : cd: HOME not set"));
 	}
 	else if (!ft_strncmp(argv[1], "-", 2))
 	{
 		new_dir = var_value("OLDPWD");
-		if (!new_dir[0])
+		if (!new_dir || !new_dir[0])
 			return (error_msg("minishell : cd: OLDPWD not set"));
 	}
 	else

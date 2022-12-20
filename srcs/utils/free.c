@@ -12,10 +12,20 @@
 
 #include "minishell.h"
 
+void	free_envp(void)
+{
+	int	i;
+
+	i = 0;
+	while (g_var.envp[i])
+		free(g_var.envp[i++]);
+	free(g_var.envp);
+}
+
 int	free_all(char *buf)
 {
 	free(buf);
-	ft_lstclear(&(g_var.envp), free);
+	free_envp();
 	return (0);
 }
 

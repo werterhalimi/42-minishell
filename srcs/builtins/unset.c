@@ -14,26 +14,27 @@
 
 int	unset(char *str)
 {
-	int		length;
-	t_list	*list;
-	t_list	*tmp;
+	int		i;
+	int		j;
+	size_t	length;
+	char	**tmp;
 
+	i = 0;
 	length = ft_strlen(str);
-	list = g_var.envp;
-	if (list && !ft_strncmp(list->content, str, length))
-	{
-		g_var.envp = list->next;
-		ft_lstdelone(list, free);
-		return (0);
-	}
-	while (list && list->next && ft_strncmp(list->next->content, str, length))
-		list = list->next;
-	if (list && list->next)
-	{
-		tmp = list->next;
-		list->next = tmp->next;
-		ft_lstdelone(tmp, free);
-		return (0);
-	}
-	return (1);
+	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], str, length))
+		i++;
+	if (!g_var.envp[i])
+		return (ERROR);
+	free(g_var.envp[i]);
+	j = i + 1;
+	while (g_var.envp[j])
+		j++;
+	g_var.envp[i] = g_var.envp[--j];
+	g_var.envp[j] = NULL;
+	tmp = array_copy(g_var.envp, j);
+	if (!tmp)
+		return (ERROR);
+	free_envp();
+	g_var.envp = tmp;
+	return (SUCCESS);
 }

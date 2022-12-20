@@ -14,12 +14,12 @@
 
 int	pwd(void)
 {
-	t_list	*list;
+	int	i;
 
-	list = g_var.envp;
-	while (list && ft_strncmp(list->content, "PWD=", 4))
-		list = list->next;
-	if (list)
-		ft_putendl_fd(list->content + 4, STDOUT_FILENO);
-	return (0);
+	i = 0;
+	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], "PWD=", 4))
+		i++;
+	if (g_var.envp[i])
+		ft_putendl_fd(g_var.envp[i] + 4, STDOUT_FILENO);
+	return (SUCCESS);
 }

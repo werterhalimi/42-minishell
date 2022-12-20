@@ -15,7 +15,8 @@ SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
 					env/init.c			main.c				parse/parse.c \
 					utils/exec.c		utils/alloc.c		utils/ft_isbuiltin.c \
 					pipe/pipex.c		builtins/echo.c		builtins/cd.c \
-					env/var_value.c		builtins/exit.c		utils/sort.c
+					env/var_value.c		builtins/exit.c		utils/sort.c \
+					utils/array_copy.c
 
 SRCS_DIR		:= ./srcs/
 
