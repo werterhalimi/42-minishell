@@ -24,13 +24,16 @@ void	free_envp(void)
 
 int	free_all(char *buf)
 {
-	free(buf);
+	free_buffer(buf);
 	free_envp();
+	rl_clear_history();
 	return (0);
 }
 
-int	free_buffer(t_list **buffer)
+int	free_buffer(char *buf)
 {
-	ft_lstclear(buffer, free);
+	g_var.sigint = 0;
+	ft_lstclear(g_var.parse_alloc, free);
+	free(buf);
 	return (0);
 }

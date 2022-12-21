@@ -16,7 +16,7 @@ SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
 					utils/exec.c		utils/alloc.c		utils/ft_isbuiltin.c \
 					pipe/pipex.c		builtins/echo.c		builtins/cd.c \
 					env/var_value.c		builtins/exit.c		utils/sort.c \
-					utils/array_copy.c
+					utils/array_copy.c	utils/signals.c
 
 SRCS_DIR		:= ./srcs/
 
@@ -34,13 +34,13 @@ LIBFT_DIR		:= ./libft
 
 INC_DIR			:= ./inc/
 INC				:= minishell.h
-HEADERS 		:= $(addprefix $(INC_DIR),$(INC))
+HEADERS 		:= $(addprefix $(INC_DIR),$(INC)) $(HOME)/.brew/opt/readline/include
 
 CC				:= @gcc
-CFLAGS			:= -g -Wall -Wextra -Werror -I $(INC_DIR)
+CFLAGS			:= -g -Wall -Wextra -Werror -I $(INC_DIR) -I $(HOME)/.brew/opt/readline/include
 RM				:= @rm -f
-LIB				:= -L $(LIBFT_DIR) -lft -lreadline
-DEBUG			:= -g3# -fsanitize=address
+LIB				:= -L $(LIBFT_DIR) -L $(HOME)/.brew/opt/readline/lib -lft -lreadline
+DEBUG			:= -g3 -fsanitize=address
 UNIT			:= ""
 NAME			:= minishell
 

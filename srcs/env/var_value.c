@@ -19,7 +19,8 @@ char	*var_value(char const *var_name)
 
 	i = 0;
 	length = ft_strlen(var_name);
-	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], var_name, length))
+	while (g_var.envp[i] && (ft_strncmp(g_var.envp[i], var_name, length) \
+		|| (g_var.envp[i][length] && g_var.envp[i][length] != '=')))
 		i++;
 	if (g_var.envp[i])
 		return (g_var.envp[i] + length + 1);

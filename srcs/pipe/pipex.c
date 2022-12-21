@@ -47,8 +47,8 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 		waitpid(pid[i], g_var.last_er, 0);
 		i++;
 	}
-	while (wait(&i) != -1)
-		continue ;
+	//while (wait(&i) != -1)
+	//	continue ;
 	free(pid);
 }
 

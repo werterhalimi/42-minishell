@@ -46,11 +46,11 @@
 
 typedef struct s_global
 {
-//	t_list	*envp;
 	char 	**envp;
 	t_list	**parse_alloc;
 	int		*last_er;
 	int		exit;
+	int		sigint;
 }	t_global;
 
 typedef struct s_command
@@ -61,12 +61,18 @@ typedef struct s_command
 	int		fd[2];
 }	t_command;
 
-t_global	g_var;
+extern t_global	g_var;
+
+/* readline */
+
+void		rl_clear_history(void);
+
+void		rl_replace_line(const char *, int);
 
 /* Alloc */
 
 void		*ft_alloc(int size, int len, t_list **buff);
-int			free_buffer(t_list **buffer);
+int			free_buffer(char *buf);
 
 /* builtins */
 
@@ -97,6 +103,10 @@ int			print_error(char *error_msg);
 void		sort(char *argv[], long size);
 
 char		**array_copy(char *src[], int size);
+
+void		sig_int(int code);
+
+void		sig_quit(int code);
 
 /* env */
 

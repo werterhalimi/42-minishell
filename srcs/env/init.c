@@ -38,11 +38,13 @@ int	init(char *envp[])
 
 	i = 0;
 	g_var.exit = 0;
+	g_var.sigint = 0;
 	while (envp[i])
 		i++;
 	g_var.envp = array_copy(envp, i);
 	if (!g_var.envp)
 		return (ERROR);
+	unset("OLDPWD");
 	export("OLDPWD");
 	tmp = prompt();
 	i = export(tmp);

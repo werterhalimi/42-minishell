@@ -28,7 +28,8 @@ static int	cd_error(char *argv[])
 		ft_putstr_fd(strerror(errno), STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
 	}
-	ft_putendl_fd(argv[1], STDERR_FILENO);
+	ft_putstr_fd(argv[1], STDERR_FILENO);
+	write(STDERR_FILENO, "\n", 1);
 	return (ERROR);
 }
 

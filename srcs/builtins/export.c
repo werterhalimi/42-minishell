@@ -63,7 +63,7 @@ static int	add_variable(char *str, int size)
 	char	**tmp;
 	int		i;
 
-	tmp = malloc(sizeof (*tmp) * (size + 1));
+	tmp = malloc(sizeof (*tmp) * (size + 2));
 	if (!tmp)
 		return (ERROR);
 	i = -1;
@@ -88,20 +88,18 @@ int	export(char *str)
 	i = 0;
 	while (str[i] && str[i] != '=')
 		i++;
-//	if (str[i] == '=')
-//		i--;
 	j = 0;
 	while (g_var.envp[j] && (ft_strncmp(g_var.envp[j], str, i) \
 		|| (g_var.envp[j][i] && g_var.envp[j][i] != '=')))
 		j++;
-	if (g_var.envp[j])
+	if (g_var.envp[j] && str[i] == '=')
 	{
 		free(g_var.envp[j]);
 		g_var.envp[j] = ft_strdup(str);
 		if (!g_var.envp[j])
 			return (ERROR);
 	}
-	else
+	else if (!g_var.envp[j])
 		return (add_variable(str, j));
 	return (SUCCESS);
 }

@@ -12,23 +12,28 @@
 
 #include "minishell.h"
 
+t_global	g_var;
+
 int	execute(t_command instr)
 {
+	int	ret;
+
+	ret = ERROR;
 	if (!ft_strncmp(instr.command, "exit", 4))
-		return (ft_exit());
-	if (!ft_strncmp(instr.command, "env", 3))
-		return (env());
-	if (!ft_strncmp(instr.command, "pwd", 3))
-		return (pwd());
-	if (!ft_strncmp(instr.command, "export", 6))
-		return (export(instr.args[1]));
-	if (!ft_strncmp(instr.command, "unset", 5))
-		return (unset(instr.args[1]));
-	if (!ft_strncmp(instr.command, "cd", 2))
-		return (cd(instr.args));
-	if (!ft_strncmp(instr.command, "echo", 4))
-		return (echo(instr.args));
-	return (0);
+		ret = ft_exit();
+	else if (!ft_strncmp(instr.command, "env", 3))
+		ret = env();
+	else if (!ft_strncmp(instr.command, "pwd", 3))
+		ret = pwd();
+	else if (!ft_strncmp(instr.command, "export", 6))
+		ret = export(instr.args[1]);
+	else if (!ft_strncmp(instr.command, "unset", 5))
+		ret = unset(instr.args[1]);
+	else if (!ft_strncmp(instr.command, "cd", 2))
+		ret = cd(instr.args);
+	else if (!ft_strncmp(instr.command, "echo", 4))
+		ret = echo(instr.args);
+	return (ret);
 }
 
 #ifndef UNIT
@@ -43,16 +48,20 @@ int	main(int argc, char *argv[], char *envp[])
 		return (free_all(NULL));
 	while (!g_var.exit)
 	{
-		buf = readline("minishell>");//var_value("PROMPT"));
-		if (buf && *buf)
+		signal(SIGINT, &sig_int);
+		signal(SIGQUIT, &sig_quit);
+		buf = readline(var_value("PROMPT"));
+		if (!buf)
+		{
+			ft_putendl_fd("exit", STDOUT_FILENO);
+			break;
+		}
+		if (!g_var.sigint && *buf)
 		{
 			add_history(buf);
 			launch_pipex(ft_countchar(buf, '|'), ft_split(buf, '|'), (int[2]) {0, 1});
-			/*
-			if (execute(command, envp) == -1)
-				return (free_all(buf));*/
 		}
-		free_buffer(g_var.parse_alloc);
+		free_buffer(buf);
 	}
 	free_all(buf);
 	return (SUCCESS);
