@@ -6,18 +6,18 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 19:34:37 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/22 00:41:57 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	middle_process(int in[3], int out[2], char *args);
+int	middle_process(int in[3], int out[2], char *args, int argc);
 
-int	launch_process(int in[2], int out[2], char *arg)
+int	launch_process(int in[2], int out[2], char *arg, int argc)
 {
 	pipe(out);
-	return (middle_process(in, out, arg));
+	return (middle_process(in, out, arg, argc));
 }
 
 void	int_swap(int dest[2], int src[2])
@@ -44,6 +44,11 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 	i = 0;
 	while (i < j)
 	{
+		if (pid[i] == -1)
+		{
+			i++;
+			continue ;
+		}
 		waitpid(pid[i], g_var.last_er, 0);
 		i++;
 	}
@@ -52,20 +57,25 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 	free(pid);
 }
 
-int	middle_process(int in[2], int out[2], char *args)
+int	middle_process(int in[2], int out[2], char *args, int argc)
 {
 	char			**paths;
-	char			*tmp;
 	int				pid;
 	t_command		cmd;
 
-	tmp = args;
 	args = ft_strtrim(args, " 	");
 	cmd = parse(args, (int[2]) {in[0], out[1]});
 	free(args);
+	if (argc == 1)
+	{
+		if (ft_isbuiltin(cmd.command))
+		{
+			execute(cmd);
+			//TODO FREE COMMAND
+			return (-1);
+		}
+	}
 	pid = fork();
-	if (ft_strncmp(args, "exit", 4) == 0)
-		exit(0);
 	if (!pid)
 	{
 		if (cmd.fd[0] < 0)
@@ -83,7 +93,10 @@ int	middle_process(int in[2], int out[2], char *args)
 			exit(127);
 		else
 			execve(get_path(paths, cmd.command), cmd.args, g_var.envp);
+		exit(0);
 	}
+	if (argc != 1)
+		g_var.exit = 0;
 	c(out[1]);
 	return (pid);
 }
@@ -108,18 +121,18 @@ void	launch_pipex(int argc, char **argv, int files[2])
 	{
 		if(j == 0)
 		{
-			pid[j] = middle_process(files, in, argv[j + 0]);
+			pid[j] = middle_process(files, in, argv[j + 0], argc);
 			c(files[0]);
 			if (argc == 2)
 				int_swap(out, in);
 		}
 		else if ( j == argc - 1)
-			pid[j] = middle_process(out, files, argv[j]);
+			pid[j] = middle_process(out, files, argv[j], argc);
 		else
 		{
 			if (j > 1)
 				int_swap(in, out);
-			pid[j] = launch_process(in, out, argv[j]);
+			pid[j] = launch_process(in, out, argv[j], argc);
 		}
 		j++;
 	}

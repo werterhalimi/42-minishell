@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 22:57:26 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/22 00:35:10 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ void	handle_input(char *line, int *fd)
 		{
 			printf("%s", sep);
 			buff = readline(">");
-			if (!ft_strncmp(buff, sep, ft_strlen(buff)))
+			if (!ft_strncmp(buff, sep, ft_strlen(buff)) && ft_strlen(buff) == ft_strlen(sep))
 				break ;
 			write(f[1], buff, ft_strlen(buff));
 			write(f[1], "\n", 1);

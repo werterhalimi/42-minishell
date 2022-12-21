@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:44:10 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/12 22:20:17 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/22 00:39:19 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	free_envp(void)
 
 int	free_all(char *buf)
 {
-	free_buffer(buf);
+	(void) buf;
 	free_envp();
 	rl_clear_history();
 	return (0);
