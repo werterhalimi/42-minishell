@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/22 22:33:37 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/22 23:15:09 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,6 +345,64 @@ void	handle_quote(char **split, int len)
 	}
 }
 
+void	str_replace(char **str, char *to_replace, char *new)
+{
+	char *tmp;
+	int	i;
+	int	len;
+
+	i = 0;
+	len = ft_strlen(*str);
+	while (i < (int) ft_strlen(*str))
+	{
+		if (ft_strncmp(*str + i, to_replace, ft_strlen(to_replace)) == 0)
+		{
+			len -= ft_strlen(to_replace);
+			len += ft_strlen(new);
+		}
+		i++;
+	}
+	tmp = ft_calloc(sizeof(*tmp), len + 1);
+	i = 0;
+	while (i < len)
+	{
+		if (ft_strncmp((*str) + i, to_replace, ft_strlen(to_replace)) == 0)
+		{
+			ft_memcpy(tmp + i, new, ft_strlen(new));
+			i += ft_strlen(new);
+			continue ;
+		}
+		tmp[i] = (*str)[i];
+		i++;
+	}
+	tmp[len] = 0;
+//	free(*str);
+	*str = tmp;
+}
+
+void	handle_var(char **line)
+{
+	char	*tmp;
+	char	*tmp2;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (g_var.envp[i])
+	{
+		j = 0;
+		while (g_var.envp[i][j] != '=')
+			j++;
+		tmp = ft_strdup(g_var.envp[i]);
+		tmp[j] = 0;
+		tmp2 = ft_strjoin("$", tmp);
+		str_replace(line, tmp2, var_value(tmp));
+		free(tmp);
+		free(tmp2);
+		i++;
+	}
+}
+
 t_command	parse(char *line, int fd[2])
 {
 	char		**split;
@@ -354,9 +412,8 @@ t_command	parse(char *line, int fd[2])
 	int			i;
 	int			y;
 
-	// TODO int ft_is_between_quote(char *c, int index, int len)
-	// if 1 then dont read as special
-	// also replace var
+	// TODO replace var
+	handle_var(&line);
 	handle_line(line, &ret, fd);
 	line = ft_strtrim(line, "	 ");
 	len = ft_countchar(line, ' ') + 1;
