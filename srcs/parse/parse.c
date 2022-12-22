@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/22 00:35:10 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/22 22:33:37 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,32 @@ void	handle_output(char *line, int *fd)
 	free(split);
 }
 
+int	is_between_quote(char *word, int index)
+{
+	int	right;
+	int left;
+	int	i;
+
+	right = 0;
+	left = 0;
+	i = 1;
+	while (i <= index)
+	{
+		if (*(word - i) == '\'' || *(word - i) == '"')
+			left++; 
+		i++;
+	}
+	i = 1;
+	while (word[i])
+	{
+		if (word[i] == '"' || word[i] == '\'')
+			right++;
+		i++;
+	}
+
+	return (right % 2 == 1 && left % 2 == 1);
+}
+
 void	handle_line(char *line, t_command *cmd, int fd[2])
 {
 	int		len;
@@ -227,6 +253,11 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 	len = ft_strlen(line);
 	while (len >= 0)
 	{
+		if (is_between_quote(line + len, len))
+		{
+			len--;
+			continue ;
+		}
 		c = line[len];
 		if (c == '<')
 		{
@@ -323,6 +354,9 @@ t_command	parse(char *line, int fd[2])
 	int			i;
 	int			y;
 
+	// TODO int ft_is_between_quote(char *c, int index, int len)
+	// if 1 then dont read as special
+	// also replace var
 	handle_line(line, &ret, fd);
 	line = ft_strtrim(line, "	 ");
 	len = ft_countchar(line, ' ') + 1;
