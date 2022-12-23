@@ -49,7 +49,7 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 			i++;
 			continue ;
 		}
-		waitpid(pid[i], g_var.last_er, 0);
+		waitpid(pid[i], &(g_var.last_er), 0);
 		i++;
 	}
 	//while (wait(&i) != -1)
@@ -60,7 +60,7 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 int	middle_process(int in[2], int out[2], char *args, int argc)
 {
 	char			**paths;
-	int				pid;
+//	int				pid;
 	t_command		cmd;
 
 	args = ft_strtrim(args, " 	");
@@ -75,8 +75,8 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 			return (-1);
 		}
 	}
-	pid = fork();
-	if (!pid)
+	g_var.pid = fork();
+	if (!g_var.pid)
 	{
 		if (cmd.fd[0] < 0)
 		{
@@ -98,7 +98,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	if (argc != 1)
 		g_var.exit = 0;
 	c(out[1]);
-	return (pid);
+	return (g_var.pid);
 }
 
 void	launch_pipex(int argc, char **argv, int files[2])
@@ -108,9 +108,10 @@ void	launch_pipex(int argc, char **argv, int files[2])
 	int	out[2];
 	int	j;
 
+	g_var.status = EXECUTE;
 	if (++argc == 0)
 		argc++;
-	pid = malloc(sizeof(int) * argc - 3);
+	pid = malloc(sizeof(int) * argc - 3); // TODO ????
 	if (!pid)
 		return ;
 	j = 0;
@@ -126,7 +127,7 @@ void	launch_pipex(int argc, char **argv, int files[2])
 			if (argc == 2)
 				int_swap(out, in);
 		}
-		else if ( j == argc - 1)
+		else if (j == argc - 1)
 			pid[j] = middle_process(out, files, argv[j], argc);
 		else
 		{
@@ -138,4 +139,6 @@ void	launch_pipex(int argc, char **argv, int files[2])
 	}
 	close_wait(in, out, j, pid);
 	free(argv);
+	g_var.pid = 0;
+	g_var.status = READ;
 }

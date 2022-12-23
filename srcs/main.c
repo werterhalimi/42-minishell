@@ -39,32 +39,28 @@ int	execute(t_command instr)
 #ifndef UNIT
 int	main(int argc, char *argv[], char *envp[])
 {
-	char		*buf = "";
+	char	*buf;
 
 	(void) argv;
 	if (argc != 1)
 		return (print_error("Invalid number of arguments"));
 	if (init(envp))
 		return (free_all(NULL));
+	buf = "";
+	signals();
 	while (!g_var.exit)
 	{
-		signal(SIGINT, &sig_int);
-		signal(SIGQUIT, &sig_quit);
 		buf = readline(var_value("PROMPT"));
 		if (!buf)
-		{
-			ft_putendl_fd("exit", STDOUT_FILENO);
 			break;
-		}
-		if (!g_var.sigint && *buf)
+		if (*buf)
 		{
 			add_history(buf);
 			launch_pipex(ft_countchar(buf, '|'), ft_split(buf, '|'), (int[2]) {0, 1});
 		}
 		free_buffer(buf);
 	}
-	free_all(buf);
-	return (SUCCESS);
+	return (free_all(buf));
 }
 #endif 
 

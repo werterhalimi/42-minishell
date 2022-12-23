@@ -24,16 +24,17 @@ void	free_envp(void)
 
 int	free_all(char *buf)
 {
-	(void) buf;
+	ft_putendl_fd("exit", STDOUT_FILENO);
 	free_envp();
 	rl_clear_history();
-	return (0);
+	return (free_buffer(buf));
 }
 
 int	free_buffer(char *buf)
 {
-	g_var.sigint = 0;
+//	g_var.sigint = 0;
 	ft_lstclear(g_var.parse_alloc, free);
-	free(buf);
-	return (0);
+	if (!g_var.exit)
+		free(buf);
+	return (SUCCESS);
 }

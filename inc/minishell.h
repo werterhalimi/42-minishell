@@ -44,13 +44,18 @@
 # define SUCCESS	0
 # define ERROR		1
 
+# define READ		0
+# define EXECUTE	1
+
 typedef struct s_global
 {
 	char 	**envp;
 	t_list	**parse_alloc;
-	int		*last_er;
+	int		last_er;
 	int		exit;
-	int		sigint;
+	int		pid;
+	int		status;
+//	int		sigint;
 }	t_global;
 
 typedef struct s_command
@@ -104,9 +109,7 @@ void		sort(char *argv[], long size);
 
 char		**array_copy(char *src[], int size);
 
-void		sig_int(int code);
-
-void		sig_quit(int code);
+void		signals(void);
 
 /* env */
 

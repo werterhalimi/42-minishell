@@ -61,7 +61,7 @@ unit:			clean
 
 clean:
 				$(RM) $(OBJS)
-				@rmdir $(OBJS_SUB_DIR) $(OBJS_DIR)
+				$(RM) -r $(OBJS_SUB_DIR) $(OBJS_DIR)
 				$(RM) $(LIBFT_DIR)/*.o
 
 fclean:			clean

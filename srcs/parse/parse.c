@@ -33,7 +33,7 @@ int	ft_countchar(const char *s, char c)
 				ret++;
 		}
 	}
-	if (!ret)
+	if (!ret) // TODO ???
 		return (-1);
 	if (s[0] == c || s[i - 1] == c)
 		ret--;
@@ -221,9 +221,9 @@ void	handle_output(char *line, int *fd)
 
 int	is_between_quote(char *word, int index)
 {
-	int	right;
+	int right;
 	int left;
-	int	i;
+	int i;
 
 	right = 0;
 	left = 0;
@@ -231,15 +231,18 @@ int	is_between_quote(char *word, int index)
 	while (i <= index)
 	{
 		if (*(word - i) == '\'' || *(word - i) == '"')
-			left++; 
+			left++;
 		i++;
 	}
-	i = 1;
-	while (word[i])
+	if (word[0])
 	{
-		if (word[i] == '"' || word[i] == '\'')
-			right++;
-		i++;
+		i = 1;
+		while (word[i])
+		{
+			if (word[i] == '"' || word[i] == '\'')
+				right++;
+			i++;
+		}
 	}
 
 	return (right % 2 == 1 && left % 2 == 1);
@@ -391,7 +394,7 @@ void	handle_var(char **line)
 	while (g_var.envp[i])
 	{
 		j = 0;
-		while (g_var.envp[i][j] != '=')
+		while (g_var.envp[i][j] && g_var.envp[i][j] != '=')
 			j++;
 		tmp = ft_strdup(g_var.envp[i]);
 		tmp[j] = 0;
@@ -433,6 +436,7 @@ t_command	parse(char *line, int fd[2])
 		ret.args[y] = 0;
 	else
 	{
+		ret.args = ft_alloc(sizeof(*(ret.args)), 2, g_var.parse_alloc); // TODO
 		ret.args[0] = line;
 		ret.args[1] = 0;
 	}

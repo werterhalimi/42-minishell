@@ -13,20 +13,25 @@
 #include "minishell.h"
 
 //	Ctrl + C
-void	sig_int(int code)
+static void	sig_int(int code)
 {
 	(void)code;
-//	if ()
-//	ft_putstr_fd("\b\b", STDOUT_FILENO);
-	ft_printf("\b\b\n");
-	rl_on_new_line();
+	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
-//	ft_putstr_fd("\n", STDOUT_FILENO);
+	rl_on_new_line();
 	rl_redisplay();
-//	*g_var.last_er = 1;
-	g_var.sigint = 1;
+	g_var.last_er = 1;
+//	g_var.sigint = 1;
 }
 
+static void	sig_child(int code)
+{
+	(void)code;
+	kill(g_var.pid, SIGINT);
+	g_var.last_er = 131;
+}
+
+/*
 //	Ctrl + "\"
 void	sig_quit(int code)
 {
@@ -36,8 +41,20 @@ void	sig_quit(int code)
 //	else
 //		ft_putstr_fd("\b\b ", STDERR_FILENO);
 //	rl_on_new_line();
-	ft_putstr_fd("\b\b", STDERR_FILENO);
-	rl_on_new_line();
-	rl_redisplay();
+//	rl_replace_line("", 0);
+//	ft_putstr_fd("\b\b", STDERR_FILENO);
+//	rl_on_new_line();
+//	rl_redisplay();
 }
+*/
 
+void	signals(void)
+{
+	signal(SIGTERM, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
+	if (g_var.status == READ)
+		signal(SIGINT, sig_int);
+	else if (g_var.pid)
+		signal(SIGINT, sig_child);
+}

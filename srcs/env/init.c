@@ -38,7 +38,9 @@ int	init(char *envp[])
 
 	i = 0;
 	g_var.exit = 0;
-	g_var.sigint = 0;
+	g_var.status = READ;
+	g_var.pid = 0;
+//	g_var.sigint = 0;
 	while (envp[i])
 		i++;
 	g_var.envp = array_copy(envp, i);
