@@ -49,12 +49,13 @@
 
 typedef struct s_global
 {
-	char 	**envp;
+	char	**envp;
 	t_list	**parse_alloc;
 	int		last_er;
 	int		exit;
 	int		pid;
 	int		status;
+	int		exec;
 //	int		sigint;
 }	t_global;
 
@@ -62,7 +63,7 @@ typedef struct s_command
 {
 	char	*command;
 	char	**args;
-	int		argc;
+//	int		argc;
 	int		fd[2];
 }	t_command;
 
@@ -70,13 +71,13 @@ extern t_global	g_var;
 
 /* readline */
 
-void		rl_clear_history(void);
+//void		rl_clear_history(void);
 
-void		rl_replace_line(const char *, int);
+//void		rl_replace_line(const char *, int);
 
 /* Alloc */
 
-void		*ft_alloc(int size, int len, t_list **buff);
+void		*ft_alloc(int size, size_t len, t_list **buff);
 int			free_buffer(char *buf);
 
 /* builtins */
@@ -127,7 +128,7 @@ int			ft_countchar(const char *str, char c);
 
 int			ft_find_paths_index(char **str);
 char		*get_path(char **str, char *command);
-char		**env_to_paths();
+char		**env_to_paths(void);
 void		launch_pipex(int argc, char **argv, int files[2]);
 int			execute(t_command instr);
 

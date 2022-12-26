@@ -44,7 +44,7 @@ static int	export_no_args(void)
 	if (!envp)
 		return (ERROR);
 	i = 0;
-	while (i < size)
+	while (i <= size)
 	{
 		envp[i] = g_var.envp[i];
 		i++;

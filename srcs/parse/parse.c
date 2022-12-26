@@ -33,8 +33,8 @@ int	ft_countchar(const char *s, char c)
 				ret++;
 		}
 	}
-	if (!ret) // TODO ???
-		return (-1);
+//	if (!ret) // TODO ???
+//		return (-1);
 	if (s[0] == c || s[i - 1] == c)
 		ret--;
 	return (ret);
@@ -69,6 +69,7 @@ char	*join(char *s1, char *s2)
 	ret = ft_strjoin(buff, s2);
 	return (ret);
 }
+
 char	*handle_fd(int *in, int *out, char *line)
 {
 	int	len;
@@ -106,34 +107,36 @@ char	*get_string(char **split, char *current, int *index, int len)
 	if (ft_strlen(current) == 1 && i < len - 1)
 		current = ft_strjoin(current, split[++i]);
 	if (current[0] == '\'' || current[0] == '"')
-		while (current[ft_strlen(current) - 1] != current[0] && i < len)
-		{
-			current = join(current,split[++i]);
+	{
+		while (current[ft_strlen(current) - 1] != current[0] && i < len) {
+			current = join(current, split[++i]);
 			free(split[i]);
 		}
+	}
 	if (current[0] != '"' && current[0] != '\'' && !index)
 	{
 		split = ft_split(current, ' ');
 		current = split[0];
 		free(split);
 	}
-	current = ft_baskslash(current);
-	if (current[0] == current[ft_strlen(current) - 1] && (
-				current[0] == '\'' ||
-				current[0] == '"'))
+	if (!current) // TODO
 	{
-		current = ft_substr(current, 1, ft_strlen(current) - 2);
+		ft_putstr_fd("minishell: syntax error near unexpected token", STDERR_FILENO);
+		g_var.exec = ERROR;
+		return (NULL);
 	}
+	current = ft_baskslash(current);
+	if (current[0] == current[ft_strlen(current) - 1] \
+		&& (current[0] == '\'' || current[0] == '"'))
+		current = ft_substr(current, 1, ft_strlen(current) - 2);
 	if (index)
 		*index = i;
 	return (current);
 }
 
-
-
 void	handle_input(char *line, int *fd)
 {
-	int	f[2];
+	int		f[2];
 	char	*tmp;
 	char	*buff;
 	char	*sep;
@@ -143,10 +146,13 @@ void	handle_input(char *line, int *fd)
 	if (line[1] == '<')
 	{
 		line = &line[2];
-		while (*line == ' ') line++;
+		while (*line == ' ')
+			line++;
 		split = ft_split(line, ' ');
 		line = ft_strtrim(line, " 	");
 		sep = get_string(split, line, 0, ft_strlen(line));
+		if (!sep)
+			return;
 		f[0] = 0;
 		while (f[0] < (int) ft_strlen(tmp))
 		{
@@ -159,7 +165,7 @@ void	handle_input(char *line, int *fd)
 		{
 			printf("%s", sep);
 			buff = readline(">");
-			if (!ft_strncmp(buff, sep, ft_strlen(buff)) && ft_strlen(buff) == ft_strlen(sep))
+			if (!buff || (!ft_strncmp(buff, sep, ft_strlen(buff)) && ft_strlen(buff) == ft_strlen(sep)))
 				break ;
 			write(f[1], buff, ft_strlen(buff));
 			write(f[1], "\n", 1);
@@ -172,7 +178,8 @@ void	handle_input(char *line, int *fd)
 	else
 	{
 		line = &line[1];
-		while (*line == ' ') line++;
+		while (*line == ' ')
+			line++;
 		split = ft_split(line, ' ');
 		line = ft_strtrim(line, "	 ");
 		fd[0] = open(get_string(split, line, 0, ft_strlen(line)), O_RDONLY);
@@ -203,13 +210,14 @@ void	handle_output(char *line, int *fd)
 		line += 1;
 	}
 	line = &line[1];
-	while (*line == ' ') line++;
+	while (*line == ' ')
+		line++;
 	split = ft_split(line, ' ');
 	line = ft_strtrim(line, " 	");
 	if (!append)
 		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else
-		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT |  O_APPEND, 0644);
+		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_APPEND, 0644);
 	while (i < (int) ft_strlen(tmp))
 	{
 		tmp[i] = ' ';
@@ -221,9 +229,9 @@ void	handle_output(char *line, int *fd)
 
 int	is_between_quote(char *word, int index)
 {
-	int right;
-	int left;
-	int i;
+	int	right;
+	int	left;
+	int	i;
 
 	right = 0;
 	left = 0;
@@ -244,7 +252,6 @@ int	is_between_quote(char *word, int index)
 			i++;
 		}
 	}
-
 	return (right % 2 == 1 && left % 2 == 1);
 }
 
@@ -311,10 +318,10 @@ void	remove_quote(char *str)
 			if (no_double == 0)
 			{
 				i++;
-				continue;
+				continue ;
 			}
 			no_double--;
-			ft_memmove(str + i, str+ 1 + i, ft_strlen(str + 1 + i));
+			ft_memmove(str + i, str + 1 + i, ft_strlen(str + 1 + i));
 			str[ft_strlen(str) - 1] = 0;
 			continue ;
 		}
@@ -323,10 +330,10 @@ void	remove_quote(char *str)
 			if (no_single == 0)
 			{
 				i++;
-				continue;
+				continue ;
 			}
 			no_single--;
-			ft_memmove(str +i, str + 1 + i, ft_strlen(str + 1 + i));
+			ft_memmove(str + i, str + 1 + i, ft_strlen(str + 1 + i));
 			str[ft_strlen(str) - 1] = 0;
 			continue ;
 		}
@@ -350,9 +357,9 @@ void	handle_quote(char **split, int len)
 
 void	str_replace(char **str, char *to_replace, char *new)
 {
-	char *tmp;
-	int	i;
-	int	len;
+	char	*tmp;
+	int		i;
+	int		len;
 
 	i = 0;
 	len = ft_strlen(*str);
@@ -422,7 +429,8 @@ t_command	parse(char *line, int fd[2])
 	len = ft_countchar(line, ' ') + 1;
 	split = ft_split(line, ' ');
 	handle_quote(split, len);
-	ret.args = ft_alloc(sizeof(*(ret.args)), len, g_var.parse_alloc);
+//	ret.args = ft_alloc(sizeof(*(ret.args)), len, g_var.parse_alloc);
+	ret.args = ft_alloc(sizeof(*(ret.args)), len + 1, g_var.parse_alloc);
 	i = 0;
 	y = 0;
 	while (i < len)
@@ -441,7 +449,7 @@ t_command	parse(char *line, int fd[2])
 		ret.args[1] = 0;
 	}
 	ret.command = split[0];
-	ret.argc = y;
+//	ret.argc = y;
 	free(split);
 	return (ret);
 }

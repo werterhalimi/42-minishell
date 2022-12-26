@@ -40,6 +40,7 @@ int	init(char *envp[])
 	g_var.exit = 0;
 	g_var.status = READ;
 	g_var.pid = 0;
+	g_var.exec = SUCCESS;
 //	g_var.sigint = 0;
 	while (envp[i])
 		i++;

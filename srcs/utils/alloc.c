@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	*ft_alloc(int size, int len, t_list **buff)
+void	*ft_alloc(int size, size_t len, t_list **buff)
 {
 	void	*ret;
 

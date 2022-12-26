@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-char	**env_to_paths()
+char	**env_to_paths(void)
 {
 	char	**env;
-	
+
 	env = g_var.envp;
 	return (ft_split(&(env[ft_find_paths_index(env)][5]), ':'));
 }

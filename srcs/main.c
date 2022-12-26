@@ -37,6 +37,7 @@ int	execute(t_command instr)
 }
 
 #ifndef UNIT
+
 int	main(int argc, char *argv[], char *envp[])
 {
 	char	*buf;
@@ -47,16 +48,16 @@ int	main(int argc, char *argv[], char *envp[])
 	if (init(envp))
 		return (free_all(NULL));
 	buf = "";
-	signals();
 	while (!g_var.exit)
 	{
+		signals();
 		buf = readline(var_value("PROMPT"));
 		if (!buf)
-			break;
+			break ;
 		if (*buf)
 		{
 			add_history(buf);
-			launch_pipex(ft_countchar(buf, '|'), ft_split(buf, '|'), (int[2]) {0, 1});
+			launch_pipex(ft_countchar(buf, '|'), ft_split(buf, '|'), (int[2]){0, 1});
 		}
 		free_buffer(buf);
 	}
@@ -68,7 +69,9 @@ int	main(int argc, char *argv[], char *envp[])
 
 int	main(void)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	printf("%i", i);
 }
 #endif
