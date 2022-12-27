@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/20 19:33:49 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/27 22:28:52 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,10 @@
 # define BOLD_CYAN		"\033[1m\033[36m"
 # define BOLD_WHITE		"\033[1m\033[37m"
 
-# define SUCCESS	0
-# define ERROR		1
+# define SUCCESS			0
+# define ERROR				1
+# define SYNTAX_ERROR		258
+
 
 # define READ		0
 # define EXECUTE	1
@@ -63,6 +65,7 @@ typedef struct s_command
 {
 	char	*command;
 	char	**args;
+	int		parse_error;
 //	int		argc;
 	int		fd[2];
 }	t_command;

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/22 00:41:57 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/27 22:43:35 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 					g_var.last_er = WSTOPSIG(status);
 			}
 		}
+		else if (pid[i] < -1)
+			g_var.last_er = pid[i] * -1;
+
 	}
 	//while (wait(&i) != -1)
 	//	continue ;
@@ -77,6 +80,11 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	args = ft_strtrim(args, " 	");
 	cmd = parse(args, (int[2]) {in[0], out[1]});
 	free(args);
+	if (cmd.parse_error)
+	{
+		//free(cmd);
+		return (cmd.parse_error);
+	}
 	if (g_var.exec == ERROR)
 		return (-1);
 	//	if (argc == 1)
@@ -156,6 +164,8 @@ void	launch_pipex(int argc, char **argv, int files[2])
 				int_swap(in, out);
 			pid[j] = launch_process(in, out, argv[j], argc);
 		}
+		if (pid[j] < -1)
+			break;
 		j++;
 	}
 	close_wait(in, out, j, pid);

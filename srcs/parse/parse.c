@@ -6,13 +6,13 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/22 23:15:09 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/28 00:21:55 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_input(char *line, int *fd);
+void	handle_input(char *line, int *fd, t_command *cmd);
 
 int	ft_countchar(const char *s, char c)
 {
@@ -69,7 +69,7 @@ char	*join(char *s1, char *s2)
 	ret = ft_strjoin(buff, s2);
 	return (ret);
 }
-
+/*
 char	*handle_fd(int *in, int *out, char *line)
 {
 	int	len;
@@ -83,7 +83,7 @@ char	*handle_fd(int *in, int *out, char *line)
 	{
 		if (line[len] == '<' && !input)
 		{
-			handle_input(&line[len - 1], in);
+			handle_input(&line[len - 1], in, 0);
 			input = len;
 		}
 		if (line[len] == '>' && !output)
@@ -94,12 +94,16 @@ char	*handle_fd(int *in, int *out, char *line)
 		len--;
 	}
 	return (ft_split(line, '<')[0]);
-}
+}*/
 
 char	*get_string(char **split, char *current, int *index, int len)
 {
 	int	i;
 
+	if (current[0] == 0)
+	{
+		return (0);
+	}
 	if (!index)
 		i = 0;
 	else
@@ -119,12 +123,12 @@ char	*get_string(char **split, char *current, int *index, int len)
 		current = split[0];
 		free(split);
 	}
-	if (!current) // TODO
+	/*if (!current) // TODO
 	{
 		ft_putstr_fd("minishell: syntax error near unexpected token", STDERR_FILENO);
 		g_var.exec = ERROR;
 		return (NULL);
-	}
+	}*/
 	current = ft_baskslash(current);
 	if (current[0] == current[ft_strlen(current) - 1] \
 		&& (current[0] == '\'' || current[0] == '"'))
@@ -134,7 +138,7 @@ char	*get_string(char **split, char *current, int *index, int len)
 	return (current);
 }
 
-void	handle_input(char *line, int *fd)
+void	handle_input(char *line, int *fd, t_command *cmd)
 {
 	int		f[2];
 	char	*tmp;
@@ -143,6 +147,13 @@ void	handle_input(char *line, int *fd)
 	char	**split;
 
 	tmp = line;
+	line = ft_strtrim(line, "	 ");
+	if (ft_strlen(line) == 2 && line[0] == line[1])
+	{
+		cmd->parse_error = SYNTAX_ERROR * (-1);
+		ft_putendl_fd("syntax error near unexpected token 'newline'", STDERR_FILENO);
+		return ;
+	}
 	if (line[1] == '<')
 	{
 		line = &line[2];
@@ -272,9 +283,9 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 		if (c == '<')
 		{
 			if (line[len - 1] == '<')
-				handle_input(&line[--len], fd);
+				handle_input(&line[--len], fd, cmd);
 			else
-				handle_input(&line[len], fd);
+				handle_input(&line[len], fd, cmd);
 		}
 		if (c == '>')
 		{
@@ -411,6 +422,7 @@ void	handle_var(char **line)
 		free(tmp2);
 		i++;
 	}
+	str_replace(line, "$?", ft_itoa(g_var.last_er));
 }
 
 t_command	parse(char *line, int fd[2])
@@ -422,6 +434,7 @@ t_command	parse(char *line, int fd[2])
 	int			i;
 	int			y;
 
+	ret.parse_error = 0;
 	// TODO replace var
 	handle_var(&line);
 	handle_line(line, &ret, fd);

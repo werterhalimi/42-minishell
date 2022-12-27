@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 22:04:11 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/20 19:31:59 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/28 00:28:19 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ char	*get_path(char **path, char *command)
 			return (ret);
 		i++;
 	}
+	if (!access(command, X_OK))
+		return (command);
 	ft_putstr_fd(command, 1);
 	ft_putendl_fd(" n'existe pas.", 1);
 	return (0);
