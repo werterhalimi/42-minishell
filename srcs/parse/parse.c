@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/28 00:21:55 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/28 19:09:03 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,16 @@ char	*get_string(char **split, char *current, int *index, int len)
 	return (current);
 }
 
+
+void	str_replace(char **str, char *to_replace, char *new);
+
+void	set_fd(int	*fd, int value)
+{
+	if (*fd != 1 && *fd != 2 && *fd != 0)
+		return ;
+	*fd = value;
+}
+
 void	handle_input(char *line, int *fd, t_command *cmd)
 {
 	int		f[2];
@@ -188,7 +198,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 		signals();
 		g_var.status = EXECUTE;
 		close(f[1]);
-		fd[0] = f[0];
+		set_fd(&fd[0], f[0]);
 		free(split);
 		free(line);
 	}
@@ -199,7 +209,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 			line++;
 		split = ft_split(line, ' ');
 		line = ft_strtrim(line, "	 ");
-		fd[0] = open(get_string(split, line, 0, ft_strlen(line)), O_RDONLY);
+		set_fd(&fd[0],open(get_string(split, line, 0, ft_strlen(line)), O_RDONLY));
 		f[0] = 0;
 		while (f[0] < (int) ft_strlen(tmp))
 		{
@@ -239,9 +249,9 @@ void	handle_output(char *line, int *fd, t_command *cmd)
 	split = ft_split(line, ' ');
 	line = ft_strtrim(line, " 	");
 	if (!append)
-		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		set_fd(&fd[1], open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else
-		fd[1] = open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_APPEND, 0644);
+		set_fd(&fd[1], open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_APPEND, 0644));
 	while (i < (int) ft_strlen(tmp))
 	{
 		tmp[i] = ' ';
@@ -285,7 +295,7 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 	char	c;
 
 	len = ft_strlen(line);
-	while (len >= 0)
+while (len >= 0)
 	{
 		if (is_between_quote(line + len, len))
 		{
