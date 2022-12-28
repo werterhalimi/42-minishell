@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/20 22:01:06 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/28 18:47:21 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	execute(t_command instr)
 int	main(int argc, char *argv[], char *envp[])
 {
 	char	*buf;
+	char	*tmp;
 
 	(void) argv;
 	if (argc != 1)
@@ -54,9 +55,12 @@ int	main(int argc, char *argv[], char *envp[])
 		buf = readline(var_value("PROMPT"));
 		if (!buf)
 			break ;
-		if (*buf)
 		{
-			add_history(buf);
+		add_history(buf);
+		tmp = buf;
+		buf = ft_strtrim(tmp, " 	");
+		free(tmp);
+		if (*buf)
 			launch_pipex(ft_countchar(buf, '|'), \
 				ft_split(buf, '|'), (int [2]){0, 1});
 		}
