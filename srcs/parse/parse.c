@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/28 19:09:03 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/28 19:20:03 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,6 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
 	{
 		cmd->parse_error = SYNTAX_ERROR * (-1);
-		ft_putendl_fd("syntax error near unexpected token 'newline'", STDERR_FILENO);
 		return ;
 	}
 	if (line[1] == '<')
@@ -199,6 +198,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 		g_var.status = EXECUTE;
 		close(f[1]);
 		set_fd(&fd[0], f[0]);
+
 		free(split);
 		free(line);
 	}
@@ -235,7 +235,6 @@ void	handle_output(char *line, int *fd, t_command *cmd)
 	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
 	{
 		cmd->parse_error = SYNTAX_ERROR * (-1);
-		ft_putendl_fd("syntax error near unexpected token 'newline'", STDERR_FILENO);
 		return ;
 	}
 	if (line[1] == '>')
@@ -295,7 +294,7 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 	char	c;
 
 	len = ft_strlen(line);
-while (len >= 0)
+	while (len >= 0)
 	{
 		if (is_between_quote(line + len, len))
 		{
@@ -321,6 +320,8 @@ while (len >= 0)
 	}
 	cmd->fd[0] = fd[0];
 	cmd->fd[1] = fd[1];
+	if (cmd->parse_error == SYNTAX_ERROR * -1)
+		ft_putendl_fd("syntax error near unexpected token 'newline'", STDERR_FILENO);
 }
 
 void	remove_quote(char *str)
