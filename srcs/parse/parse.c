@@ -101,9 +101,7 @@ char	*get_string(char **split, char *current, int *index, int len)
 	int	i;
 
 	if (current[0] == 0)
-	{
 		return (0);
-	}
 	if (!index)
 		i = 0;
 	else
@@ -148,7 +146,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 
 	tmp = line;
 	line = ft_strtrim(line, "	 ");
-	if (ft_strlen(line) == 2 && line[0] == line[1])
+	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
 	{
 		cmd->parse_error = SYNTAX_ERROR * (-1);
 		ft_putendl_fd("syntax error near unexpected token 'newline'", STDERR_FILENO);
@@ -172,15 +170,23 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 		}
 		buff = "";
 		pipe(f);
-		while (1)
+		g_var.status = HEREDOC;
+		g_var.pid = fork();
+		if (g_var.pid == 0)
 		{
-			printf("%s", sep);
-			buff = readline(">");
-			if (!buff || (!ft_strncmp(buff, sep, ft_strlen(buff)) && ft_strlen(buff) == ft_strlen(sep)))
-				break ;
-			write(f[1], buff, ft_strlen(buff));
-			write(f[1], "\n", 1);
+			while (1)
+			{
+				signals();
+				printf("%s", sep);
+				buff = readline(">");
+				if (!buff || (!ft_strncmp(buff, sep, ft_strlen(buff)) && ft_strlen(buff) == ft_strlen(sep)))
+					exit(SUCCESS);
+				write(f[1], buff, ft_strlen(buff));
+				write(f[1], "\n", 1);
+			}
 		}
+		signals();
+		g_var.status = EXECUTE;
 		close(f[1]);
 		fd[0] = f[0];
 		free(split);
@@ -205,7 +211,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 	}
 }
 
-void	handle_output(char *line, int *fd)
+void	handle_output(char *line, int *fd, t_command *cmd)
 {
 	int		append;
 	char	**split;
@@ -215,6 +221,13 @@ void	handle_output(char *line, int *fd)
 	tmp = line;
 	i = 0;
 	append = 0;
+	line = ft_strtrim(line, "	 ");
+	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
+	{
+		cmd->parse_error = SYNTAX_ERROR * (-1);
+		ft_putendl_fd("syntax error near unexpected token 'newline'", STDERR_FILENO);
+		return ;
+	}
 	if (line[1] == '>')
 	{
 		append = 1;
@@ -290,9 +303,9 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 		if (c == '>')
 		{
 			if (line[len - 1] == '>')
-				handle_output(&line[--len], fd);
+				handle_output(&line[--len], fd, cmd);
 			else
-				handle_output(&line[len], fd);
+				handle_output(&line[len], fd, cmd);
 		}
 		len--;
 	}
@@ -423,6 +436,7 @@ void	handle_var(char **line)
 		i++;
 	}
 	str_replace(line, "$?", ft_itoa(g_var.last_er));
+//	str_replace(line, "~", var_value("HOME"));
 }
 
 t_command	parse(char *line, int fd[2])

@@ -32,7 +32,6 @@ int	free_all(char *buf)
 
 int	free_buffer(char *buf)
 {
-//	g_var.sigint = 0;
 	ft_lstclear(g_var.parse_alloc, free);
 	if (!g_var.exit)
 		free(buf);

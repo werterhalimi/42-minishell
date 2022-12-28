@@ -13,7 +13,7 @@
 SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
 					builtins/unset.c	utils/error.c		utils/free.c \
 					env/init.c			main.c				parse/parse.c \
-					utils/exec.c		utils/alloc.c		utils/ft_isbuiltin.c \
+					utils/path.c		utils/alloc.c		utils/ft_isbuiltin.c \
 					pipe/pipex.c		builtins/echo.c		builtins/cd.c \
 					env/var_value.c		builtins/exit.c		utils/sort.c \
 					utils/array_copy.c	utils/signals.c

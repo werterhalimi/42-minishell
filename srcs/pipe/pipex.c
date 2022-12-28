@@ -12,14 +12,6 @@
 
 #include "minishell.h"
 
-int	middle_process(int in[3], int out[2], char *args, int argc);
-
-int	launch_process(int in[2], int out[2], char *arg, int argc)
-{
-	pipe(out);
-	return (middle_process(in, out, arg, argc));
-}
-
 void	int_swap(int dest[2], int const src[2])
 {
 	dest[0] = src[0];
@@ -28,7 +20,7 @@ void	int_swap(int dest[2], int const src[2])
 
 void	c(int i)
 {
-	if (i != 0 && i != 1)
+	if (i != STDIN_FILENO && i != STDOUT_FILENO && i != STDERR_FILENO)
 		close(i);
 }
 
@@ -42,33 +34,60 @@ void	close_wait(int fd[2], int out[2], int j, int *pid)
 	c(fd[1]);
 	c(out[0]);
 	c(out[1]);
-//	(void) j;
 	i = -1;
+//	printf("WAIT 0 : j = %d\n", j);
 	while (++i < j)
 	{
-		if (pid[i] != -1)
+//		printf("WAIT 1\n");
+		if (pid[i] < NO_WAIT)
+			g_var.last_er = pid[i] * -1;
+		else if (pid[i] != NO_WAIT)
 		{
 			signals();
+//			printf("WAIT 2\n");
 			last_pid = waitpid(pid[i], &status, 0);
 			if (last_pid < 0 && errno != ECHILD) // TODO
 				perror("WAIT ERROR");
-			if (i == j - 1)
+			if (i == j - 1 && g_var.quit_child == NO)
 			{
+//				printf("ERROR 0 : %d\n", g_var.last_er);
 				if (WIFEXITED(status))
-					g_var.last_er = status;
-				else if (WIFSIGNALED(status))
+				{
+					g_var.last_er = WEXITSTATUS(status);
+//					printf("ERROR 1 : %d\n", g_var.last_er);
+				}
+				if (WIFSIGNALED(status))
+				{
 					g_var.last_er = WTERMSIG(status) + 128;
-				else if (WIFSTOPPED(status))
+//					printf("ERROR 2 : %d\n", g_var.last_er);
+				}
+				if (WIFSTOPPED(status))
+				{
 					g_var.last_er = WSTOPSIG(status);
+//					printf("ERROR 3 : %d\n", g_var.last_er);
+				}
 			}
 		}
-		else if (pid[i] < -1)
-			g_var.last_er = pid[i] * -1;
-
+//		else if (pid[i] < -1)
+//			g_var.last_er = pid[i] * -1;
 	}
 	//while (wait(&i) != -1)
 	//	continue ;
 	free(pid);
+//	printf("ERROR CODE : %d\n", g_var.last_er);
+}
+
+void	print_cmd(t_command cmd)
+{
+	printf("\n++++++++++++++++++++++++++\n");
+	printf("CMD : %s\n", cmd.command);
+	int	i = -1;
+	while (cmd.args[++i])
+		printf("%d : %s\n", i, cmd.args[i]);
+	printf("%d : %s\n", i, cmd.args[i]);
+	printf("fd[0] = %d\n", cmd.fd[0]);
+	printf("fd[1] = %d\n", cmd.fd[1]);
+	printf("++++++++++++++++++++++++++\n\n");
 }
 
 int	middle_process(int in[2], int out[2], char *args, int argc)
@@ -85,16 +104,16 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 		//free(cmd);
 		return (cmd.parse_error);
 	}
-	if (g_var.exec == ERROR)
-		return (-1);
+	if (g_var.quit_child == YES)
+		return (NO_WAIT);
 	//	if (argc == 1)
 	if (!argc)
 	{
 		if (ft_isbuiltin(cmd.command))
 		{
-			execute(cmd);
+			g_var.last_er = execute(cmd);
 			//TODO FREE COMMAND
-			return (-1);
+			return (NO_WAIT);
 		}
 	}
 	g_var.pid = fork();
@@ -110,10 +129,11 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 		paths = env_to_paths();
 		dup2(cmd.fd[0], 0);
 		dup2(cmd.fd[1], 1);
+//		print_cmd(cmd);
 		if (ft_isbuiltin(cmd.command))
 			execute(cmd);
-		else if (get_path(paths, cmd.command) == 0)
-			exit(127);
+		else if (!get_path(paths, cmd.command))
+			exit(PATH_ERROR);
 		else
 			execve(get_path(paths, cmd.command), cmd.args, g_var.envp);
 		exit(0);
@@ -123,6 +143,12 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 		g_var.exit = 0;
 	c(out[1]);
 	return (g_var.pid);
+}
+
+int	launch_process(int in[2], int out[2], char *arg, int argc)
+{
+	pipe(out);
+	return (middle_process(in, out, arg, argc));
 }
 
 void	launch_pipex(int argc, char **argv, int files[2])
@@ -164,13 +190,13 @@ void	launch_pipex(int argc, char **argv, int files[2])
 				int_swap(in, out);
 			pid[j] = launch_process(in, out, argv[j], argc);
 		}
-		if (pid[j] < -1)
+		if (pid[j++] < -1)
 			break;
-		j++;
+//		j++;
 	}
 	close_wait(in, out, j, pid);
 	free(argv);
 	g_var.pid = 0;
 	g_var.status = READ;
-	g_var.exec = SUCCESS;
+	g_var.quit_child = NO;
 }

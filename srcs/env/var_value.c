@@ -19,8 +19,6 @@ char	*var_value(char const *var_name)
 
 	i = 0;
 	length = ft_strlen(var_name);
-	if (!ft_strncmp("?", var_name, 1))
-		return (ft_itoa(g_var.last_er));
 	while (g_var.envp[i] && (ft_strncmp(g_var.envp[i], var_name, length) \
 		|| (g_var.envp[i][length] && g_var.envp[i][length] != '=')))
 		i++;

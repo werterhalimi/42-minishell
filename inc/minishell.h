@@ -41,13 +41,20 @@
 # define BOLD_CYAN		"\033[1m\033[36m"
 # define BOLD_WHITE		"\033[1m\033[37m"
 
-# define SUCCESS			0
-# define ERROR				1
-# define SYNTAX_ERROR		258
-
+# define SUCCESS		0
+# define ERROR			1
+# define PATH_ERROR		127
+# define QUIT_CHILD		131
+# define SYNTAX_ERROR	258
 
 # define READ		0
 # define EXECUTE	1
+# define HEREDOC	2
+
+# define NO		0
+# define YES	1
+
+# define NO_WAIT	-1
 
 typedef struct s_global
 {
@@ -57,8 +64,7 @@ typedef struct s_global
 	int		exit;
 	int		pid;
 	int		status;
-	int		exec;
-//	int		sigint;
+	int		quit_child;
 }	t_global;
 
 typedef struct s_command

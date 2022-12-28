@@ -57,7 +57,8 @@ int	main(int argc, char *argv[], char *envp[])
 		if (*buf)
 		{
 			add_history(buf);
-			launch_pipex(ft_countchar(buf, '|'), ft_split(buf, '|'), (int[2]){0, 1});
+			launch_pipex(ft_countchar(buf, '|'), \
+				ft_split(buf, '|'), (int [2]){0, 1});
 		}
 		free_buffer(buf);
 	}

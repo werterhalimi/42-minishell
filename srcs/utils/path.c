@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
+/*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,12 +14,21 @@
 
 char	**env_to_paths(void)
 {
-	char	**env;
+//	char	**env;
+//
+//	env = g_var.envp;
+//	return (ft_split(&(env[ft_find_paths_index(env)][5]), ':'));
 
-	env = g_var.envp;
-	return (ft_split(&(env[ft_find_paths_index(env)][5]), ':'));
+	char	*paths_line;
+	char	**paths;
+
+	paths = NULL;
+	paths_line = var_value("PATH");
+	if (paths_line)
+		paths = ft_split(paths_line, ':');
+	return (paths);
 }
-
+/*
 int	ft_find_paths_index(char **str)
 {
 	int	i;
@@ -33,23 +42,27 @@ int	ft_find_paths_index(char **str)
 	}
 	return (-1);
 }
+*/
 
 char	*get_path(char **path, char *command)
 {
 	int		i;
 	char	*ret;
 
-	i = 0;
-	while (path[i])
+	if (path)
 	{
-		ret = ft_strjoin(path[i], ft_strjoin("/", command));
-		if (!access(ret, X_OK))
-			return (ret);
-		i++;
+		i = 0;
+		while (path[i])
+		{
+			ret = ft_strjoin(path[i], ft_strjoin("/", command));
+			if (!access(ret, X_OK))
+				return (ret);
+			i++;
+		}
+		if (!access(command, X_OK))
+			return (command);
 	}
-	if (!access(command, X_OK))
-		return (command);
 	ft_putstr_fd(command, 1);
 	ft_putendl_fd(" n'existe pas.", 1);
-	return (0);
+	return (NULL);
 }
