@@ -12,10 +12,14 @@
 
 #include "minishell.h"
 
-int	env(void)
+int	env(char const *arg)
 {
 	int	i;
 
+	if (arg && access(arg, F_OK))
+		return (print_current_errno("env", arg));
+	else if (arg)
+		return (print_errno("env", arg, EACCES));
 	i = -1;
 	while (g_var.envp[++i])
 		if (ft_strchr(g_var.envp[i], '='))

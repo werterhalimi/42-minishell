@@ -28,6 +28,7 @@ SRCS			=	ft_atoi.c		ft_bzero.c		ft_calloc.c \
 					 \
 					ft_printf.c		malloc_nbr.c		malloc_char.c \
 					t_str.c			ft_uitoa.c			ft_hextoa.c \
+					ft_printf_fd.c \
 					 \
 					get_next_line_bonus.c	get_next_line_utils_bonus.c
 

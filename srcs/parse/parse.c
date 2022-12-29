@@ -320,7 +320,7 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 	}
 	cmd->fd[0] = fd[0];
 	cmd->fd[1] = fd[1];
-	if (cmd->parse_error == SYNTAX_ERROR * -1)
+	if (cmd->parse_error == SYNTAX_ERROR * -1) // TODO
 		ft_putendl_fd("syntax error near unexpected token 'newline'", STDERR_FILENO);
 }
 
@@ -399,6 +399,8 @@ void	str_replace(char **str, char *to_replace, char *new)
 
 	i = 0;
 	len = ft_strlen(*str);
+	if (!new)
+		new = "";
 	while (i < (int) ft_strlen(*str))
 	{
 		if (ft_strncmp(*str + i, to_replace, ft_strlen(to_replace)) == 0)

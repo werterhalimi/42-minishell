@@ -20,6 +20,7 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -41,11 +42,13 @@
 # define BOLD_CYAN		"\033[1m\033[36m"
 # define BOLD_WHITE		"\033[1m\033[37m"
 
-# define SUCCESS		0
-# define ERROR			1
-# define PATH_ERROR		127
-# define QUIT_CHILD		131
-# define SYNTAX_ERROR	258
+# define SUCCESS			0
+# define ERROR				1
+# define PERM_ERROR			126
+# define PATH_ERROR			127
+# define QUIT_CHILD			131
+# define UNDEFINED_ERROR	255
+# define SYNTAX_ERROR		258
 
 # define READ		0
 # define EXECUTE	1
@@ -72,7 +75,6 @@ typedef struct s_command
 	char	*command;
 	char	**args;
 	int		parse_error;
-//	int		argc;
 	int		fd[2];
 }	t_command;
 
@@ -87,13 +89,12 @@ extern t_global	g_var;
 /* Alloc */
 
 void		*ft_alloc(int size, size_t len, t_list **buff);
-int			free_buffer(char *buf);
 
 /* builtins */
 
 int			ft_isbuiltin(char *cmd);
 
-int			env(void);
+int			env(char const *arg);
 
 int			pwd(void);
 
@@ -105,7 +106,7 @@ int			echo(char *argv[]);
 
 int			cd(char *argv[]);
 
-int			ft_exit(void);
+int			ft_exit(char *argv[]);
 
 /* utils */
 
@@ -113,7 +114,13 @@ void		free_envp(void);
 
 int			free_all(char *buf);
 
+int			free_buffer(char *buf);
+
 int			print_error(char *error_msg);
+
+int			print_errno(const char *cmd, const char *arg, int errnum);
+
+int			print_current_errno(const char *cmd, const char *arg);
 
 void		sort(char *argv[], long size);
 
@@ -121,7 +128,7 @@ char		**array_copy(char *src[], int size);
 
 void		signals(void);
 
-int 		remove_char(char *str, char c, int index);
+int			remove_char(char *str, char c, int index);
 
 /* env */
 

@@ -42,7 +42,6 @@ char	*get_path(char **path, char *command)
 		if (!access(command, X_OK))
 			return (command);
 	}
-	ft_putstr_fd(command, STDERR_FILENO); // TODO
-	ft_putendl_fd(" n'existe pas.", STDERR_FILENO);
+	ft_printf_fd(STDERR_FILENO, "%sminishell: %s: command not found\n", RED, command);
 	return (NULL);
 }

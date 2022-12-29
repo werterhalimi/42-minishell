@@ -22,7 +22,7 @@ char	*var_value(char const *var_name)
 	while (g_var.envp[i] && (ft_strncmp(g_var.envp[i], var_name, length) \
 		|| (g_var.envp[i][length] && g_var.envp[i][length] != '=')))
 		i++;
-	if (g_var.envp[i])
+	if (g_var.envp[i] && g_var.envp[i][length] == '=')
 		return (g_var.envp[i] + length + 1);
 	return (NULL);
 }

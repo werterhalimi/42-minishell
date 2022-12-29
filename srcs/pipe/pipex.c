@@ -121,10 +121,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	{
 		signals();
 		if (cmd.fd[0] < 0)
-		{
-			printf("Ce fichier n'existe pas.\n");
-			exit(1);
-		}
+			exit(print_error("Ce fichier n'existe pas."));
 		c(out[0]);
 		paths = env_to_paths();
 		dup2(cmd.fd[0], 0);
@@ -140,7 +137,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	}
 //	if (argc != 1) ???
 	if (argc)
-		g_var.exit = 0;
+		g_var.exit = NO;
 	c(out[1]);
 	return (g_var.pid);
 }

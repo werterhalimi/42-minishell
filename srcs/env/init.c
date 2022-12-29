@@ -19,37 +19,52 @@ static char	*prompt(void)
 
 	prompt1 = ft_strjoin("PROMPT=", CYAN);
 	if (!prompt1)
-		return ("> ");
+		return (NULL);
 	prompt2 = ft_strjoin(prompt1, "minishell > ");
 	free(prompt1);
 	if (!prompt2)
-		return ("> ");
+		return (NULL);
 	prompt1 = ft_strjoin(prompt2, RESET_COLOR);
 	free(prompt2);
-	if (!prompt1)
-		return ("> ");
 	return (prompt1);
 }
 
-int	init(char *envp[])
+static int	init_global_variable(char *envp[])
 {
-	int		i;
-	char	*tmp;
+	int	i;
 
-	i = 0;
-	g_var.exit = 0;
+	g_var.exit = NO;
 	g_var.status = READ;
 	g_var.pid = 0;
 	g_var.quit_child = NO;
+	g_var.last_er = ERROR;
+	i = 0;
 	while (envp[i])
 		i++;
 	g_var.envp = array_copy(envp, i);
 	if (!g_var.envp)
 		return (ERROR);
-	unset("OLDPWD");
-	export("OLDPWD");
+	return (SUCCESS);
+}
+
+int	init(char *envp[])
+{
+	int		res;
+	char	*tmp;
+
+	if (init_global_variable(envp))
+		return (free_all(NULL));
+	if (unset("OLDPWD"))
+		return (free_all(NULL));
+	if (export("OLDPWD"))
+		return (free_all(NULL));
 	tmp = prompt();
-	i = export(tmp);
+	if (!tmp)
+		return (free_all(NULL));
+	res = export(tmp);
 	free(tmp);
-	return (i);
+	if (res)
+		return (free_all(NULL));
+	g_var.last_er = SUCCESS;
+	return (SUCCESS);
 }

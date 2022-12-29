@@ -16,6 +16,8 @@ void	free_envp(void)
 {
 	int	i;
 
+	if (!g_var.envp)
+		return ;
 	i = 0;
 	while (g_var.envp[i])
 		free(g_var.envp[i++]);
@@ -24,7 +26,8 @@ void	free_envp(void)
 
 int	free_all(char *buf)
 {
-	ft_putendl_fd("exit", STDOUT_FILENO);
+	if (!g_var.exit)
+		ft_putendl_fd("exit", STDOUT_FILENO);
 	free_envp();
 	rl_clear_history();
 	return (free_buffer(buf));
@@ -35,5 +38,6 @@ int	free_buffer(char *buf)
 	ft_lstclear(g_var.parse_alloc, free);
 	if (!g_var.exit)
 		free(buf);
-	return (SUCCESS);
+	ft_putstr_fd(RESET_COLOR, STDERR_FILENO);
+	return (g_var.last_er);
 }
