@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/29 21:47:22 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/29 21:53:05 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,7 +308,7 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 			continue ;
 		}
 		c = line[len];
-		if (c == '<')
+		if (c == '<' && !is_between_quote(line + len, len))
 		{
 			if (line[len - 1] == '<')
 				handle_input(&line[--len], fd, cmd);
