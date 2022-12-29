@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/27 22:43:35 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/29 23:23:09 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,18 +101,21 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	free(args);
 	if (cmd.parse_error)
 	{
-		//free(cmd);
+		free(cmd.args);
 		return (cmd.parse_error);
 	}
 	if (g_var.quit_child == YES)
+	{
+		free(cmd.args);
 		return (NO_WAIT);
+	}
 	//	if (argc == 1)
 	if (!argc)
 	{
 		if (ft_isbuiltin(cmd.command))
 		{
 			g_var.last_er = execute(cmd);
-			//TODO FREE COMMAND
+			free(cmd.args);
 			return (NO_WAIT);
 		}
 	}
@@ -139,6 +142,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	if (argc)
 		g_var.exit = NO;
 	c(out[1]);
+	free(cmd.args);
 	return (g_var.pid);
 }
 
