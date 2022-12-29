@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/28 19:20:03 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/29 01:57:56 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,6 +395,7 @@ void	str_replace(char **str, char *to_replace, char *new)
 	char	*tmp;
 	int		i;
 	int		len;
+	int		no;
 
 	i = 0;
 	len = ft_strlen(*str);
@@ -409,15 +410,17 @@ void	str_replace(char **str, char *to_replace, char *new)
 	}
 	tmp = ft_calloc(sizeof(*tmp), len + 1);
 	i = 0;
+	no = 0;
 	while (i < len)
 	{
 		if (ft_strncmp((*str) + i, to_replace, ft_strlen(to_replace)) == 0)
 		{
-			ft_memcpy(tmp + i, new, ft_strlen(new));
+			ft_memcpy(tmp + i, new, ft_strlen(new) );
 			i += ft_strlen(new);
+			no++;
 			continue ;
 		}
-		tmp[i] = (*str)[i];
+		tmp[i] = (*str)[i - ft_strlen(new) * no];
 		i++;
 	}
 	tmp[len] = 0;
@@ -450,6 +453,36 @@ void	handle_var(char **line)
 //	str_replace(line, "~", var_value("HOME"));
 }
 
+void	handle_tilde(char **line)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = 0;
+	while (line[0][i])
+	{
+		if (line[0][i] == '~')
+		{
+			tmp = ft_strjoin(var_value("HOME"),line[0] + i + 1);
+			j = 0;
+			while (tmp[j])
+			{
+				if (tmp[j] == ' ')
+				{
+					tmp[j] = 0;
+					break ;
+				}
+				j++;
+			}
+			if (!access(tmp, F_OK))
+				str_replace(line, "~", tmp);
+			free(tmp);
+		}
+		i++;
+	}
+}
+
 t_command	parse(char *line, int fd[2])
 {
 	char		**split;
@@ -461,6 +494,7 @@ t_command	parse(char *line, int fd[2])
 
 	ret.parse_error = 0;
 	// TODO replace var
+	handle_tilde(&line);
 	handle_var(&line);
 	handle_line(line, &ret, fd);
 	line = ft_strtrim(line, "	 ");
