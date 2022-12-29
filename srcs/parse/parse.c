@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	handle_input(char *line, int *fd, t_command *cmd);
+//void	handle_input(char *line, int *fd, t_command *cmd);
 
 int	ft_countchar(const char *s, char c)
 {
@@ -137,11 +137,11 @@ char	*get_string(char **split, char *current, int *index, int len)
 }
 
 
-void	str_replace(char **str, char *to_replace, char *new);
+//void	str_replace(char **str, char *to_replace, char *new);
 
-void	set_fd(int	*fd, int value)
+void	set_fd(int *fd, int value)
 {
-	if (*fd != 1 && *fd != 2 && *fd != 0)
+	if (*fd != STDIN_FILENO && *fd != STDOUT_FILENO && *fd != STDERR_FILENO)
 		return ;
 	*fd = value;
 }

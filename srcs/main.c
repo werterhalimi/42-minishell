@@ -55,12 +55,12 @@ int	main(int argc, char *argv[], char *envp[])
 		buf = readline(var_value("PROMPT"));
 		if (!buf)
 			break ;
-		{
-		add_history(buf);
 		tmp = buf;
 		buf = ft_strtrim(tmp, " 	");
 		free(tmp);
 		if (*buf)
+		{
+			add_history(buf);
 			launch_pipex(ft_countchar(buf, '|'), \
 				ft_split(buf, '|'), (int [2]){0, 1});
 		}

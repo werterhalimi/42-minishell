@@ -121,6 +121,8 @@ char		**array_copy(char *src[], int size);
 
 void		signals(void);
 
+int 		remove_char(char *str, char c, int index);
+
 /* env */
 
 int			init(char *envp[]);

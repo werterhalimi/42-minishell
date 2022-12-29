@@ -14,11 +14,6 @@
 
 char	**env_to_paths(void)
 {
-//	char	**env;
-//
-//	env = g_var.envp;
-//	return (ft_split(&(env[ft_find_paths_index(env)][5]), ':'));
-
 	char	*paths_line;
 	char	**paths;
 
@@ -28,21 +23,6 @@ char	**env_to_paths(void)
 		paths = ft_split(paths_line, ':');
 	return (paths);
 }
-/*
-int	ft_find_paths_index(char **str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (ft_strncmp("PATH=", str[i], 5) == 0)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-*/
 
 char	*get_path(char **path, char *command)
 {
@@ -62,7 +42,7 @@ char	*get_path(char **path, char *command)
 		if (!access(command, X_OK))
 			return (command);
 	}
-	ft_putstr_fd(command, STDERR_FILENO);
+	ft_putstr_fd(command, STDERR_FILENO); // TODO
 	ft_putendl_fd(" n'existe pas.", STDERR_FILENO);
 	return (NULL);
 }

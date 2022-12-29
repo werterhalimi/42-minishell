@@ -78,28 +78,46 @@ static int	add_variable(char *str, int size)
 	return (SUCCESS);
 }
 
+static int	update_variable(char *str, int index, int append, int value_pos)
+{
+	char	*tmp;
+
+	if (append)
+		tmp = ft_strjoin(g_var.envp[index], str + value_pos);
+	else
+		tmp = ft_strdup(str);
+	if (!tmp)
+		return (ERROR);
+	free(g_var.envp[index]);
+	g_var.envp[index] = tmp;
+	return (SUCCESS);
+}
+
 int	export(char *str)
 {
-	int		i;
-	int		j;
+	int	i;
+	int	j;
+	int	append;
 
 	if (!str)
 		return (export_no_args());
 	i = 0;
+	append = NO;
 	while (str[i] && str[i] != '=')
+	{
+		if (!(ft_isalnum(str[i]) || (str[i] == '+' && str[i + 1] == '=')))
+			return (print_error("minishell: export: ...")); // TODO
 		i++;
+	}
+	if (str[i] == '=' && str[i - 1] == '+' && !remove_char(str, '+', --i))
+		append = YES;
 	j = 0;
 	while (g_var.envp[j] && (ft_strncmp(g_var.envp[j], str, i) \
 		|| (g_var.envp[j][i] && g_var.envp[j][i] != '=')))
 		j++;
-	if (g_var.envp[j] && str[i] == '=')
-	{
-		free(g_var.envp[j]);
-		g_var.envp[j] = ft_strdup(str);
-		if (!g_var.envp[j])
-			return (ERROR);
-	}
-	else if (!g_var.envp[j])
+	if (!g_var.envp[j])
 		return (add_variable(str, j));
+	else if (str[i++] == '=')
+		return (update_variable(str, j, append, i));
 	return (SUCCESS);
 }
