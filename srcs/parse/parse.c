@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/29 20:31:57 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/29 21:06:44 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,13 @@ char	*join(char *s1, char *s2)
 	char	*ret;
 
 	buff = ft_strjoin(s1, " ");
-	ret = ft_strjoin(buff, s2);
+	if (s2)
+	{
+		ret = ft_strjoin(buff, s2);
+		free(buff);
+	}
+	else
+		ret = buff;
 	return (ret);
 }
 /*
@@ -390,6 +396,38 @@ void	handle_quote(char **split, int len)
 	}
 }
 
+
+int	is_between_single_quote(char *word, int index)
+{
+	int	right;
+	int	left;
+	int	i;
+
+	right = 0;
+	left = 0;
+	i = 1;
+	while (i <= index)
+	{
+		if (*(word - i) == '\'')
+			left++;
+		i++;
+	}
+	if (word[0])
+	{
+		i = 1;
+		while (word[i])
+		{
+			if (word[i] == '\'')
+				right++;
+			i++;
+		}
+	}
+	return (right % 2 == 1 && left % 2 == 1);
+}
+
+
+
+
 void	str_replace(char **str, char *to_replace, char *new)
 {
 	char	*tmp;
@@ -415,7 +453,8 @@ void	str_replace(char **str, char *to_replace, char *new)
 	no = 0;
 	while (i < len)
 	{
-		if (ft_strncmp((*str) + i, to_replace, ft_strlen(to_replace)) == 0)
+		if (ft_strncmp((*str) + i, to_replace, ft_strlen(to_replace)) == 0
+				&& !is_between_single_quote(str[0] + no, no))
 		{
 			ft_memcpy(tmp + i, new, ft_strlen(new) );
 			i += ft_strlen(new);
