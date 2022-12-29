@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/29 01:57:56 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/29 20:31:57 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -419,11 +419,12 @@ void	str_replace(char **str, char *to_replace, char *new)
 		{
 			ft_memcpy(tmp + i, new, ft_strlen(new) );
 			i += ft_strlen(new);
-			no++;
+			no += ft_strlen(to_replace);
 			continue ;
 		}
-		tmp[i] = (*str)[i - ft_strlen(new) * no];
+		tmp[i] = (*str)[no];
 		i++;
+		no++;
 	}
 	tmp[len] = 0;
 //	free(*str);
@@ -478,7 +479,7 @@ void	handle_tilde(char **line)
 				j++;
 			}
 			if (!access(tmp, F_OK))
-				str_replace(line, "~", tmp);
+				str_replace(line, "~", var_value("HOME"));
 			free(tmp);
 		}
 		i++;
