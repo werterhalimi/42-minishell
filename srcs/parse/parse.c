@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/29 21:47:22 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/29 21:06:44 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,8 +387,6 @@ void	handle_quote(char **split, int len)
 {
 	int	i;
 
-	if (!split[0])
-		return ; 
 	remove_quote(split[0]);
 	i = 1;
 	while  (i < len)
@@ -549,7 +547,7 @@ t_command	parse(char *line, int fd[2])
 	ret.args = ft_alloc(sizeof(*(ret.args)), len + 1, g_var.parse_alloc);
 	i = 0;
 	y = 0;
-	while (i < len && split[i])
+	while (i < len)
 	{
 		current = ft_strtrim(split[i], " ");
 		current = get_string(split, current, &i, len);
