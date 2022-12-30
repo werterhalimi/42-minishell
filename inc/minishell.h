@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/30 17:36:22 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:15:21 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,6 @@ extern t_global	g_var;
 //void		rl_replace_line(const char *, int);
 
 void		print_cmd(t_command cmd);
-
-/* Alloc */
-
-void		*ft_alloc(int size, size_t len, t_list **buff);
 
 /* builtins */
 

@@ -6,18 +6,18 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/12 11:39:15 by ncotte            #+#    #+#              #
-#    Updated: 2022/12/19 00:24:37 by shalimi          ###   ########.fr        #
+#    Updated: 2022/12/30 19:16:11 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS_FILES		:=	builtins/env.c		parse/parse.c		builtins/pwd.c \
 					builtins/unset.c	utils/error.c		utils/free.c \
 					env/init.c			main.c				exec/exec_builtin.c \
-					exec/path.c			utils/alloc.c		builtins/export.c \
+					exec/path.c			builtins/export.c 	exec/signals.c \
 					exec/main_exec.c	builtins/echo.c		exec/close_wait.c \
 					env/var_value.c		builtins/exit.c		utils/array_copy.c \
 					utils/sort.c		builtins/cd.c		utils/remove_char.c \
-					utils/ft_trim.c		exec/signals.c
+					utils/ft_trim.c
 
 SRCS_DIR		:= ./srcs/
 

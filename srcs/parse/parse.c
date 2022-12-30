@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/30 18:55:39 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:16:26 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ char	*join(char *s1, char *s2)
 	char	*ret;
 
 	buff = ft_strjoin(s1, " ");
+	free(s1);
 	ret = ft_strjoin(buff, s2);
+	free(buff);
+	free(s2);
 	return (ret);
 }
 /*
@@ -94,7 +97,8 @@ char	*handle_fd(int *in, int *out, char *line)
 
 char	*get_string(char **split, char *current, int *index, int len)
 {
-	int	i;
+	int		i;
+	char	*tmp;
 
 	if (current[0] == 0)
 		return (0);
@@ -102,8 +106,12 @@ char	*get_string(char **split, char *current, int *index, int len)
 		i = 0;
 	else
 		i = *index;
-	if (ft_strlen(current) == 1 && i < len - 1) // TODO ????
+	if (ft_strlen(current) == 1 && i < len - 1)
+	{
+		tmp = current;
 		current = ft_strjoin(current, split[++i]);
+		free(tmp);
+	}
 	if (current[0] == '\'' || current[0] == '"')
 	{
 		while (current[ft_strlen(current) - 1] != current[0] && i < len) {
@@ -493,6 +501,7 @@ void	handle_tilde(char **line)
 	char	*tmp2;
 
 	i = 0;
+	tmp2 = *line;
 	while (line[0][i])
 	{
 		if (line[0][i] == '~')
@@ -510,7 +519,6 @@ void	handle_tilde(char **line)
 			}
 			if (!access(tmp, F_OK))
 			{
-				tmp2 = *line;
 				str_replace(line, "~", var_value("HOME"));
 				free(tmp2);
 			}
@@ -587,7 +595,7 @@ t_command	parse(char *line, int fd[2])
 	line = ft_strtrim(line, "	 ");
 	free(tmp);
 	ret.len = ft_countchar(line, ' ') + 1;
-	ret.args = ft_alloc(sizeof(*(ret.args)), ret.len + 1, g_var.parse_alloc);
+	ret.args = ft_calloc(sizeof(*(ret.args)), ret.len + 1);
 	i = 0;
 	while (i < ret.len)
 	{
