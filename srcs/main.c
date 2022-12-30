@@ -16,9 +16,11 @@ t_global	g_var;
 
 void	print_cmd(t_command cmd)
 {
+	int	i;
+
 	printf("\n++++++++++++++++++++++++++\n");
 	printf("CMD : %s\n", cmd.command);
-	int	i = -1;
+	i = -1;
 	if (cmd.args)
 	{
 		printf("ARGS : %p\n", cmd.args);

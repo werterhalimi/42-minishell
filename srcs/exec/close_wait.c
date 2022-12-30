@@ -18,37 +18,41 @@ void	close_file(int i)
 		close(i);
 }
 
-void	close_wait(int fd[2], int out[2], int j, int *pid)
+static void	wait_child(int index, int nb_process, int pid)
+{
+	int	last_pid;
+	int	status;
+
+	signals();
+	last_pid = waitpid(pid, &status, 0);
+	if (last_pid < 0 && errno != ECHILD) // TODO
+		perror("WAIT ERROR");
+	if (index == nb_process - 1 && g_var.quit_child == NO)
+	{
+		if (WIFEXITED(status))
+			g_var.last_er = WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			g_var.last_er = WTERMSIG(status) + 128;
+		if (WIFSTOPPED(status))
+			g_var.last_er = WSTOPSIG(status);
+	}
+}
+
+void	close_wait(int in[2], int out[2], int nb_process, int **pids)
 {
 	int	i;
-	int	status;
-	int	last_pid;
 
-	close_file(fd[0]);
-	close_file(fd[1]);
+	close_file(in[0]);
+	close_file(in[1]);
 	close_file(out[0]);
 	close_file(out[1]);
 	i = -1;
-	while (++i < j)
+	while (++i < nb_process)
 	{
-		if (pid[i] < NO_WAIT)
-			g_var.last_er = pid[i] * -1;
-		else if (pid[i] != NO_WAIT)
-		{
-			signals();
-			last_pid = waitpid(pid[i], &status, 0);
-			if (last_pid < 0 && errno != ECHILD) // TODO
-				perror("WAIT ERROR");
-			if (i == j - 1 && g_var.quit_child == NO)
-			{
-				if (WIFEXITED(status))
-					g_var.last_er = WEXITSTATUS(status);
-				if (WIFSIGNALED(status))
-					g_var.last_er = WTERMSIG(status) + 128;
-				if (WIFSTOPPED(status))
-					g_var.last_er = WSTOPSIG(status);
-			}
-		}
+		if ((*pids)[i] < NO_WAIT)
+			g_var.last_er = (*pids)[i] * -1;
+		else if ((*pids)[i] != NO_WAIT)
+			wait_child(i, nb_process, (*pids)[i]);
 	}
-	free(pid);
+	free(*pids);
 }

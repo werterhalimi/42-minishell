@@ -156,7 +156,7 @@ void		signals(void);
 
 void		close_file(int i);
 
-void		close_wait(int fd[2], int out[2], int j, int *pid);
+void		close_wait(int in[2], int out[2], int nb_process, int **pids);
 
 int			ft_isbuiltin(char *cmd);
 

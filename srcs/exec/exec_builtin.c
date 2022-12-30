@@ -25,22 +25,19 @@ int	ft_isbuiltin(char *cmd)
 
 int	exec_builtin(t_command instr)
 {
-	int	ret;
-
-	ret = ERROR;
 	if (!ft_strncmp(instr.command, "exit", 5))
-		ret = ft_exit(instr.args);
-	else if (!ft_strncmp(instr.command, "env", 4))
-		ret = env(instr.args[1]);
-	else if (!ft_strncmp(instr.command, "pwd", 5))
-		ret = pwd();
-	else if (!ft_strncmp(instr.command, "export", 7))
-		ret = export(instr.args[1]);
-	else if (!ft_strncmp(instr.command, "unset", 6))
-		ret = unset(instr.args[1]);
-	else if (!ft_strncmp(instr.command, "cd", 3))
-		ret = cd(instr.args);
-	else if (!ft_strncmp(instr.command, "echo", 5))
-		ret = echo(instr.args);
-	return (ret);
+		return (ft_exit(instr.args));
+	if (!ft_strncmp(instr.command, "env", 4))
+		return (env(instr.args[1]));
+	if (!ft_strncmp(instr.command, "pwd", 5))
+		return (pwd());
+	if (!ft_strncmp(instr.command, "export", 7))
+		return (export(instr.args[1]));
+	if (!ft_strncmp(instr.command, "unset", 6))
+		return (unset(instr.args[1]));
+	if (!ft_strncmp(instr.command, "cd", 3))
+		return (cd(instr.args));
+	if (!ft_strncmp(instr.command, "echo", 5))
+		return (echo(instr.args));
+	return (ERROR);
 }

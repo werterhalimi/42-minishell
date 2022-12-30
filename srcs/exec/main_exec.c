@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	int_swap(int dest[2], int const src[2])
+static void	copy(int dest[2], int const src[2])
 {
 	dest[0] = src[0];
 	dest[1] = src[1];
@@ -46,7 +46,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	args = ft_strtrim(args, " 	");
 	cmd = parse(args, (int [2]){in[0], out[1]});
 	free(args);
-	if (cmd.parse_error || g_var.quit_child == YES)
+	if (cmd.parse_error || g_var.quit_child == YES || !cmd.command[0])
 	{
 		free(cmd.args);
 		if (cmd.parse_error)
@@ -68,13 +68,13 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	free(cmd.args);
 	return (g_var.pid);
 }
-
+/*
 int	launch_process(int in[2], int out[2], char *arg, int argc)
 {
 	pipe(out);
 	return (middle_process(in, out, arg, argc));
 }
-/*
+
 static void	loop()
 {
 
@@ -82,39 +82,41 @@ static void	loop()
 */
 void	launch_pipex(int argc, char **argv, int files[2])
 {
-	int	*pid;
+	int	*pids;
 	int	in[2];
 	int	out[2];
 	int	j;
 
 	g_var.status = EXECUTE;
-	pid = malloc(sizeof(int) * (argc + 1));
-	if (pid)
+	pids = malloc(sizeof(int) * (argc + 1));
+	if (pids)
 	{
 		j = 0;
 		pipe(in);
 		if (!argc)
-			int_swap(in, files);
+			copy(in, files);
 		while (j <= argc)
 		{
 			if (j == 0)
 			{
-				pid[j] = middle_process(files, in, argv[j + 0], argc);
+				pids[j] = middle_process(files, in, argv[j + 0], argc);
 				close_file(files[0]);
 				if (argc == 1)
-					int_swap(out, in);
-			} else if (j == argc)
-				pid[j] = middle_process(out, files, argv[j], argc);
+					copy(out, in);
+			}
+			else if (j == argc)
+				pids[j] = middle_process(out, files, argv[j], argc);
 			else
 			{
 				if (j > 1) // ???
-					int_swap(in, out);
-				pid[j] = launch_process(in, out, argv[j], argc);
+					copy(in, out);
+				pipe(out);
+				pids[j] = middle_process(in, out, argv[j], argc);
 			}
-			if (pid[j++] < -1)
-				break;
+			if (pids[j++] < -1)
+				break ;
 		}
-		close_wait(in, out, j, pid);
+		close_wait(in, out, j, &pids);
 		g_var.quit_child = NO;
 		g_var.pid = 0;
 	}
