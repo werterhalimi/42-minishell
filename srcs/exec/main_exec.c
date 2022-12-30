@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 15:52:46 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/30 18:57:35 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 18:59:17 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 
 	args = ft_strtrim(args, " 	");
 	cmd = parse(args, (int [2]){in[0], out[1]});
-	free(args);
 	if (cmd.parse_error || g_var.quit_child == YES || !cmd.command[0])
 	{
 		free_cmd(cmd);
