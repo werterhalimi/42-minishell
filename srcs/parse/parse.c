@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/30 17:16:11 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 17:48:39 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -565,49 +565,27 @@ void	parse_line(char **args, char *line, int len)
 
 t_command	parse(char *line, int fd[2])
 {
-//	char		**split;
-	int			len;
-//	char		*current;
 	t_command	ret;
 	int			i;
-//	int			y;
+	char		*tmp;
 
 	ret.parse_error = 0;
-	// TODO replace var
 	handle_tilde(&line);
 	handle_var(&line);
 	handle_line(line, &ret, fd);
+	tmp = line;
 	line = ft_strtrim(line, "	 ");
-	len = ft_countchar(line, ' ') + 1;
-	ret.args = ft_alloc(sizeof(*(ret.args)), len + 1, g_var.parse_alloc);
+	free(tmp);
+	ret.len = ft_countchar(line, ' ') + 1;
+	ret.args = ft_alloc(sizeof(*(ret.args)), ret.len + 1, g_var.parse_alloc);
 	i = 0;
-	while (i < len)
+	while (i < ret.len)
 	{
 		ret.args[i] = ft_strdup("");
 		i++;
 	}
-	parse_line(ret.args, line, len);
-	handle_quote(ret.args, len);
-/*	i = 0;
-	y = 0;
-	while (i < len)
-	{
-		current = ft_strtrim(split[i], " ");
-		current = get_string(split, current, &i, len);
-		ret.args[y++] = current;
-		i++;
-	}
-	if (len != 0)
-		ret.args[y] = 0;
-	else
-	{
-		ret.args = ft_alloc(sizeof(*(ret.args)), 2, g_var.parse_alloc); // TODO
-		ret.args[0] = line;
-		ret.args[1] = 0;
-	}
-	ret.command = split[0];
-	free(split);*/
+	parse_line(ret.args, line, ret.len);
+	handle_quote(ret.args, ret.len);
 	ret.command = ret.args[0];
-
 	return (ret);
 }
