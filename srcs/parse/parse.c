@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/30 17:48:39 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 18:55:39 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,6 @@ char	*get_string(char **split, char *current, int *index, int len)
 }
 
 
-//void	str_replace(char **str, char *to_replace, char *new);
 
 void	set_fd(int *fd, int value)
 {
@@ -472,12 +471,18 @@ void	handle_var(char **line)
 		tmp = ft_strdup(g_var.envp[i]);
 		tmp[j] = 0;
 		tmp2 = ft_strjoin("$", tmp);
+		free(tmp);
+		tmp = *line;
 		str_replace(line, tmp2, var_value(tmp));
 		free(tmp);
 		free(tmp2);
 		i++;
 	}
-	str_replace(line, "$?", ft_itoa(g_var.last_er));
+	tmp2 = *line;
+	tmp = ft_itoa(g_var.last_er);
+	str_replace(line, "$?", tmp);
+	free(tmp);
+	free(tmp2);
 }
 
 void	handle_tilde(char **line)
@@ -485,6 +490,7 @@ void	handle_tilde(char **line)
 	int		i;
 	int		j;
 	char	*tmp;
+	char	*tmp2;
 
 	i = 0;
 	while (line[0][i])
@@ -503,7 +509,11 @@ void	handle_tilde(char **line)
 				j++;
 			}
 			if (!access(tmp, F_OK))
+			{
+				tmp2 = *line;
 				str_replace(line, "~", var_value("HOME"));
+				free(tmp2);
+			}
 			free(tmp);
 		}
 		i++;
