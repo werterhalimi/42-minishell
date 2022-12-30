@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:44:10 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/22 00:39:19 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 17:37:35 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,17 @@ int	free_buffer(char *buf)
 		free(buf);
 	ft_putstr_fd(RESET_COLOR, STDERR_FILENO);
 	return (g_var.last_er);
+}
+
+void	free_cmd(t_command cmd)
+{
+	int	i;
+
+	i = 0;
+	while (i < cmd.len)
+	{
+		free(cmd.args[i]);
+		i++;
+	}
+	free(cmd.args);
 }

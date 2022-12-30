@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/27 22:28:52 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 17:36:22 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_command
 {
 	char	*command;
 	char	**args;
+	int		len;
 	int		parse_error;
 	int		fd[2];
 }	t_command;
@@ -133,6 +134,8 @@ char		**array_copy(char *src[], int size);
 int			remove_char(char *str, char c, int index);
 
 char		*ft_trim(char *word, char *set);
+
+void		free_cmd(t_command cmd);
 
 /* env */
 
