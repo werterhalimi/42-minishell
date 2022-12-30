@@ -39,7 +39,7 @@ static int	child_process(t_command cmd, int *out)
 	return (SUCCESS);
 }
 
-int	middle_process(int in[2], int out[2], char *args, int argc)
+static int	sub_process(int in[2], int out[2], char *args, int nb_pipes)
 {
 	t_command	cmd;
 
@@ -52,7 +52,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 			return (cmd.parse_error);
 		return (NO_WAIT);
 	}
-	if (!argc && ft_isbuiltin(cmd.command))
+	if (!nb_pipes && ft_isbuiltin(cmd.command))
 	{
 		g_var.last_er = exec_builtin(cmd);
 		free_cmd(cmd);
@@ -61,64 +61,61 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	g_var.pid = fork();
 	if (!g_var.pid)
 		exit(child_process(cmd, out));
-	if (argc)
+	if (nb_pipes)
 		g_var.exit = NO;
 	close_file(out[1]);
 	free_cmd(cmd);
 	return (g_var.pid);
 }
-/*
-int	launch_process(int in[2], int out[2], char *arg, int argc)
+
+static void	exec_loop(int *index, char **argv, int *pids, t_pipes *pipes)
 {
-	pipe(out);
-	return (middle_process(in, out, arg, argc));
+	while (*index <= pipes->nb_pipes)
+	{
+		if (*index == 0)
+		{
+			pids[*index] = sub_process(pipes->files, pipes->in, argv[*index + 0], pipes->nb_pipes);
+			close_file((pipes->files)[0]);
+			if (pipes->nb_pipes == 1)
+				copy(pipes->out, pipes->in);
+		}
+		else if (*index == pipes->nb_pipes)
+			pids[*index] = sub_process(pipes->out, pipes->files, argv[*index], pipes->nb_pipes);
+		else
+		{
+			if (*index > 1) // ???
+				copy(pipes->in, pipes->out);
+			pipe(pipes->out);
+			pids[*index] = sub_process(pipes->in, pipes->out, argv[*index], pipes->nb_pipes);
+		}
+		if (pids[(*index)++] < -1)
+			break ;
+	}
 }
 
-static void	loop()
+void	launch_pipex(int nb_pipes, char **argv, int files[2])
 {
-
-}
-*/
-void	launch_pipex(int argc, char **argv, int files[2])
-{
-	int	*pids;
-	int	in[2];
-	int	out[2];
-	int	j;
+	int		*pids;
+//	int	in[2];
+//	int	out[2];
+	int	index;
+	t_pipes	pipes;
 
 	g_var.status = EXECUTE;
-	pids = malloc(sizeof(int) * (argc + 1));
+	pids = malloc(sizeof(int) * (nb_pipes + 1));
 	if (pids)
 	{
-		j = 0;
-		pipe(in);
-		if (!argc)
-			copy(in, files);
-		while (j <= argc)
-		{
-			if (j == 0)
-			{
-				pids[j] = middle_process(files, in, argv[j + 0], argc);
-				close_file(files[0]);
-				if (argc == 1)
-					copy(out, in);
-			}
-			else if (j == argc)
-				pids[j] = middle_process(out, files, argv[j], argc);
-			else
-			{
-				if (j > 1) // ???
-					copy(in, out);
-				pipe(out);
-				pids[j] = middle_process(in, out, argv[j], argc);
-			}
-			if (pids[j++] < -1)
-				break ;
-		}
-		close_wait(in, out, j, pids);
+		index = 0;
+		pipes.nb_pipes = nb_pipes;
+		copy(pipes.files, files);
+		pipe(pipes.in);
+		if (!nb_pipes)
+			copy(pipes.in, files);
+		exec_loop(&index, argv, pids, &pipes);
+		close_wait(pipes, index, pids);
 		g_var.quit_child = NO;
 		g_var.pid = 0;
 	}
-	free(argv);
+	free_array(argv);
 	g_var.status = READ;
 }

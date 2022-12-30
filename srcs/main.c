@@ -46,7 +46,7 @@ static void	main_loop(char **buf)
 		tmp = *buf;
 		*buf = ft_strtrim(tmp, " 	");
 		free(tmp);
-		if (*buf)
+		if (**buf)
 		{
 			add_history(*buf);
 			launch_pipex(ft_countchar(*buf, '|'), \

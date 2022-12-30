@@ -38,14 +38,16 @@ static void	wait_child(int index, int nb_process, int pid)
 	}
 }
 
-void	close_wait(int in[2], int out[2], int nb_process, int *pids)
+void	close_wait(t_pipes pipes, int nb_process, int *pids)
 {
 	int	i;
 
-	close_file(in[0]);
-	close_file(in[1]);
-	close_file(out[0]);
-	close_file(out[1]);
+	close_file(pipes.files[0]);
+	close_file(pipes.files[1]);
+	close_file(pipes.in[0]);
+	close_file(pipes.in[1]);
+	close_file(pipes.out[0]);
+	close_file(pipes.out[1]);
 	i = -1;
 	while (++i < nb_process)
 	{

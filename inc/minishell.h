@@ -79,6 +79,14 @@ typedef struct s_command
 	int		fd[2];
 }	t_command;
 
+typedef struct s_pipes
+{
+	int	nb_pipes;
+	int	files[2];
+	int	in[2];
+	int	out[2];
+}	t_pipes;
+
 extern t_global	g_var;
 
 /* readline */
@@ -111,7 +119,7 @@ int			ft_exit(char *argv[]);
 
 /* utils */
 
-void		free_envp(void);
+void		free_array(char *argv[]);
 
 int			free_all(char *buf);
 
@@ -159,12 +167,12 @@ void		signals(void);
 
 void		close_file(int i);
 
-void		close_wait(int in[2], int out[2], int nb_process, int *pids);
+void		close_wait(t_pipes pipes, int nb_process, int *pids);
 
 int			ft_isbuiltin(char *cmd);
 
 int			exec_builtin(t_command instr);
 
-void		launch_pipex(int argc, char **argv, int files[2]);
+void		launch_pipex(int nb_pipes, char **argv, int files[2]);
 
 #endif

@@ -12,23 +12,23 @@
 
 #include "minishell.h"
 
-void	free_envp(void)
+void	free_array(char *argv[])
 {
 	int	i;
 
-	if (!g_var.envp)
+	if (!argv)
 		return ;
 	i = 0;
-	while (g_var.envp[i])
-		free(g_var.envp[i++]);
-	free(g_var.envp);
+	while (argv[i])
+		free(argv[i++]);
+	free(argv);
 }
 
 int	free_all(char *buf)
 {
 	if (!g_var.exit)
 		ft_putendl_fd("exit", STDOUT_FILENO);
-	free_envp();
+	free_array(g_var.envp);
 	rl_clear_history();
 	return (free_buffer(buf));
 }

@@ -34,7 +34,7 @@ int	unset(char *str)
 	tmp = array_copy(g_var.envp, j);
 	if (!tmp)
 		return (ERROR);
-	free_envp();
+	free_array(g_var.envp);
 	g_var.envp = tmp;
 	return (SUCCESS);
 }
