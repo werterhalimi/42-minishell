@@ -17,7 +17,7 @@ int	env(char const *arg)
 	int	i;
 
 	if (arg && access(arg, F_OK))
-		return (print_current_errno("env", arg));
+		return (print_errno("env", arg, errno));
 	else if (arg)
 		return (print_errno("env", arg, EACCES));
 	i = -1;

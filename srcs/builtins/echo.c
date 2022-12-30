@@ -21,17 +21,17 @@ int	echo(char *argv[])
 	n_option = 0;
 	if (argv[i])
 	{
-		while (argv[i] && ft_strncmp(argv[i], "-n", 2) == 0 && i++)
+		while (argv[i] && !ft_strncmp(argv[i], "-n", 2) && i++)
 			n_option = 1;
 		while (argv[i])
 		{
-			ft_putstr_fd(argv[i], 1);
-			if (argv[i + 1] && argv[i][0] != '\0')
-				write(1, " ", 1);
+			ft_putstr_fd(argv[i], STDOUT_FILENO);
+			if (argv[i + 1] && argv[i][0])
+				write(STDOUT_FILENO, " ", 1);
 			i++;
 		}
 	}
 	if (!n_option)
-		write(1, "\n", 1);
+		write(STDOUT_FILENO, "\n", 1);
 	return (SUCCESS);
 }

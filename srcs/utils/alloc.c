@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	*ft_alloc(int size, size_t len, t_list **buff)
+void	*ft_alloc(int size, size_t len, t_list **buff) // TODO STILL IN USE ?
 {
 	void	*ret;
 

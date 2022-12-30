@@ -18,7 +18,7 @@ static int	is_numeric(char const *str, long nbr, int index)
 	int	last_digit;
 
 	i = 0;
-	last_digit = (int) (LONG_MAX % 10) + 1;
+	last_digit = (int)(LONG_MAX % 10) + 1;
 	if (str[0] == '-' || str[0] == '+')
 		i++;
 	return (!(index - i > 18 || (index - i == 18 && nbr >= LONG_MAX / 10 \
@@ -54,13 +54,11 @@ int	ft_exit(char *argv[])
 
 	ret_value = ft_atol(argv[1], &arg_value);
 	if (ret_value && argv[2])
-		return (print_error("minishell: exit: too many arguments"));
+		return (print_custom_error("minishell: exit: too many arguments"));
 	g_var.exit = YES;
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (argv[1] && !ret_value)
-	{
-		ft_printf_fd(STDERR_FILENO, "%sminishell: exit: %s: numeric argument required\n", RED, argv[1]);
-		return (UNDEFINED_ERROR);
-	}
-	return ((int) (arg_value & 0x00000000000000FF));
+		return (print_error("minishell: exit", argv[1], \
+			"numeric argument required", UNDEFINED_ERROR));
+	return ((int)(arg_value & 0x00000000000000FF));
 }

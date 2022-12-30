@@ -42,6 +42,6 @@ char	*get_path(char **path, char *command)
 		if (!access(command, X_OK))
 			return (command);
 	}
-	ft_printf_fd(STDERR_FILENO, "%sminishell: %s: command not found\n", RED, command);
+	print_error("minishell", command, "command not found", ERROR);
 	return (NULL);
 }
