@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/28 18:47:21 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:46:58 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ static void	main_loop(char **buf)
 		if (**buf)
 		{
 			add_history(*buf);
+			// Le split est pas bon
 			launch_pipex(ft_countchar(*buf, '|'), \
 				ft_split(*buf, '|'), (int [2]){0, 1});
 		}

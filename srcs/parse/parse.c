@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/30 19:16:26 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:54:38 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,8 +465,7 @@ void	str_replace(char **str, char *to_replace, char *new)
 
 void	handle_var(char **line)
 {
-	char	*tmp;
-	char	*tmp2;
+	char	*tmp[3];
 	int		i;
 	int		j;
 
@@ -476,21 +475,21 @@ void	handle_var(char **line)
 		j = 0;
 		while (g_var.envp[i][j] && g_var.envp[i][j] != '=')
 			j++;
-		tmp = ft_strdup(g_var.envp[i]);
-		tmp[j] = 0;
-		tmp2 = ft_strjoin("$", tmp);
-		free(tmp);
-		tmp = *line;
-		str_replace(line, tmp2, var_value(tmp));
-		free(tmp);
-		free(tmp2);
+		tmp[0] = ft_strdup(g_var.envp[i]);
+		tmp[0][j] = 0;
+		tmp[1] = ft_strjoin("$", tmp[0]);
+		tmp[2] = *line;
+		str_replace(line, tmp[1], var_value(tmp[0]));
+		free(tmp[2]);
+		free(tmp[0]);
+		free(tmp[1]);
 		i++;
 	}
-	tmp2 = *line;
-	tmp = ft_itoa(g_var.last_er);
-	str_replace(line, "$?", tmp);
-	free(tmp);
-	free(tmp2);
+	tmp[1] = *line;
+	tmp[0] = ft_itoa(g_var.last_er);
+	str_replace(line, "$?", tmp[0]);
+	free(tmp[0]);
+	free(tmp[1]);
 }
 
 void	handle_tilde(char **line)
@@ -536,6 +535,7 @@ void	str_builder(char **str, char to_append)
 	if(ft_strncmp(*str, "", 1) == 0)
 	{
 		(*str)[0] = to_append;
+		(*str)[1] = 0;
 		return ;
 	}
 	len = ft_strlen(*str);
@@ -587,6 +587,7 @@ t_command	parse(char *line, int fd[2])
 	int			i;
 	char		*tmp;
 
+	// gerer cas "cat << >>" ou "cat << |"
 	ret.parse_error = 0;
 	handle_tilde(&line);
 	handle_var(&line);
@@ -605,5 +606,6 @@ t_command	parse(char *line, int fd[2])
 	parse_line(ret.args, line, ret.len);
 	handle_quote(ret.args, ret.len);
 	ret.command = ret.args[0];
+	free(line);
 	return (ret);
 }
