@@ -74,19 +74,22 @@ static void	exec_loop(int *index, char **argv, int *pids, t_pipes *pipes)
 	{
 		if (*index == 0)
 		{
-			pids[*index] = sub_process(pipes->files, pipes->in, argv[*index + 0], pipes->nb_pipes);
+			pids[*index] = sub_process(pipes->files, pipes->in, \
+				argv[*index + 0], pipes->nb_pipes);
 			close_file((pipes->files)[0]);
 			if (pipes->nb_pipes == 1)
 				copy(pipes->out, pipes->in);
 		}
 		else if (*index == pipes->nb_pipes)
-			pids[*index] = sub_process(pipes->out, pipes->files, argv[*index], pipes->nb_pipes);
+			pids[*index] = sub_process(pipes->out, pipes->files, \
+				argv[*index], pipes->nb_pipes);
 		else
 		{
-			if (*index > 1) // ???
+			if (*index > 1)
 				copy(pipes->in, pipes->out);
 			pipe(pipes->out);
-			pids[*index] = sub_process(pipes->in, pipes->out, argv[*index], pipes->nb_pipes);
+			pids[*index] = sub_process(pipes->in, pipes->out, \
+				argv[*index], pipes->nb_pipes);
 		}
 		if (pids[(*index)++] < -1)
 			break ;
@@ -96,9 +99,7 @@ static void	exec_loop(int *index, char **argv, int *pids, t_pipes *pipes)
 void	launch_pipex(int nb_pipes, char **argv, int files[2])
 {
 	int		*pids;
-//	int	in[2];
-//	int	out[2];
-	int	index;
+	int		index;
 	t_pipes	pipes;
 
 	g_var.status = EXECUTE;

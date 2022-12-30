@@ -25,7 +25,7 @@ static void	wait_child(int index, int nb_process, int pid)
 
 	signals();
 	last_pid = waitpid(pid, &status, 0);
-	if (last_pid < 0 && errno != ECHILD) // TODO
+	if (last_pid < 0 && errno != ECHILD)
 		perror("WAIT ERROR");
 	if (index == nb_process - 1 && g_var.quit_child == NO)
 	{
