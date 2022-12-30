@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/29 21:06:44 by shalimi          ###   ########.fr       */
+/*   Updated: 2022/12/30 17:16:11 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,7 @@ char	*join(char *s1, char *s2)
 	char	*ret;
 
 	buff = ft_strjoin(s1, " ");
-	if (s2)
-	{
-		ret = ft_strjoin(buff, s2);
-		free(buff);
-	}
-	else
-		ret = buff;
+	ret = ft_strjoin(buff, s2);
 	return (ret);
 }
 /*
@@ -377,11 +371,13 @@ void	handle_quote(char **split, int len)
 {
 	int	i;
 
-	remove_quote(split[0]);
+	if (split[0])
+		remove_quote(split[0]);
 	i = 1;
 	while  (i < len)
 	{
-		remove_quote(split[i]);
+		if (split[i])
+			remove_quote(split[i]);
 		i++;
 	}
 }
@@ -514,14 +510,67 @@ void	handle_tilde(char **line)
 	}
 }
 
+void	str_builder(char **str, char to_append)
+{
+	char	*tmp;
+	int	len;
+
+	if(ft_strncmp(*str, "", 1) == 0)
+	{
+		(*str)[0] = to_append;
+		return ;
+	}
+	len = ft_strlen(*str);
+	tmp = ft_calloc(sizeof(*tmp), len + 1);
+	ft_memcpy(tmp, *str, len);
+	tmp[len] = to_append;
+	free(*str);
+	*str = ft_calloc(sizeof(*tmp), len + 2);
+	ft_memcpy(*str, tmp, len + 1);
+	free(tmp);
+}
+
+int	is_quote(char c)
+{
+	return (c == '"' || c == '\'');
+}
+
+void	parse_line(char **args, char *line, int len)
+{
+	int	i;
+	int	y;
+
+	if (len == 0)
+	{
+		free(args);
+		args = ft_calloc(sizeof(*args), 2);
+		(args)[0] = line;
+		return ;
+	}
+	i = 0;
+	y = 0;
+	while (i <(int) ft_strlen(line))
+	{
+		if (line[i] == ' ' && !is_between_quote(&line[i], i))
+		{	
+			i++;
+			y++;
+			continue;
+		}
+		str_builder(&(args)[y], line[i]);
+		i++;
+	}
+	(args)[y + 1] = 0;
+}
+
 t_command	parse(char *line, int fd[2])
 {
-	char		**split;
+//	char		**split;
 	int			len;
-	char		*current;
+//	char		*current;
 	t_command	ret;
 	int			i;
-	int			y;
+//	int			y;
 
 	ret.parse_error = 0;
 	// TODO replace var
@@ -530,10 +579,16 @@ t_command	parse(char *line, int fd[2])
 	handle_line(line, &ret, fd);
 	line = ft_strtrim(line, "	 ");
 	len = ft_countchar(line, ' ') + 1;
-	split = ft_split(line, ' ');
-	handle_quote(split, len);
 	ret.args = ft_alloc(sizeof(*(ret.args)), len + 1, g_var.parse_alloc);
 	i = 0;
+	while (i < len)
+	{
+		ret.args[i] = ft_strdup("");
+		i++;
+	}
+	parse_line(ret.args, line, len);
+	handle_quote(ret.args, len);
+/*	i = 0;
 	y = 0;
 	while (i < len)
 	{
@@ -551,6 +606,8 @@ t_command	parse(char *line, int fd[2])
 		ret.args[1] = 0;
 	}
 	ret.command = split[0];
-	free(split);
+	free(split);*/
+	ret.command = ret.args[0];
+
 	return (ret);
 }
