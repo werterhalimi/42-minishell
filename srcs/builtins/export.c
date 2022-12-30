@@ -22,12 +22,7 @@ static void	print_var(char *str)
 		i++;
 	write(STDOUT_FILENO, str, i);
 	if (str[i++] == '=')
-	{
-		write(STDOUT_FILENO, "=", 1);
-		write(STDOUT_FILENO, "\"", 1);
-		ft_putstr_fd(str + i, STDOUT_FILENO);
-		write(STDOUT_FILENO, "\"", 1);
-	}
+		ft_printf("=\"%s\"", str + i);
 	write(STDOUT_FILENO, "\n", 1);
 }
 
@@ -71,7 +66,10 @@ static int	add_variable(char *str, int size)
 		tmp[i] = g_var.envp[i];
 	tmp[i] = ft_strdup(str);
 	if (!tmp[i])
+	{
+		free(tmp);
 		return (ERROR);
+	}
 	tmp[++i] = NULL;
 	free(g_var.envp);
 	g_var.envp = tmp;
@@ -104,11 +102,10 @@ int	export(char *str)
 	i = 0;
 	append = NO;
 	while (str[i] && str[i] != '=')
-	{
-		if (!(ft_isalnum(str[i]) || (str[i] == '+' && str[i + 1] == '=')))
-			return (print_error("minishell: export: ...")); // TODO
-		i++;
-	}
+		if (!(ft_isalnum(str[i]) || (str[i] == '+' && str[i + 1] == '=')) \
+			|| i++ < 0)
+			return (print_quote_error("minishell: export", str, \
+				"not a valid identifier", ERROR));
 	if (str[i] == '=' && str[i - 1] == '+' && !remove_char(str, '+', --i))
 		append = YES;
 	j = 0;

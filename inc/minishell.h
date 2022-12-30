@@ -86,13 +86,13 @@ extern t_global	g_var;
 
 //void		rl_replace_line(const char *, int);
 
+void		print_cmd(t_command cmd);
+
 /* Alloc */
 
 void		*ft_alloc(int size, size_t len, t_list **buff);
 
 /* builtins */
-
-int			ft_isbuiltin(char *cmd);
 
 int			env(char const *arg);
 
@@ -116,19 +116,23 @@ int			free_all(char *buf);
 
 int			free_buffer(char *buf);
 
-int			print_error(char *error_msg);
+int			print_error(char const *cmd, char const *arg, \
+				char const *msg, int errcode);
+
+int			print_quote_error(char const *cmd, char const *arg, \
+				char const *msg, int errcode);
+
+int			print_custom_error(char *error_msg);
 
 int			print_errno(const char *cmd, const char *arg, int errnum);
-
-int			print_current_errno(const char *cmd, const char *arg);
 
 void		sort(char *argv[], long size);
 
 char		**array_copy(char *src[], int size);
 
-void		signals(void);
-
 int			remove_char(char *str, char c, int index);
+
+char		*ft_trim(char *word, char *set);
 
 /* env */
 
@@ -142,12 +146,22 @@ t_command	parse(char *line, int fd[2]);
 char		*get_string(char **split, char *current, int *i, int len);
 int			ft_countchar(const char *str, char c);
 
-/* Exec */
+/* exec */
 
-int			ft_find_paths_index(char **str);
 char		*get_path(char **str, char *command);
+
 char		**env_to_paths(void);
+
+void		signals(void);
+
+void		close_file(int i);
+
+void		close_wait(int fd[2], int out[2], int j, int *pid);
+
+int			ft_isbuiltin(char *cmd);
+
+int			exec_builtin(t_command instr);
+
 void		launch_pipex(int argc, char **argv, int files[2]);
-int			execute(t_command instr);
 
 #endif

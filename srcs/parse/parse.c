@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-//void	handle_input(char *line, int *fd, t_command *cmd);
-
 int	ft_countchar(const char *s, char c)
 {
 	int	i;
@@ -33,8 +31,6 @@ int	ft_countchar(const char *s, char c)
 				ret++;
 		}
 	}
-//	if (!ret) // TODO ???
-//		return (-1);
 	if (s[0] == c || s[i - 1] == c)
 		ret--;
 	return (ret);
@@ -112,7 +108,7 @@ char	*get_string(char **split, char *current, int *index, int len)
 		i = 0;
 	else
 		i = *index;
-	if (ft_strlen(current) == 1 && i < len - 1)
+	if (ft_strlen(current) == 1 && i < len - 1) // TODO ????
 		current = ft_strjoin(current, split[++i]);
 	if (current[0] == '\'' || current[0] == '"')
 	{
@@ -127,12 +123,6 @@ char	*get_string(char **split, char *current, int *index, int len)
 		current = split[0];
 		free(split);
 	}
-	/*if (!current) // TODO
-	{
-		ft_putstr_fd("minishell: syntax error near unexpected token", STDERR_FILENO);
-		g_var.exec = ERROR;
-		return (NULL);
-	}*/
 	current = ft_baskslash(current);
 	if (current[0] == current[ft_strlen(current) - 1] \
 		&& (current[0] == '\'' || current[0] == '"'))
@@ -494,7 +484,6 @@ void	handle_var(char **line)
 		i++;
 	}
 	str_replace(line, "$?", ft_itoa(g_var.last_er));
-//	str_replace(line, "~", var_value("HOME"));
 }
 
 void	handle_tilde(char **line)
@@ -545,7 +534,6 @@ t_command	parse(char *line, int fd[2])
 	len = ft_countchar(line, ' ') + 1;
 	split = ft_split(line, ' ');
 	handle_quote(split, len);
-//	ret.args = ft_alloc(sizeof(*(ret.args)), len, g_var.parse_alloc);
 	ret.args = ft_alloc(sizeof(*(ret.args)), len + 1, g_var.parse_alloc);
 	i = 0;
 	y = 0;
@@ -565,7 +553,6 @@ t_command	parse(char *line, int fd[2])
 		ret.args[1] = 0;
 	}
 	ret.command = split[0];
-//	ret.argc = y;
 	free(split);
 	return (ret);
 }

@@ -14,26 +14,44 @@
 
 t_global	g_var;
 
-int	execute(t_command instr)
+void	print_cmd(t_command cmd)
 {
-	int	ret;
+	printf("\n++++++++++++++++++++++++++\n");
+	printf("CMD : %s\n", cmd.command);
+	int	i = -1;
+	if (cmd.args)
+	{
+		printf("ARGS : %p\n", cmd.args);
+		while (cmd.args[++i])
+			printf("%d : %s\n", i, cmd.args[i]);
+		printf("%d : %s\n", i, cmd.args[i]);
+	}
+	printf("fd[0] = %d\n", cmd.fd[0]);
+	printf("fd[1] = %d\n", cmd.fd[1]);
+	printf("++++++++++++++++++++++++++\n\n");
+}
 
-	ret = ERROR;
-	if (!ft_strncmp(instr.command, "exit", 5))
-		ret = ft_exit(instr.args);
-	else if (!ft_strncmp(instr.command, "env", 4))
-		ret = env(instr.args[1]);
-	else if (!ft_strncmp(instr.command, "pwd", 5))
-		ret = pwd();
-	else if (!ft_strncmp(instr.command, "export", 7))
-		ret = export(instr.args[1]);
-	else if (!ft_strncmp(instr.command, "unset", 6))
-		ret = unset(instr.args[1]);
-	else if (!ft_strncmp(instr.command, "cd", 3))
-		ret = cd(instr.args);
-	else if (!ft_strncmp(instr.command, "echo", 5))
-		ret = echo(instr.args);
-	return (ret);
+static void	main_loop(char **buf)
+{
+	char	*tmp;
+
+	while (!g_var.exit)
+	{
+		signals();
+		*buf = readline(var_value("PROMPT"));
+		if (!(*buf))
+			break ;
+		tmp = *buf;
+		*buf = ft_strtrim(tmp, " 	");
+		free(tmp);
+		if (*buf)
+		{
+			add_history(*buf);
+			launch_pipex(ft_countchar(*buf, '|'), \
+				ft_split(*buf, '|'), (int [2]){0, 1});
+		}
+		free_buffer(*buf);
+	}
 }
 
 #ifndef UNIT
@@ -41,31 +59,14 @@ int	execute(t_command instr)
 int	main(int argc, char *argv[], char *envp[])
 {
 	char	*buf;
-	char	*tmp;
 
 	(void) argv;
 	if (argc != 1)
-		return (print_error("Invalid number of arguments"));
+		return (print_custom_error("Invalid number of arguments"));
 	if (init(envp))
-		return (print_error("Error during initialization"));
+		return (print_custom_error("Error during initialization"));
 	buf = "";
-	while (!g_var.exit)
-	{
-		signals();
-		buf = readline(var_value("PROMPT"));
-		if (!buf)
-			break ;
-		tmp = buf;
-		buf = ft_strtrim(tmp, " 	");
-		free(tmp);
-		if (*buf)
-		{
-			add_history(buf);
-			launch_pipex(ft_countchar(buf, '|'), \
-				ft_split(buf, '|'), (int [2]){0, 1});
-		}
-		free_buffer(buf);
-	}
+	main_loop(&buf);
 	return (free_all(buf));
 }
 #endif 

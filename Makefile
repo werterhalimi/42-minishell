@@ -10,13 +10,14 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		:=	builtins/env.c		builtins/export.c	builtins/pwd.c \
+SRCS_FILES		:=	builtins/env.c		parse/parse.c		builtins/pwd.c \
 					builtins/unset.c	utils/error.c		utils/free.c \
-					env/init.c			main.c				parse/parse.c \
-					utils/path.c		utils/alloc.c		utils/ft_isbuiltin.c \
-					pipe/pipex.c		builtins/echo.c		builtins/cd.c \
-					env/var_value.c		builtins/exit.c		utils/sort.c \
-					utils/array_copy.c	utils/signals.c		utils/remove_char.c
+					env/init.c			main.c				exec/exec_builtin.c \
+					exec/path.c			utils/alloc.c		builtins/export.c \
+					exec/main_exec.c	builtins/echo.c		exec/close_wait.c \
+					env/var_value.c		builtins/exit.c		utils/array_copy.c \
+					utils/sort.c		builtins/cd.c		utils/remove_char.c \
+					utils/ft_trim.c		exec/signals.c
 
 SRCS_DIR		:= ./srcs/
 
@@ -26,7 +27,7 @@ OBJS_FILES		:= $(SRCS_FILES:.c=.o)
 
 OBJS_DIR		:= ./bin/
 
-OBJS_SUB_DIR	:=	$(OBJS_DIR)builtins	$(OBJS_DIR)utils $(OBJS_DIR)parse $(OBJS_DIR)pipe $(OBJS_DIR)env
+OBJS_SUB_DIR	:=	$(OBJS_DIR)builtins	$(OBJS_DIR)utils $(OBJS_DIR)parse $(OBJS_DIR)exec $(OBJS_DIR)env
 
 OBJS			:= $(addprefix $(OBJS_DIR),$(OBJS_FILES))
 

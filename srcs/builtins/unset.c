@@ -24,7 +24,7 @@ int	unset(char *str)
 	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], str, length))
 		i++;
 	if (!g_var.envp[i])
-		return (ERROR);
+		return (SUCCESS);
 	free(g_var.envp[i]);
 	j = i + 1;
 	while (g_var.envp[j])

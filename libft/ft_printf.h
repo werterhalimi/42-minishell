@@ -26,7 +26,7 @@
 /// @return the total length writen, negative if error
 int		ft_printf(const char *str, ...);
 
-/// @brief Print str on the standart output given the specified format
+/// @brief Print str on fd given the specified format
 /// @return the total length writen, negative if error
 int		ft_printf_fd(const int fd, const char *str, ...);
 

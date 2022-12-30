@@ -16,7 +16,7 @@
 static void	sig_int_main(int code)
 {
 	(void)code;
-	write(STDOUT_FILENO, "\n", 1);
+	write(STDERR_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
@@ -33,7 +33,7 @@ static void	sig_quit_child(int code)
 {
 	(void)code;
 	kill(g_var.pid, SIGINT);
-	ft_putendl_fd("Quit: 3", STDOUT_FILENO);
+	ft_putendl_fd("Quit: 3", STDERR_FILENO);
 	g_var.last_er = QUIT_CHILD;
 	g_var.quit_child = YES;
 }

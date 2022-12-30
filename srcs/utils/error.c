@@ -21,7 +21,20 @@ static int	errno_to_errcode(int errnum)
 	return (-1);
 }
 
-int	print_error(char *error_msg)
+int	print_error(char const *cmd, char const *arg, char const *msg, int errcode)
+{
+	ft_printf_fd(STDERR_FILENO, "%s%s: %s: %s\n", RED, cmd, arg, msg);
+	return (errcode);
+}
+
+int	print_quote_error(char const *cmd, char const *arg, \
+	char const *msg, int errcode)
+{
+	ft_printf_fd(STDERR_FILENO, "%s%s: `%s\': %s\n", RED, cmd, arg, msg);
+	return (errcode);
+}
+
+int	print_custom_error(char *error_msg)
 {
 	ft_putstr_fd(RED, STDERR_FILENO);
 	ft_putendl_fd(error_msg, STDERR_FILENO);
@@ -30,13 +43,7 @@ int	print_error(char *error_msg)
 
 int	print_errno(const char *cmd, const char *arg, int errnum)
 {
-	ft_printf_fd(STDERR_FILENO, "%s%s: %s: %s\n", RED, cmd, arg, strerror(errnum));
+	ft_printf_fd(STDERR_FILENO, "%s%s: %s: %s\n", \
+		RED, cmd, arg, strerror(errnum));
 	return (errno_to_errcode(errnum));
-}
-
-int	print_current_errno(const char *cmd, const char *arg)
-{
-	ft_printf_fd(STDERR_FILENO, "%s%s: ", RED, cmd);
-	perror(arg);
-	return (errno_to_errcode(errno));
 }
