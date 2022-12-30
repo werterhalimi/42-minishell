@@ -62,7 +62,6 @@
 typedef struct s_global
 {
 	char	**envp;
-	t_list	**parse_alloc;
 	int		last_er;
 	int		exit;
 	int		pid;
@@ -115,13 +114,13 @@ int			ft_exit(char *argv[]);
 
 /* utils */
 
-void		free_array(char *argv[]);
+void		free_cmd(t_command cmd);
 
-int			free_all(char *buf);
+void		free_array(char *argv[]);
 
 int			free_buffer(char *buf);
 
-void		free_cmd(t_command cmd);
+int			free_all(char *buf);
 
 int			print_error(char const *cmd, char const *arg, \
 				char const *msg, int errcode);
