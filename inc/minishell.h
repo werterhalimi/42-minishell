@@ -117,6 +117,8 @@ int			free_all(char *buf);
 
 int			free_buffer(char *buf);
 
+void		free_cmd(t_command cmd);
+
 int			print_error(char const *cmd, char const *arg, \
 				char const *msg, int errcode);
 
@@ -134,8 +136,6 @@ char		**array_copy(char *src[], int size);
 int			remove_char(char *str, char c, int index);
 
 char		*ft_trim(char *word, char *set);
-
-void		free_cmd(t_command cmd);
 
 /* env */
 
@@ -159,7 +159,7 @@ void		signals(void);
 
 void		close_file(int i);
 
-void		close_wait(int in[2], int out[2], int nb_process, int **pids);
+void		close_wait(int in[2], int out[2], int nb_process, int *pids);
 
 int			ft_isbuiltin(char *cmd);
 

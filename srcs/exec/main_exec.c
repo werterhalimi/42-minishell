@@ -48,7 +48,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	free(args);
 	if (cmd.parse_error || g_var.quit_child == YES || !cmd.command[0])
 	{
-		free(cmd.args);
+		free_cmd(cmd);
 		if (cmd.parse_error)
 			return (cmd.parse_error);
 		return (NO_WAIT);
@@ -56,7 +56,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	if (!argc && ft_isbuiltin(cmd.command))
 	{
 		g_var.last_er = exec_builtin(cmd);
-		free(cmd.args);
+		free_cmd(cmd);
 		return (NO_WAIT);
 	}
 	g_var.pid = fork();
@@ -65,7 +65,7 @@ int	middle_process(int in[2], int out[2], char *args, int argc)
 	if (argc)
 		g_var.exit = NO;
 	close_file(out[1]);
-	free(cmd.args);
+	free_cmd(cmd);
 	return (g_var.pid);
 }
 /*
@@ -116,7 +116,7 @@ void	launch_pipex(int argc, char **argv, int files[2])
 			if (pids[j++] < -1)
 				break ;
 		}
-		close_wait(in, out, j, &pids);
+		close_wait(in, out, j, pids);
 		g_var.quit_child = NO;
 		g_var.pid = 0;
 	}

@@ -38,7 +38,7 @@ static void	wait_child(int index, int nb_process, int pid)
 	}
 }
 
-void	close_wait(int in[2], int out[2], int nb_process, int **pids)
+void	close_wait(int in[2], int out[2], int nb_process, int *pids)
 {
 	int	i;
 
@@ -49,10 +49,10 @@ void	close_wait(int in[2], int out[2], int nb_process, int **pids)
 	i = -1;
 	while (++i < nb_process)
 	{
-		if ((*pids)[i] < NO_WAIT)
-			g_var.last_er = (*pids)[i] * -1;
-		else if ((*pids)[i] != NO_WAIT)
-			wait_child(i, nb_process, (*pids)[i]);
+		if (pids[i] < NO_WAIT)
+			g_var.last_er = pids[i] * -1;
+		else if (pids[i] != NO_WAIT)
+			wait_child(i, nb_process, pids[i]);
 	}
-	free(*pids);
+	free(pids);
 }

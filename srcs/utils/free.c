@@ -48,9 +48,6 @@ void	free_cmd(t_command cmd)
 
 	i = 0;
 	while (i < cmd.len)
-	{
-		free(cmd.args[i]);
-		i++;
-	}
+		free(cmd.args[i++]);
 	free(cmd.args);
 }
