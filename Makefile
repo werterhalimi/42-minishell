@@ -11,13 +11,13 @@
 # **************************************************************************** #
 
 SRCS_FILES		:=	builtins/env.c		parse/parse.c		builtins/pwd.c \
-					builtins/unset.c	utils/error.c		utils/free.c \
+					builtins/unset.c	utils/error.c		builtins/export_one_var.c \
 					env/init.c			main.c				exec/exec_builtin.c \
 					exec/path.c			builtins/export.c 	exec/signals.c \
 					exec/main_exec.c	builtins/echo.c		exec/close_wait.c \
 					env/var_value.c		builtins/exit.c		utils/array_copy.c \
 					utils/sort.c		builtins/cd.c		utils/remove_char.c \
-					utils/ft_trim.c
+					utils/ft_trim.c		utils/free.c
 
 SRCS_DIR		:= ./srcs/
 

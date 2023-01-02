@@ -51,9 +51,9 @@ void	close_wait(t_pipes pipes, int nb_process, int *pids)
 	i = -1;
 	while (++i < nb_process)
 	{
-		if (pids[i] < NO_WAIT)
+		if (pids[i] < EXCEPTION)
 			g_var.last_er = pids[i] * -1;
-		else if (pids[i] != NO_WAIT)
+		else if (pids[i] != EXCEPTION)
 			wait_child(i, nb_process, pids[i]);
 	}
 	free(pids);

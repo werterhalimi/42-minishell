@@ -12,6 +12,9 @@
 
 #include "minishell.h"
 
+/// \brief Update $HOME and $OLDPWD variables after cd
+/// \param new_dir the path of the new working directory
+/// \return 0 on SUCCESS, 1 if ERROR
 static int	update_env(char *new_dir)
 {
 	char	*str;
@@ -23,14 +26,14 @@ static int	update_env(char *new_dir)
 	str = ft_strjoin("OLDPWD=", str);
 	if (!str)
 		return (ERROR);
-	ret = export(str);
+	ret = export_one_var(str);
 	free(str);
 	if (ret)
 		return (ERROR);
 	str = ft_strjoin("PWD=", new_dir);
 	if (!str)
 		return (ERROR);
-	ret = export(str);
+	ret = export_one_var(str);
 	free(str);
 	return (ret);
 }

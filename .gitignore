@@ -3,4 +3,5 @@
 *.a
 minishell
 .idea
+.DS_Store
 

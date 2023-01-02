@@ -54,14 +54,14 @@ int	init(char *envp[])
 
 	if (init_global_variable(envp))
 		return (free_all(NULL));
-	if (unset("OLDPWD"))
+	if (unset_one_arg("OLDPWD", YES))
 		return (free_all(NULL));
-	if (export("OLDPWD"))
+	if (export_one_var("OLDPWD"))
 		return (free_all(NULL));
 	tmp = prompt();
 	if (!tmp)
 		return (free_all(NULL));
-	res = export(tmp);
+	res = export_one_var(tmp);
 	free(tmp);
 	if (res)
 		return (free_all(NULL));

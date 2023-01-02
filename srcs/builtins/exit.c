@@ -12,6 +12,11 @@
 
 #include "minishell.h"
 
+/// \brief Check if str contains a valid long int (one char at the time)
+/// \param str the string to convert (source)
+/// \param nbr the converted number (so far)
+/// \param index the position in str of the current char to check
+/// \return 1 if it does, 0 otherwise
 static int	is_numeric(char const *str, long nbr, int index)
 {
 	int	i;
@@ -26,6 +31,10 @@ static int	is_numeric(char const *str, long nbr, int index)
 		|| (str[0] == '-' && str[index] - '0' > last_digit)))));
 }
 
+/// \brief Convert a string into a long int
+/// \param str the string to convert (source)
+/// \param nbr a pointer to the number (destination)
+/// \return 1 on SUCCESS, 0 if ERROR
 static int	ft_atol(char *str, long *nbr)
 {
 	long	sign;

@@ -50,13 +50,13 @@ static int	sub_process(int in[2], int out[2], char *args, int nb_pipes)
 		free_cmd(cmd);
 		if (cmd.parse_error)
 			return (cmd.parse_error);
-		return (NO_WAIT);
+		return (EXCEPTION);
 	}
 	if (!nb_pipes && ft_isbuiltin(cmd.command))
 	{
 		g_var.last_er = exec_builtin(cmd);
 		free_cmd(cmd);
-		return (NO_WAIT);
+		return (EXCEPTION);
 	}
 	g_var.pid = fork();
 	if (!g_var.pid)

@@ -32,9 +32,9 @@ int	exec_builtin(t_command instr)
 	if (!ft_strncmp(instr.command, "pwd", 5))
 		return (pwd());
 	if (!ft_strncmp(instr.command, "export", 7))
-		return (export(instr.args[1]));
+		return (export(instr.args));
 	if (!ft_strncmp(instr.command, "unset", 6))
-		return (unset(instr.args[1]));
+		return (unset(instr.args));
 	if (!ft_strncmp(instr.command, "cd", 3))
 		return (cd(instr.args));
 	if (!ft_strncmp(instr.command, "echo", 5))

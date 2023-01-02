@@ -94,7 +94,7 @@ static int	parsing(t_str **result, const char *str, int j, va_list *args)
 	return (j);
 }
 
-int	ft_printf_fd(const int fd, const char *str, ...)
+int	ft_printf_fd(int fd, const char *str, ...)
 {
 	va_list	args;
 	t_str	*result;

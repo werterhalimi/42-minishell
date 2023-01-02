@@ -504,7 +504,7 @@ int	str_replace_once(char **str, char *to_replace, char *new, int index)
 	return (index + (int) ft_strlen(new));
 }
 
-void	handle_var(char **line)
+void	handle_var(char **line) // TODO echo $$ ?
 {
 	int		i;
 	int		j;
@@ -515,7 +515,7 @@ void	handle_var(char **line)
 	value = NULL;
 	while((*line)[i])
 	{
-		if ((*line)[i++] == '$')
+		if ((*line)[i++] == '$' && (*line)[i])
 		{
 			j = i;
 			if ((*line)[j] == '?')

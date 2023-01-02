@@ -12,6 +12,9 @@
 
 #include "minishell.h"
 
+/// \brief Print the name of the variable
+/// \n and its value between double quotes
+/// \param str the name and value of the variable (name=value)
 static void	print_var(char *str)
 {
 	int	i;
@@ -26,6 +29,9 @@ static void	print_var(char *str)
 	write(STDOUT_FILENO, "\n", 1);
 }
 
+/// \brief export bash command without arguments
+/// \n (print all declared environment variables except $_)
+/// \return 0 on SUCCESS, 1 if ERROR
 static int	export_no_args(void)
 {
 	char	**envp;
@@ -53,68 +59,17 @@ static int	export_no_args(void)
 	return (SUCCESS);
 }
 
-static int	add_variable(char *str, int size)
-{
-	char	**tmp;
-	int		i;
-
-	tmp = malloc(sizeof (*tmp) * (size + 2));
-	if (!tmp)
-		return (ERROR);
-	i = -1;
-	while (g_var.envp[++i])
-		tmp[i] = g_var.envp[i];
-	tmp[i] = ft_strdup(str);
-	if (!tmp[i])
-	{
-		free(tmp);
-		return (ERROR);
-	}
-	tmp[++i] = NULL;
-	free(g_var.envp);
-	g_var.envp = tmp;
-	return (SUCCESS);
-}
-
-static int	update_variable(char *str, int index, int append, int value_pos)
-{
-	char	*tmp;
-
-	if (append)
-		tmp = ft_strjoin(g_var.envp[index], str + value_pos);
-	else
-		tmp = ft_strdup(str);
-	if (!tmp)
-		return (ERROR);
-	free(g_var.envp[index]);
-	g_var.envp[index] = tmp;
-	return (SUCCESS);
-}
-
-int	export(char *str)
+int	export(char **argv)
 {
 	int	i;
-	int	j;
-	int	append;
+	int	ret_value;
 
-	if (!str)
+	if (!argv[1])
 		return (export_no_args());
-	i = 0;
-	append = NO;
-	while (str[i] && str[i] != '=')
-		if (!(ft_isalnum(str[i]) || (str[i] == '+' && str[i + 1] == '=')) \
-			|| i++ < 0)
-			return (print_quote_error("minishell: export", str, \
-				"not a valid identifier", ERROR));
-	if (str[i] == '=' && str[i - 1] == '+' && !remove_char(str, '+', --i))
-		append = YES;
-	j = 0;
-	while (g_var.envp[j] && (ft_strncmp(g_var.envp[j], str, i) \
-		|| (g_var.envp[j][i] && g_var.envp[j][i] != '=')))
-		j++;
-	if (!g_var.envp[j])
-		return (add_variable(str, j));
-	else if (str[i++] == '=')
-		return (update_variable(str, j, append, i));
-	return (SUCCESS);
+	i = 1;
+	ret_value = SUCCESS;
+	while (argv[i])
+		if (export_one_var(argv[i++]))
+			ret_value = ERROR;
+	return (ret_value);
 }

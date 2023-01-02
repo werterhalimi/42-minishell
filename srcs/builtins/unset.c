@@ -12,16 +12,36 @@
 
 #include "minishell.h"
 
-int	unset(char *str)
+/// \brief Move all environment variable into a new array
+/// \param nb_variables the number of variables
+/// \return 0 on SUCCESS, 1 if ERROR
+static int	rearrange_env(int nb_variables)
+{
+	int		i;
+	char	**tmp;
+
+	tmp = malloc(sizeof (*tmp) * (nb_variables + 1));
+	if (!tmp)
+		return (ERROR);
+	i = -1;
+	while (++i < nb_variables)
+		tmp[i] = g_var.envp[i];
+	tmp[i] = NULL;
+	free(g_var.envp);
+	g_var.envp = tmp;
+	return (SUCCESS);
+}
+
+int	unset_one_arg(char *name, int rearrange)
 {
 	int		i;
 	int		j;
 	size_t	length;
-	char	**tmp;
 
 	i = 0;
-	length = ft_strlen(str);
-	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], str, length))
+	length = ft_strlen(name);
+	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], name, length) \
+		&& (!g_var.envp[i][length] || g_var.envp[i][length] == '='))
 		i++;
 	if (!g_var.envp[i])
 		return (SUCCESS);
@@ -31,10 +51,22 @@ int	unset(char *str)
 		j++;
 	g_var.envp[i] = g_var.envp[--j];
 	g_var.envp[j] = NULL;
-	tmp = array_copy(g_var.envp, j);
-	if (!tmp)
-		return (ERROR);
-	free_array(g_var.envp);
-	g_var.envp = tmp;
-	return (SUCCESS);
+	if (rearrange == NO)
+		return (SUCCESS);
+	return (rearrange_env(j));
+}
+
+int	unset(char *argv[])
+{
+	int i;
+
+	if (!argv[1])
+		return (SUCCESS);
+	i = 1;
+	while (argv[i])
+		unset_one_arg(argv[i++], NO);
+	i = 0;
+	while (g_var.envp[i])
+		i++;
+	return (rearrange_env(i));
 }

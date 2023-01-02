@@ -14,12 +14,21 @@
 
 int	pwd(void)
 {
-	int	i;
+	int		i;
+	char	*tmp;
 
 	i = 0;
 	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], "PWD=", 4))
 		i++;
 	if (g_var.envp[i])
 		ft_putendl_fd(g_var.envp[i] + 4, STDOUT_FILENO);
+	else
+	{
+		tmp = getcwd(NULL, 0);
+		if (!tmp)
+			return (ERROR);
+		ft_putendl_fd(tmp, STDOUT_FILENO);
+		free(tmp);
+	}
 	return (SUCCESS);
 }
