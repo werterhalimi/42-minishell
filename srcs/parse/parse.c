@@ -121,7 +121,7 @@ char	*get_string(char **split, char *current, int *index, int len)
 	}
 	if (current[0] != '"' && current[0] != '\'' && !index)
 	{
-		split = ft_split(current, ' ');
+		split = ft_split(current, ' '); // TODO \t ?
 		current = split[0];
 		free(split);
 	}
@@ -133,8 +133,6 @@ char	*get_string(char **split, char *current, int *index, int len)
 		*index = i;
 	return (current);
 }
-
-
 
 void	set_fd(int *fd, int value)
 {
@@ -152,7 +150,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 	char	**split;
 
 	tmp = line;
-	line = ft_strtrim(line, "	 ");
+	line = ft_strtrim(line, "\t ");
 	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
 	{
 		cmd->parse_error = SYNTAX_ERROR * (-1);
@@ -161,10 +159,10 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 	if (line[1] == '<')
 	{
 		line = &line[2];
-		while (*line == ' ')
+		while (*line == ' ') // TODO \t ?
 			line++;
-		split = ft_split(line, ' ');
-		line = ft_strtrim(line, " 	");
+		split = ft_split(line, ' '); // TODO \t ?
+		line = ft_strtrim(line, "\t ");
 		sep = get_string(split, line, 0, ft_strlen(line));
 		if (!sep)
 			return;
@@ -202,10 +200,10 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 	else
 	{
 		line = &line[1];
-		while (*line == ' ')
+		while (*line == ' ') // TODO \t ?
 			line++;
-		split = ft_split(line, ' ');
-		line = ft_strtrim(line, "	 ");
+		split = ft_split(line, ' '); // TODO \t ?
+		line = ft_strtrim(line, "\t ");
 		set_fd(&fd[0],open(get_string(split, line, 0, ft_strlen(line)), O_RDONLY));
 		f[0] = 0;
 		while (f[0] < (int) ft_strlen(tmp))
@@ -228,7 +226,7 @@ void	handle_output(char *line, int *fd, t_command *cmd)
 	tmp = line;
 	i = 0;
 	append = 0;
-	line = ft_strtrim(line, "	 ");
+	line = ft_strtrim(line, "\t ");
 	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
 	{
 		cmd->parse_error = SYNTAX_ERROR * (-1);
@@ -240,10 +238,10 @@ void	handle_output(char *line, int *fd, t_command *cmd)
 		line += 1;
 	}
 	line = &line[1];
-	while (*line == ' ')
+	while (*line == ' ') // TODO \t ?
 		line++;
-	split = ft_split(line, ' ');
-	line = ft_strtrim(line, " 	");
+	split = ft_split(line, ' '); // TODO \t ?
+	line = ft_strtrim(line, "\t ");
 	if (!append)
 		set_fd(&fd[1], open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else
@@ -389,7 +387,6 @@ void	handle_quote(char **split, int len)
 	}
 }
 
-
 int	is_between_single_quote(char *word, int index)
 {
 	int	right;
@@ -418,9 +415,6 @@ int	is_between_single_quote(char *word, int index)
 	return (right % 2 == 1 && left % 2 == 1);
 }
 
-
-
-
 void	str_replace(char **str, char *to_replace, char *new)
 {
 	char	*tmp;
@@ -432,38 +426,136 @@ void	str_replace(char **str, char *to_replace, char *new)
 	len = ft_strlen(*str);
 	if (!new)
 		new = "";
-	while (i < (int) ft_strlen(*str))
+	while ((*str)[i]) // (i < (int) ft_strlen(*str))
 	{
-		if (ft_strncmp(*str + i, to_replace, ft_strlen(to_replace)) == 0)
+		if (ft_strncmp(*str + i++, to_replace, ft_strlen(to_replace)) == 0)
 		{
 			len -= ft_strlen(to_replace);
 			len += ft_strlen(new);
 		}
-		i++;
+//		i++;
 	}
 	tmp = ft_calloc(sizeof(*tmp), len + 1);
 	i = 0;
 	no = 0;
-	while (i < len)
+	while ((*str)[i])
 	{
-		if (ft_strncmp((*str) + i, to_replace, ft_strlen(to_replace)) == 0
-				&& !is_between_single_quote(str[0] + no, no))
+		if (ft_strncmp(*str + i, to_replace, ft_strlen(to_replace)) == 0
+			&& !is_between_single_quote(str[0] + i, i))
 		{
-			ft_memcpy(tmp + i, new, ft_strlen(new) );
-			i += ft_strlen(new);
-			no += ft_strlen(to_replace);
+			ft_memcpy(tmp + no, new, ft_strlen(new));
+			no += ft_strlen(new);
+			i += ft_strlen(to_replace);
 			continue ;
 		}
-		tmp[i] = (*str)[no];
-		i++;
-		no++;
+		tmp[no++] = (*str)[i++];
 	}
+//	while (i < len)
+//	{
+//		if (ft_strncmp(*str + i, to_replace, ft_strlen(to_replace)) == 0
+//				&& !is_between_single_quote(str[0] + no, no))
+//		{
+//			ft_memcpy(tmp + i, new, ft_strlen(new) );
+//			i += ft_strlen(new);
+//			no += ft_strlen(to_replace);
+//			continue ;
+//		}
+//		tmp[i] = (*str)[no];
+//		i++;
+//		no++;
+//	}
 	tmp[len] = 0;
-//	free(*str);
+//	free(*str); // TODO ?
 	*str = tmp;
 }
 
+int	str_replace_once(char **str, char *to_replace, char *new, int index)
+{
+	char	*tmp;
+	int		i;
+	int		len;
+	int		no;
+
+	len = ft_strlen(*str);
+	if (!new)
+		new = "";
+	if (! ft_strncmp(*str + index, to_replace, ft_strlen(to_replace))) // TODO ??
+	{
+		len -= ft_strlen(to_replace);
+		len += ft_strlen(new);
+	}
+	tmp = ft_calloc(sizeof(*tmp), len + 1);
+	i = 0;
+	no = 0;
+	while ((*str)[i])
+	{
+		if (i == index && !is_between_single_quote(str[0] + i, i))
+		{
+			ft_memcpy(tmp + no, new, ft_strlen(new));
+			no += ft_strlen(new);
+			i += ft_strlen(to_replace);
+			continue ;
+		}
+		tmp[no++] = (*str)[i++];
+	}
+	tmp[len] = 0;
+	//	free(*str); // TODO ?
+	*str = tmp;
+	return (index + (int) ft_strlen(new));
+}
+
 void	handle_var(char **line)
+{
+	int		i;
+	int		j;
+	char	*value;
+	char	*tmp[2];
+
+	i = 0;
+	value = NULL;
+	while((*line)[i])
+	{
+		if ((*line)[i++] == '$')
+		{
+			j = i;
+			if ((*line)[j] == '?')
+			{
+				tmp[0] = ft_strdup((*line) + j++);
+				if (tmp[0])
+				{
+					tmp[0][j - i] = 0;
+					value = ft_itoa(g_var.last_er);
+				}
+			}
+			else
+			{
+				while (ft_isalnum((*line)[j]))
+					j++;
+				tmp[0] = ft_strdup((*line) + i);
+				if (tmp[0])
+				{
+					tmp[0][j - i] = 0;
+					tmp[1] = var_value(tmp[0]);
+					if (tmp[1])
+						value = ft_strdup(tmp[1]);
+				}
+			}
+			if (tmp[0])
+			{
+				tmp[1] = ft_strjoin("$", tmp[0]);
+				free(tmp[0]);
+				if (tmp[1])
+				{
+					i = str_replace_once(line, tmp[1], value, i - 1);
+					free(tmp[1]);
+					free(value);
+				}
+			}
+		}
+	}
+}
+/*
+void	handle_var(char **line) // TODO non-existing var & too long
 {
 	char	*tmp[3];
 	int		i;
@@ -475,7 +567,7 @@ void	handle_var(char **line)
 		j = 0;
 		while (g_var.envp[i][j] && g_var.envp[i][j] != '=')
 			j++;
-		tmp[0] = ft_strdup(g_var.envp[i]);
+		tmp[0] = ft_strdup(g_var.envp[i++]);
 		tmp[0][j] = 0;
 		tmp[1] = ft_strjoin("$", tmp[0]);
 		tmp[2] = *line;
@@ -483,7 +575,7 @@ void	handle_var(char **line)
 		free(tmp[2]);
 		free(tmp[0]);
 		free(tmp[1]);
-		i++;
+//		i++;
 	}
 	tmp[1] = *line;
 	tmp[0] = ft_itoa(g_var.last_er);
@@ -491,7 +583,7 @@ void	handle_var(char **line)
 	free(tmp[0]);
 	free(tmp[1]);
 }
-
+*/
 void	handle_tilde(char **line)
 {
 	int		i;
@@ -509,7 +601,7 @@ void	handle_tilde(char **line)
 			j = 0;
 			while (tmp[j])
 			{
-				if (tmp[j] == ' ')
+				if (tmp[j] == ' ' || tmp[j] == '\t')
 				{
 					tmp[j] = 0;
 					break ;
@@ -532,12 +624,12 @@ void	str_builder(char **str, char to_append)
 	char	*tmp;
 	int	len;
 
-	if(ft_strncmp(*str, "", 1) == 0)
-	{
-		(*str)[0] = to_append;
-		(*str)[1] = 0;
-		return ;
-	}
+//	if(!(**str)) //ft_strncmp(*str, "", 1) == 0
+//	{
+//		(*str)[0] = to_append;
+//		(*str)[1] = 0;
+//		return ;
+//	}
 	len = ft_strlen(*str);
 	tmp = ft_calloc(sizeof(*tmp), len + 1);
 	ft_memcpy(tmp, *str, len);
@@ -556,7 +648,7 @@ int	is_quote(char c)
 void	parse_line(char **args, char *line, int len)
 {
 	int	i;
-	int	y;
+	int	words;
 
 	if (len == 0)
 	{
@@ -566,19 +658,20 @@ void	parse_line(char **args, char *line, int len)
 		return ;
 	}
 	i = 0;
-	y = 0;
-	while (i <(int) ft_strlen(line))
+	words = 0;
+	while (i < (int) ft_strlen(line))
 	{
-		if (line[i] == ' ' && !is_between_quote(&line[i], i))
-		{	
-			i++;
-			y++;
+//		if ((ine[i] == ' ' && !is_between_quote(&line[i], i))
+		if ((line[i] == ' ' || line[i] == '\t') && !is_between_quote(&line[i], i))
+		{
+			if (++i && !(line[i - 2] == ' ' || line[i - 2] == '\t'))
+				words++;
 			continue;
 		}
-		str_builder(&(args)[y], line[i]);
-		i++;
+		str_builder(args + words, line[i++]); // str_builder(&(args)[words], line[i])
+//		i++;
 	}
-	(args)[y + 1] = 0;
+	(args)[words + 1] = NULL;
 }
 
 t_command	parse(char *line, int fd[2])
@@ -593,16 +686,14 @@ t_command	parse(char *line, int fd[2])
 	handle_var(&line);
 	handle_line(line, &ret, fd);
 	tmp = line;
-	line = ft_strtrim(line, "	 ");
+	line = ft_strtrim(line, "\t ");
 	free(tmp);
-	ret.len = ft_countchar(line, ' ') + 1;
+	ret.len = ft_countchar(line, ' ') + 1; // TODO \t ?
 	ret.args = ft_calloc(sizeof(*(ret.args)), ret.len + 1);
 	i = 0;
 	while (i < ret.len)
-	{
-		ret.args[i] = ft_strdup("");
-		i++;
-	}
+		ret.args[i++] = ft_strdup("");
+	ret.args[i] = NULL;
 	parse_line(ret.args, line, ret.len);
 	handle_quote(ret.args, ret.len);
 	ret.command = ret.args[0];
