@@ -44,12 +44,9 @@ static int	export_no_args(void)
 	envp = malloc(sizeof (*envp) * (size + 1));
 	if (!envp)
 		return (ERROR);
-	i = 0;
-	while (i <= size)
-	{
+	i = -1;
+	while (++i <= size)
 		envp[i] = g_var.envp[i];
-		i++;
-	}
 	sort(envp, size);
 	i = -1;
 	while (envp[++i])
@@ -64,12 +61,12 @@ int	export(char **argv)
 	int	i;
 	int	ret_value;
 
-	if (!argv[1])
+	if (!argv || !argv[1])
 		return (export_no_args());
 	i = 1;
 	ret_value = SUCCESS;
 	while (argv[i])
-		if (export_one_var(argv[i++]))
+		if (export_one_var(argv[i++], NO))
 			ret_value = ERROR;
 	return (ret_value);
 }

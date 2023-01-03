@@ -12,12 +12,13 @@
 
 #include "minishell.h"
 
-int	pwd(void)
+int	pwd(char *argv[])
 {
 	int		i;
 	char	*tmp;
 
 	i = 0;
+	(void) argv;
 	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], "PWD=", 4))
 		i++;
 	if (g_var.envp[i])

@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+/// \brief Generate a custom PROMPT variable
+/// \return a string containing the prompt on SUCCESS, NULL if ERROR
 static char	*prompt(void)
 {
 	char	*prompt1;
@@ -29,6 +31,10 @@ static char	*prompt(void)
 	return (prompt1);
 }
 
+/// \brief Copy the environment variables
+/// \n and initialize the global variable structure
+/// \param envp an array of *char containing the starting environment variables
+/// \return 0 on SUCCESS, 1 if ERROR
 static int	init_global_variable(char *envp[])
 {
 	int	i;
@@ -54,14 +60,12 @@ int	init(char *envp[])
 
 	if (init_global_variable(envp))
 		return (free_all(NULL));
-	if (unset_one_arg("OLDPWD", YES))
-		return (free_all(NULL));
-	if (export_one_var("OLDPWD"))
+	if (export_one_var("OLDPWD", YES))
 		return (free_all(NULL));
 	tmp = prompt();
 	if (!tmp)
 		return (free_all(NULL));
-	res = export_one_var(tmp);
+	res = export_one_var(tmp, YES);
 	free(tmp);
 	if (res)
 		return (free_all(NULL));

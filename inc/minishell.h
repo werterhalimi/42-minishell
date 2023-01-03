@@ -74,7 +74,7 @@
 /// \brief Global variable structure
 /// \param envp an array of *char containing the environment variables,
 /// \n ending with NULL
-/// \param last_er the return (error) code of the last command executed
+/// \param last_er the return (error) code of the last command executed ($?)
 /// \param exit true if an exit command was called, false otherwise
 /// \param pid the pid of the child process for the parent, 0 otherwise
 /// \param status the global status (READ, EXECUTE, HEREDOC)
@@ -153,9 +153,10 @@ int			cd(char *argv[]);
 int			echo(char *argv[]);
 
 /// \brief env bash command (print the initialized environment variables)
-/// \param arg the first argument after the command's name
+/// \param argv an array of *char containing the arguments of the command,
+/// \n beginning with the command itself and ending with NULL
 /// \return 0 on SUCCESS, an error code otherwise
-int			env(char const *arg);
+int			env(char *argv[]);
 
 /// \brief exit bash command (terminate the process)
 /// \param argv an array of *char containing the arguments of the command,
@@ -172,11 +173,13 @@ int			export(char *argv[]);
 /// \brief Create/update one environment variable
 /// \param str the name and value of the variable (name=value)
 /// \return 0 on SUCCESS, 1 if ERROR
-int			export_one_var(char *str);
+int			export_one_var(char *str, int overwrite);
 
 /// \brief pwd bash command (print path of current directory)
+/// \param argv an array of *char containing the arguments of the command,
+/// \n beginning with the command itself and ending with NULL
 /// \return 0 on SUCCESS, 1 if ERROR
-int			pwd(void);
+int			pwd(char *argv[]);
 
 /// \brief unset bash command (delete environment variables)
 /// \param argv an array of *char containing the arguments of the command,
@@ -188,41 +191,61 @@ int			unset(char *argv[]);
 /// \param str the name of the variable
 /// \param rearrange 0 if no reallocation have to be done, non-0 otherwise
 /// \return 0 on SUCCESS, 1 if ERROR
-int			unset_one_arg(char *name, int rearrange);
-
-/* utils */
-
-void		free_cmd(t_command cmd);
-
-void		free_array(char *argv[]);
-
-int			free_buffer(char *buf);
-
-int			free_all(char *buf);
-
-int			print_error(char const *cmd, char const *arg, \
-				char const *msg, int errcode);
-
-int			print_quote_error(char const *cmd, char const *arg, \
-				char const *msg, int errcode);
-
-int			print_custom_error(char *error_msg);
-
-int			print_errno(const char *cmd, const char *arg, int errnum);
-
-void		sort(char *argv[], long size);
-
-char		**array_copy(char *src[], int size);
-
-int			remove_char(char *str, char c, int index);
-
-char		*ft_trim(char *word, char *set);
+int			unset_one_var(char *name, int rearrange);
 
 /* env */
 
+/// \brief Initialize the global variable structure
+/// \param envp an array of *char containing the starting environment variables
+/// \return 0 on SUCCESS, 1 if ERROR
 int			init(char *envp[]);
 
+/// \brief Search and return the value of an environment variable
+/// \param var_name the variable name
+/// \return the variable value (as string) if it exist and has a value,
+/// \n NULL otherwise
 char		*var_value(char const *var_name);
+
+/* exec */
+
+/// \brief Close the file fd except STDIN, STDOUT and STDERR
+/// \param fd the file descriptor
+void		close_file(int fd);
+
+/// \brief Close all pipes and wait all child process
+/// \param pipes the structure containing all pipes
+/// \param nb_process the number of child process
+/// \param pids an array containing the pid of all child process
+void		close_wait(t_pipes pipes, int nb_process, int *pids);
+
+/// \brief Check if a command is a builtin one
+/// \param cmd the name of the command
+/// \return non-0 if it is, 0 otherwise
+int			ft_isbuiltin(char *cmd);
+
+/// \brief Execute a builtin command
+/// \param cmd the command structure
+/// \return 0 on SUCCESS, non-0 if ERROR
+int			exec_builtin(t_command cmd);
+
+/// \brief Main execution
+/// \param nb_pipes the total number of pipes
+/// \param argv the input of the user splitted by pipes
+/// \param files the input and output file descriptors
+void		main_exec(int nb_pipes, char **argv, int files[2]);
+
+/// \brief Split the PATH variable
+/// \return an array of char * containing all path
+char		**env_to_paths(void);
+
+/// \brief Add the complete path of the command to its name
+/// \param path an array of char * containing all path
+/// \param command the name of the command
+/// \return the path of the command, NULL if ERROR
+char		*get_path(char **str, char *command);
+
+/// \brief Main signal handler for each situation
+void		signals(void);
 
 /* parse */
 
@@ -230,22 +253,78 @@ t_command	parse(char *line, int fd[2]);
 char		*get_string(char **split, char *current, int *i, int len);
 int			ft_countchar(const char *str, char c);
 
-/* exec */
+/* utils */
 
-char		*get_path(char **str, char *command);
+/// \brief Copy (duplicate) an array of char*
+/// \param src the source
+/// \param size the number of elements in src
+/// \return the address of the copy, NULL if ERROR
+char		**array_copy(char *src[], int size);
 
-char		**env_to_paths(void);
+/// \brief Print an error message on STDERR of format:
+/// \n cmd: arg: msg
+/// \param cmd the command causing the error
+/// \param arg the argument causing the error
+/// \param msg the error message
+/// \param errcode the error code to return
+/// \return errcode
+int			print_error(char const *cmd, char const *arg, \
+				char const *msg, int errcode);
 
-void		signals(void);
+/// \brief Print an error message on STDERR of format:
+/// \n cmd: `arg': msg
+/// \param cmd the command causing the error
+/// \param arg the argument causing the error
+/// \param msg the error message
+/// \param errcode the error code to return
+/// \return errcode
+int			print_quote_error(char const *cmd, char const *arg, \
+				char const *msg, int errcode);
 
-void		close_file(int i);
+/// \brief Print an error message on STDERR
+/// \param error_msg the error message
+/// \return 1
+int			print_custom_error(char *error_msg);
 
-void		close_wait(t_pipes pipes, int nb_process, int *pids);
+/// \brief Print an error message on STDERR of format:
+///// \n cmd: arg: strerror(errnum)
+/// \param cmd the command causing the error
+/// \param arg the argument causing the error
+/// \param errnum the error number
+/// \return errnum converted to an error code
+int			print_errno(const char *cmd, const char *arg, int errnum);
 
-int			ft_isbuiltin(char *cmd);
+/// \brief Free a command structure
+/// \param cmd the command
+void		free_cmd(t_command cmd);
 
-int			exec_builtin(t_command instr);
+/// \brief Free an array of char*
+/// \param argv the array
+void		free_array(char *argv[]);
 
-void		launch_pipex(int nb_pipes, char **argv, int files[2]);
+/// \brief Free the buffer of readline
+/// \param buf the buffer containing the input of the user (readline)
+/// \return the last error code ($?)
+int			free_buffer(char *buf);
+
+/// \brief Free all data
+/// \param buf the buffer containing the input of the user (readline)
+/// \return the last error code ($?)
+int			free_all(char *buf);
+
+char		*ft_trim(char *word, char *set);
+
+/// \brief Remove the first char c in str
+/// \param str the source string
+/// \param c the char to remove
+/// \param index the position of c in str, negative if not specified
+/// \return 0 on SUCCESS, 1 if ERROR
+int			remove_char(char *str, char c, int index);
+
+/// \brief Sort an array of char* using ASCII value
+/// \n from lowest ot biggest (using quicksort)
+/// \param argv the array to sort
+/// \param size the number of elements to sort
+void		sort(char *argv[], long size);
 
 #endif

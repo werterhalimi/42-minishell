@@ -14,30 +14,30 @@
 
 int	ft_isbuiltin(char *cmd)
 {
-	return (!ft_strncmp(cmd, "echo", 5) \
-		|| !ft_strncmp(cmd, "cd", 3) \
-		|| !ft_strncmp(cmd, "pwd", 4) \
-		|| !ft_strncmp(cmd, "export", 7) \
-		|| !ft_strncmp(cmd, "unset", 6) \
+	return (!ft_strncmp(cmd, "cd", 3) \
+		|| !ft_strncmp(cmd, "echo", 5) \
 		|| !ft_strncmp(cmd, "env", 4) \
-		|| !ft_strncmp(cmd, "exit", 5));
+		|| !ft_strncmp(cmd, "exit", 5) \
+		|| !ft_strncmp(cmd, "export", 7) \
+		|| !ft_strncmp(cmd, "pwd", 4) \
+		|| !ft_strncmp(cmd, "unset", 6));
 }
 
-int	exec_builtin(t_command instr)
+int	exec_builtin(t_command cmd)
 {
-	if (!ft_strncmp(instr.command, "exit", 5))
-		return (ft_exit(instr.args));
-	if (!ft_strncmp(instr.command, "env", 4))
-		return (env(instr.args[1]));
-	if (!ft_strncmp(instr.command, "pwd", 5))
-		return (pwd());
-	if (!ft_strncmp(instr.command, "export", 7))
-		return (export(instr.args));
-	if (!ft_strncmp(instr.command, "unset", 6))
-		return (unset(instr.args));
-	if (!ft_strncmp(instr.command, "cd", 3))
-		return (cd(instr.args));
-	if (!ft_strncmp(instr.command, "echo", 5))
-		return (echo(instr.args));
+	if (!ft_strncmp(cmd.command, "cd", 3))
+		return (cd(cmd.args));
+	if (!ft_strncmp(cmd.command, "echo", 5))
+		return (echo(cmd.args));
+	if (!ft_strncmp(cmd.command, "env", 4))
+		return (env(cmd.args));
+	if (!ft_strncmp(cmd.command, "exit", 5))
+		return (ft_exit(cmd.args));
+	if (!ft_strncmp(cmd.command, "export", 7))
+		return (export(cmd.args));
+	if (!ft_strncmp(cmd.command, "pwd", 5))
+		return (pwd(cmd.args));
+	if (!ft_strncmp(cmd.command, "unset", 6))
+		return (unset(cmd.args));
 	return (ERROR);
 }

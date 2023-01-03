@@ -12,6 +12,9 @@
 
 #include "minishell.h"
 
+/// \brief Convert an errnum (errno) to a bash error code
+/// \param errnum the error number
+/// \return the corresponding error code, -1 if unknown/unused
 static int	errno_to_errcode(int errnum)
 {
 	if (errnum == EACCES)

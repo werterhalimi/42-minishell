@@ -12,7 +12,9 @@
 
 #include "minishell.h"
 
-//	Ctrl + C
+/// \brief Signal INT handler (Ctrl + C)
+/// \n when reading the user input commands
+/// \param code the signal code
 static void	sig_int_main(int code)
 {
 	(void)code;
@@ -23,21 +25,31 @@ static void	sig_int_main(int code)
 	g_var.last_er = ERROR;
 }
 
+/// \brief Signal INT handler (Ctrl + C)
+/// \n when executing commands
+/// \param code the signal code
 static void	sig_int_child(int code)
 {
 	(void)code;
 	write(STDERR_FILENO, "\n", 1);
 }
 
+/// \brief Signal QUIT handler (Ctrl + \)
+/// \n when executing commands
+/// \param code the signal code
 static void	sig_quit_child(int code)
 {
 	(void)code;
 	kill(g_var.pid, SIGINT);
 	ft_putendl_fd("Quit: 3", STDERR_FILENO);
-	g_var.last_er = QUIT_CHILD;
+	if (g_var.quit_child == NO)
+		g_var.last_er = QUIT_CHILD;
 	g_var.quit_child = YES;
 }
 
+/// \brief Signal INT handler (Ctrl + C)
+/// \n when redirecting STDIN to the first process
+/// \param code the signal code
 static void	sig_int_heredoc(int code)
 {
 	(void)code;
@@ -49,21 +61,28 @@ static void	sig_int_heredoc(int code)
 
 void	signals(void)
 {
-	int	status;
-
-	signal(SIGTERM, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, SIG_DFL);
 	if (g_var.status == READ)
-		signal(SIGINT, sig_int_main);
-	else if (g_var.status == HEREDOC && g_var.pid)
 	{
-		signal(SIGINT, sig_int_heredoc);
-		wait(&status);
+		signal(SIGINT, sig_int_main);
+		signal(SIGQUIT, SIG_IGN);
+	}
+	else if (g_var.status == HEREDOC)
+	{
+		signal(SIGQUIT, SIG_IGN);
+		if (g_var.pid)
+		{
+			signal(SIGINT, sig_int_heredoc);
+			wait(NULL);
+		}
 	}
 	else if (g_var.pid)
 	{
 		signal(SIGINT, sig_int_child);
 		signal(SIGQUIT, sig_quit_child);
+	}
+	else
+	{
+		signal(SIGQUIT, SIG_DFL);
+		signal(SIGINT, SIG_DFL);
 	}
 }

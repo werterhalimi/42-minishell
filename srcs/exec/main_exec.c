@@ -12,12 +12,19 @@
 
 #include "minishell.h"
 
+/// \brief Copy the content of a pair of int from src to dest
+/// \param dest destination
+/// \param src source
 static void	copy(int dest[2], int const src[2])
 {
 	dest[0] = src[0];
 	dest[1] = src[1];
 }
 
+/// \brief Execution of the child process
+/// \param cmd the command structure
+/// \param out the output pipe
+/// \return 0 on SUCCESS, non-0 if ERROR
 static int	child_process(t_command cmd, int *out)
 {
 	char	**paths;
@@ -39,6 +46,12 @@ static int	child_process(t_command cmd, int *out)
 	return (SUCCESS);
 }
 
+/// \brief Execution of a sub-process
+/// \param in the input pipe
+/// \param out the output pipe
+/// \param args a string containing the command and its arguments
+/// \param nb_pipes the number of child process
+/// \return the pid of the child process
 static int	sub_process(int in[2], int out[2], char *args, int nb_pipes)
 {
 	t_command	cmd;
@@ -68,6 +81,11 @@ static int	sub_process(int in[2], int out[2], char *args, int nb_pipes)
 	return (g_var.pid);
 }
 
+/// \brief Execution loop for each process
+/// \param index an id that counts the number of process
+/// \param argv the input of the user splitted by pipes
+/// \param pids an array of int containing for all child pids
+/// \param pipes the pipes structure
 static void	exec_loop(int *index, char **argv, int *pids, t_pipes *pipes)
 {
 	while (*index <= pipes->nb_pipes)
@@ -96,12 +114,14 @@ static void	exec_loop(int *index, char **argv, int *pids, t_pipes *pipes)
 	}
 }
 
-void	launch_pipex(int nb_pipes, char **argv, int files[2])
+void	main_exec(int nb_pipes, char **argv, int files[2])
 {
 	int		*pids;
 	int		index;
 	t_pipes	pipes;
 
+	if (!argv)
+		return ;
 	g_var.status = EXECUTE;
 	pids = malloc(sizeof(int) * (nb_pipes + 1));
 	if (pids)

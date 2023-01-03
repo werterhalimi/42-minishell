@@ -41,7 +41,9 @@ char	*get_path(char **path, char *command)
 		}
 		if (!access(command, X_OK))
 			return (command);
+		print_error("minishell", command, "command not found", PATH_ERROR);
 	}
-	print_error("minishell", command, "command not found", ERROR);
+	else
+		print_errno("minishell", command, ENOENT);
 	return (NULL);
 }

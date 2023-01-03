@@ -12,22 +12,24 @@
 
 #include "minishell.h"
 
-void	close_file(int i)
+void	close_file(int fd)
 {
-	if (i != STDIN_FILENO && i != STDOUT_FILENO && i != STDERR_FILENO)
-		close(i);
+	if (fd != STDIN_FILENO && fd != STDOUT_FILENO && fd != STDERR_FILENO)
+		close(fd);
 }
 
-static void	wait_child(int index, int nb_process, int pid)
+/// \brief Wait all child process and set the last error code ($?) accordingly
+/// \param last_pid the pid of the last child process
+static void	wait_child(int last_pid)
 {
-	int	last_pid;
+	int	current_pid;
 	int	status;
 
 	signals();
-	last_pid = waitpid(pid, &status, 0);
-	if (last_pid < 0 && errno != ECHILD)
+	current_pid = wait(&status);
+	if (current_pid < 0 && errno != ECHILD)
 		perror("WAIT ERROR");
-	if (index == nb_process - 1 && g_var.quit_child == NO)
+	if (last_pid == current_pid && g_var.quit_child == NO)
 	{
 		if (WIFEXITED(status))
 			g_var.last_er = WEXITSTATUS(status);
@@ -35,12 +37,14 @@ static void	wait_child(int index, int nb_process, int pid)
 			g_var.last_er = WTERMSIG(status) + 128;
 		if (WIFSTOPPED(status))
 			g_var.last_er = WSTOPSIG(status);
+		g_var.quit_child = YES;
 	}
 }
 
 void	close_wait(t_pipes pipes, int nb_process, int *pids)
 {
 	int	i;
+	int	last_pid;
 
 	close_file(pipes.files[0]);
 	close_file(pipes.files[1]);
@@ -49,12 +53,13 @@ void	close_wait(t_pipes pipes, int nb_process, int *pids)
 	close_file(pipes.out[0]);
 	close_file(pipes.out[1]);
 	i = -1;
+	last_pid = pids[nb_process - 1];
 	while (++i < nb_process)
 	{
 		if (pids[i] < EXCEPTION)
 			g_var.last_er = pids[i] * -1;
 		else if (pids[i] != EXCEPTION)
-			wait_child(i, nb_process, pids[i]);
+			wait_child(last_pid);
 	}
 	free(pids);
 }

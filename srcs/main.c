@@ -50,7 +50,7 @@ static void	main_loop(char **buf)
 		{
 			add_history(*buf);
 			// Le split est pas bon
-			launch_pipex(ft_countchar(*buf, '|'), \
+			main_exec(ft_countchar(*buf, '|'), \
 				ft_split(*buf, '|'), (int [2]){0, 1});
 		}
 		free_buffer(*buf);

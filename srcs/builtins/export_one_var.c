@@ -43,7 +43,7 @@ static int	add_variable(char *str, int nb_variables)
 /// \brief Update an environment variable
 /// \param str the name and value of the variable (name=value)
 /// \param index the position of the variable ib the array
-/// \param append 0 if replace mode, non-0 if append mode
+/// \param append 1 if append mode, overwrite/replace mode otherwise
 /// \param value_pos the position of the start of the variable's value
 /// \n (right after '=')
 /// \return 0 on SUCCESS, 1 if ERROR
@@ -51,10 +51,10 @@ static int	update_variable(char *str, int index, int append, int value_pos)
 {
 	char	*tmp;
 
-	if (append == NO)
-		tmp = ft_strdup(str);
-	else
+	if (append == YES)
 		tmp = ft_strjoin(g_var.envp[index], str + value_pos);
+	else
+		tmp = ft_strdup(str);
 	if (!tmp)
 		return (ERROR);
 	free(g_var.envp[index]);
@@ -62,7 +62,7 @@ static int	update_variable(char *str, int index, int append, int value_pos)
 	return (SUCCESS);
 }
 
-int	export_one_var(char *str)
+int	export_one_var(char *str, int overwrite)
 {
 	int	i;
 	int	j;
@@ -75,7 +75,8 @@ int	export_one_var(char *str)
 			|| i++ < 0)
 			return (print_quote_error("minishell: export", str, \
 				"not a valid identifier", ERROR));
-	if (str[i] == '=' && str[i - 1] == '+' && !remove_char(str, '+', --i))
+	if (overwrite == NO && str[i] == '=' && str[i - 1] == '+' \
+		&& !remove_char(str, '+', --i))
 		append = YES;
 	j = 0;
 	while (g_var.envp[j] && (ft_strncmp(g_var.envp[j], str, i) \
@@ -83,7 +84,7 @@ int	export_one_var(char *str)
 		j++;
 	if (!g_var.envp[j])
 		return (add_variable(str, j));
-	else if (str[i++] == '=')
+	else if (overwrite == YES || str[i++] == '=')
 		return (update_variable(str, j, append, i));
 	return (SUCCESS);
 }

@@ -12,6 +12,10 @@
 
 #include "minishell.h"
 
+/// \brief Calculate the difference s1 - s2 lexicographically (as unsigned char)
+/// \param s1 the first string
+/// \param s2 the second string
+/// \return the difference
 static int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
@@ -22,6 +26,9 @@ static int	ft_strcmp(const char *s1, const char *s2)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
+/// \brief Swap 2 string
+/// \param start the address of the first string
+/// \param end the address of the second string
 static void	swap(char **start, char **end)
 {
 	char	*tmp;
@@ -31,6 +38,11 @@ static void	swap(char **start, char **end)
 	*end = tmp;
 }
 
+/// \brief Quicksort algorithm for an array of char*
+/// \param pivot the address of the pivot
+/// \param start the address of the first string
+/// \param end the address of the last string
+/// \return the new address of the pivot
 static char	**quicksort(char **pivot, char **start, char **end)
 {
 	if (start < end)

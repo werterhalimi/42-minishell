@@ -32,7 +32,7 @@ static int	rearrange_env(int nb_variables)
 	return (SUCCESS);
 }
 
-int	unset_one_arg(char *name, int rearrange)
+int	unset_one_var(char *name, int rearrange)
 {
 	int		i;
 	int		j;
@@ -40,8 +40,8 @@ int	unset_one_arg(char *name, int rearrange)
 
 	i = 0;
 	length = ft_strlen(name);
-	while (g_var.envp[i] && ft_strncmp(g_var.envp[i], name, length) \
-		&& (!g_var.envp[i][length] || g_var.envp[i][length] == '='))
+	while (g_var.envp[i] && (ft_strncmp(g_var.envp[i], name, length) \
+		|| (g_var.envp[i][length] && g_var.envp[i][length] != '=')))
 		i++;
 	if (!g_var.envp[i])
 		return (SUCCESS);
@@ -58,13 +58,13 @@ int	unset_one_arg(char *name, int rearrange)
 
 int	unset(char *argv[])
 {
-	int i;
+	int	i;
 
 	if (!argv[1])
 		return (SUCCESS);
 	i = 1;
 	while (argv[i])
-		unset_one_arg(argv[i++], NO);
+		unset_one_var(argv[i++], NO);
 	i = 0;
 	while (g_var.envp[i])
 		i++;
