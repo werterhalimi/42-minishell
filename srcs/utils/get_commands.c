@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 20:45:04 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/03 21:17:12 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/03 21:22:18 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,3 @@ char	**get_commands(char *s, char c, int *len)
 	free(tab);
 	return (result);
 }
-

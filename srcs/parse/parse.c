@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2022/12/30 19:54:38 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/03 23:37:38 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,8 +167,13 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 		if (!sep)
 			return;
 		f[0] = 0;
+		f[1] = 0;
 		while (f[0] < (int) ft_strlen(tmp))
 		{
+			if (ft_isalnum(tmp[f[0]]))
+				f[1] = -1;
+			else if (f[1] ==-1)
+				break;
 			tmp[f[0]] = ' ';
 			f[0]++;
 		}
@@ -206,8 +211,13 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 		line = ft_strtrim(line, "\t ");
 		set_fd(&fd[0],open(get_string(split, line, 0, ft_strlen(line)), O_RDONLY));
 		f[0] = 0;
+		f[1] = 0;
 		while (f[0] < (int) ft_strlen(tmp))
 		{
+			if (ft_isalnum(tmp[f[0]]))
+				f[1] = -1;
+			else if (f[1] ==-1)
+				break;
 			tmp[f[0]] = ' ';
 			f[0]++;
 		}
@@ -246,8 +256,13 @@ void	handle_output(char *line, int *fd, t_command *cmd)
 		set_fd(&fd[1], open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else
 		set_fd(&fd[1], open(get_string(split, line, 0, ft_strlen(line)), O_WRONLY | O_CREAT | O_APPEND, 0644));
+	append = 0;
 	while (i < (int) ft_strlen(tmp))
 	{
+		if (ft_isalnum(tmp[i]))
+			append = -1;
+		else if (append ==-1)
+			break;
 		tmp[i] = ' ';
 		i++;
 	}
