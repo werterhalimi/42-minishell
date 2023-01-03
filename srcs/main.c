@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/30 19:46:58 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/03 21:17:12 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	print_cmd(t_command cmd)
 static void	main_loop(char **buf)
 {
 	char	*tmp;
+	char	**commands;
+	int		len;
 
 	while (!g_var.exit)
 	{
@@ -49,9 +51,8 @@ static void	main_loop(char **buf)
 		if (**buf)
 		{
 			add_history(*buf);
-			// Le split est pas bon
-			main_exec(ft_countchar(*buf, '|'), \
-				ft_split(*buf, '|'), (int [2]){0, 1});
+			commands = get_commands(*buf, '|', &len);
+			main_exec(len, commands, (int [2]){0, 1});
 		}
 		free_buffer(*buf);
 	}

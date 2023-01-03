@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2022/12/30 19:15:21 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/03 21:17:25 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,5 +326,8 @@ int			remove_char(char *str, char c, int index);
 /// \param argv the array to sort
 /// \param size the number of elements to sort
 void		sort(char *argv[], long size);
+
+char		**get_commands(char *s, char c, int *len);
+int			is_between_quote(char *word, int index);
 
 #endif
