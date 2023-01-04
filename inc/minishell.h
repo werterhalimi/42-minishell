@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:58:28 by ncotte            #+#    #+#             */
-/*   Updated: 2023/01/03 21:17:25 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/04 21:47:49 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@ void		signals(void);
 /* parse */
 
 t_command	parse(char *line, int fd[2]);
-char		*get_string(char **split, char *current, int *i, int len);
+//char		*get_string(char **split, char *current, int *i, int len);
 int			ft_countchar(const char *str, char c);
 
 /* utils */
@@ -327,7 +327,23 @@ int			remove_char(char *str, char c, int index);
 /// \param size the number of elements to sort
 void		sort(char *argv[], long size);
 
+/// Parse
 char		**get_commands(char *s, char c, int *len);
 int			is_between_quote(char *word, int index);
-
+int			ft_countchar(const char *s, char c);
+char		*ft_baskslash(char *str);
+char		*join(char *s1, char *s2);
+void		set_fd(int *fd, int value);
+char		*get_string(char **split, char *current, int index, int len);
+void		handle_tilde(char **line);
+void		str_replace(char **str, char *to_replace, char *n);
+int			is_between_single_quote(char *word, int index);
+int			str_replace_once(char **str, char *to_replace, char *n, int index);
+void		handle_quote(char **split, int len);
+void		remove_quote(char *str);
+void		handle_input(char *line, int *fd, t_command *cmd);
+void		handle_output(char *line, int *fd, t_command *cmd);
+void		remove_quote(char *str);
+void		handle_line(char *line, t_command *cmd, int fd[2]);
+void		handle_var(char **line);
 #endif

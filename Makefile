@@ -6,7 +6,7 @@
 #    By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/12 11:39:15 by ncotte            #+#    #+#              #
-#    Updated: 2023/01/03 21:01:30 by shalimi          ###   ########.fr        #
+#    Updated: 2023/01/04 21:41:52 by shalimi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,10 @@ SRCS_FILES		:=	utils/free.c		utils/sort.c		utils/array_copy.c \
 					parse/parse.c \
 					exec/path.c			exec/signals.c		exec/exec_builtin.c \
 					exec/close_wait.c	exec/main_exec.c \
-					main.c utils/get_commands.c
+					main.c utils/get_commands.c parse/utils.c parse/get_string.c \
+					parse/handle_tilde.c parse/str_replace.c parse/quote_utils.c \
+					parse/handle_input.c parse/handle_output.c parse/remove_quote.c \
+					parse/handle_line.c parse/handle_var.c
 
 SRCS_DIR		:= ./srcs/
 
