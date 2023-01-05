@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 19:24:49 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/04 20:17:40 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/05 22:35:51 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,16 @@ void	handle_input_file(char *line, int *fd, char *tmp)
 {
 	char	**split;
 	int		f[2];
+	char	*tpmp;
 
 	line = &line[1];
 	while (*line == ' ')
 		line++;
 	split = ft_split(line, ' ');
 	line = ft_strtrim(line, "\t ");
-	set_fd(&fd[0], open(get_string(split, line, 0, ft_strlen(line)), O_RDONLY));
+	tpmp = get_string(split, line, 0, ft_strlen(line));
+	set_fd(&fd[0], open(tpmp, O_RDONLY));
+	free(tpmp);
 	f[0] = 0;
 	f[1] = 0;
 	while (f[0] < (int) ft_strlen(tmp))
@@ -35,7 +38,7 @@ void	handle_input_file(char *line, int *fd, char *tmp)
 		f[0]++;
 	}
 	free(line);
-	free(split);
+	free_array(split);
 }
 
 void	handle_heredoc(char *sep, char *buff, int *fd)
@@ -105,4 +108,5 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 		handle_input_heredoc(line, fd, tmp);
 	else
 		handle_input_file(line, fd, tmp);
+	free(line);
 }
