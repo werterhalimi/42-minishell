@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	handle_input_file(char *line, int *fd, char *tmp)
+static void	handle_input_file(char *line, int *fd, char *tmp)
 {
 	char	**split;
 	int		f[2];
@@ -41,7 +41,7 @@ void	handle_input_file(char *line, int *fd, char *tmp)
 	free_array(split);
 }
 
-void	handle_heredoc(char *sep, char *buff, int *fd)
+static void	handle_heredoc(char *sep, char *buff, int *fd)
 {
 	int	f[2];
 
@@ -68,7 +68,7 @@ void	handle_heredoc(char *sep, char *buff, int *fd)
 	set_fd(&fd[0], f[0]);
 }
 
-void	handle_input_heredoc(char *line, int *fd, char *tmp)
+static void	handle_input_heredoc(char *line, int *fd, char *tmp)
 {
 	char	**split;
 	char	*sep;

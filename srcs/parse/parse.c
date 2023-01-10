@@ -12,7 +12,31 @@
 
 #include "minishell.h"
 
-void	str_builder(char **str, char to_append)
+static int	ft_countchar(const char *s, char c)
+{
+	int	i;
+	int	ret;
+
+	i = 0;
+	ret = 0;
+	if (c == 0)
+		return (-1);
+	while (s[i])
+	{
+		if (s[i++] == c)
+		{
+			if (s[i] == c || !s[i])
+				continue ;
+			else
+				ret++;
+		}
+	}
+	if (s[0] == c || s[i - 1] == c)
+		ret--;
+	return (ret);
+}
+
+static void	str_builder(char **str, char to_append)
 {
 	char	*tmp;
 	int		len;
@@ -27,7 +51,7 @@ void	str_builder(char **str, char to_append)
 	free(tmp);
 }
 
-void	parse_line(char **args, char *line, int len)
+static void	parse_line(char **args, char *line, int len)
 {
 	int	i;
 	int	words;

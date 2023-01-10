@@ -10,19 +10,19 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		:=	utils/free.c		utils/sort.c		utils/array_copy.c \
-					utils/ft_trim.c		utils/error.c		utils/remove_char.c \
-					env/var_value.c		env/init.c \
+SRCS_FILES		:=	utils/free.c		utils/sort.c		utils/get_commands.c \
+					utils/ft_trim.c		utils/error.c \
+					env/var_value.c		env/init.c			env/valid_var_name.c\
 					builtins/cd.c		builtins/echo.c		builtins/export_one_var.c \
 					builtins/env.c		builtins/exit.c		builtins/export.c \
 					builtins/pwd.c		builtins/unset.c \
-					parse/parse.c \
+					parse/set_fd.c		parse/get_string.c	parse/handle_output.c \
+					parse/handle_var.c	parse/handle_line.c	parse/handle_input.c \
+					parse/parse.c		parse/quote_utils.c parse/handle_tilde.c \
+					parse/handle_quote.c \
 					exec/path.c			exec/signals.c		exec/exec_builtin.c \
 					exec/close_wait.c	exec/main_exec.c \
-					main.c utils/get_commands.c parse/utils.c parse/get_string.c \
-					parse/handle_tilde.c parse/str_replace.c parse/quote_utils.c \
-					parse/handle_input.c parse/handle_output.c parse/remove_quote.c \
-					parse/handle_line.c parse/handle_var.c
+					main.c
 
 SRCS_DIR		:= ./srcs/
 

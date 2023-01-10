@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	append_and_clear(char *line, int *fd, int append, char *tmp)
+static void	append_and_clear(char *line, int *fd, int append, char *tmp)
 {
 	char	**split;
 	int		i;
@@ -20,10 +20,10 @@ void	append_and_clear(char *line, int *fd, int append, char *tmp)
 	split = ft_split(line, ' ');
 	line = ft_strtrim(line, "\t ");
 	if (!append)
-		set_fd(&fd[1], open(get_string(split, line, 0,
+		set_fd(&fd[1], open(get_string(split, line, 0, \
 					ft_strlen(line)), O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else
-		set_fd(&fd[1], open(get_string(split, line, 0,
+		set_fd(&fd[1], open(get_string(split, line, 0, \
 					ft_strlen(line)), O_WRONLY | O_CREAT | O_APPEND, 0644));
 	append = 0;
 	i = 0;

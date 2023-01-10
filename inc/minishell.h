@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <signal.h>
 # include <limits.h>
+# include <termios.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -136,8 +137,6 @@ extern t_global	g_var;
 
 //void		rl_replace_line(const char *, int);
 
-void		print_cmd(t_command cmd);
-
 /* builtins */
 
 /// \brief cd bash command (change directory)
@@ -197,14 +196,22 @@ int			unset_one_var(char *name, int rearrange);
 
 /// \brief Initialize the global variable structure
 /// \param envp an array of *char containing the starting environment variables
+/// \param termios_new TODO
+/// \param termios_copy TODO
 /// \return 0 on SUCCESS, 1 if ERROR
-int			init(char *envp[]);
+int			init(char *envp[], struct termios *termios_new, struct termios *termios_copy);
 
 /// \brief Search and return the value of an environment variable
 /// \param var_name the variable name
 /// \return the variable value (as string) if it exist and has a value,
 /// \n NULL otherwise
 char		*var_value(char const *var_name);
+
+/// \brief
+/// \param c
+/// \param index
+/// \return non-zero if it is, 0 otherwise
+int			valid_var_name(char c, int index);
 
 /* exec */
 
@@ -220,7 +227,7 @@ void		close_wait(t_pipes pipes, int nb_process, int *pids);
 
 /// \brief Check if a command is a builtin one
 /// \param cmd the name of the command
-/// \return non-0 if it is, 0 otherwise
+/// \return non-zero if it is, 0 otherwise
 int			ft_isbuiltin(char *cmd);
 
 /// \brief Execute a builtin command
@@ -250,16 +257,8 @@ void		signals(void);
 /* parse */
 
 t_command	parse(char *line, int fd[2]);
-//char		*get_string(char **split, char *current, int *i, int len);
-int			ft_countchar(const char *str, char c);
 
 /* utils */
-
-/// \brief Copy (duplicate) an array of char*
-/// \param src the source
-/// \param size the number of elements in src
-/// \return the address of the copy, NULL if ERROR
-char		**array_copy(char *src[], int size);
 
 /// \brief Print an error message on STDERR of format:
 /// \n cmd: arg: msg
@@ -309,17 +308,11 @@ int			free_buffer(char *buf);
 
 /// \brief Free all data
 /// \param buf the buffer containing the input of the user (readline)
+/// \param termios_copy TODO
 /// \return the last error code ($?)
-int			free_all(char *buf);
+int			free_all(char *buf, struct termios *termios_copy);
 
 char		*ft_trim(char *word, char *set);
-
-/// \brief Remove the first char c in str
-/// \param str the source string
-/// \param c the char to remove
-/// \param index the position of c in str, negative if not specified
-/// \return 0 on SUCCESS, 1 if ERROR
-int			remove_char(char *str, char c, int index);
 
 /// \brief Sort an array of char* using ASCII value
 /// \n from lowest ot biggest (using quicksort)
@@ -327,23 +320,24 @@ int			remove_char(char *str, char c, int index);
 /// \param size the number of elements to sort
 void		sort(char *argv[], long size);
 
-/// Parse
 char		**get_commands(char *s, char c, int *len);
-int			is_between_quote(char *word, int index);
-int			ft_countchar(const char *s, char c);
-char		*ft_baskslash(char *str);
-char		*join(char *s1, char *s2);
-void		set_fd(int *fd, int value);
+
+/// Parse
 char		*get_string(char **split, char *current, int index, int len);
-void		handle_tilde(char **line);
-void		str_replace(char **str, char *to_replace, char *n);
-int			is_between_single_quote(char *word, int index);
-int			str_replace_once(char **str, char *to_replace, char *n, int index);
-void		handle_quote(char **split, int len);
-void		remove_quote(char *str);
 void		handle_input(char *line, int *fd, t_command *cmd);
-void		handle_output(char *line, int *fd, t_command *cmd);
-void		remove_quote(char *str);
 void		handle_line(char *line, t_command *cmd, int fd[2]);
+void		handle_output(char *line, int *fd, t_command *cmd);
+void		handle_quote(char **split, int len);
+void		handle_tilde(char **line);
 void		handle_var(char **line);
+int			is_between_quote(char const *word, int index);
+int			is_between_single_quote(char const *word, int index);
+void		set_fd(int *fd, int value);
+//int		ft_countchar(const char *s, char c);
+//char		*ft_backslash(char *str);
+//char		*join(char *s1, char *s2);
+//void		str_replace(char **str, char *to_replace, char *n);
+//int		str_replace_once(char **str, char *to_replace, char *n, int index);
+//void		remove_quote(char *str);
+//void		remove_quote(char *str);
 #endif

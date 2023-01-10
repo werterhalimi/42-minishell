@@ -12,7 +12,54 @@
 
 #include "minishell.h"
 
-void	remove_space(char *tmp)
+static char	*find_and_replace(char **str, char *to_replace, char *new, int len)
+{
+	char	*tmp;
+	int		i;
+	int		no;
+
+	tmp = ft_calloc(sizeof(*tmp), len + 1);
+	i = 0;
+	no = 0;
+	while ((*str)[i])
+	{
+		if (ft_strncmp(*str + i, to_replace, ft_strlen(to_replace)) == 0
+			&& !is_between_single_quote(str[0] + i, i))
+		{
+			ft_memcpy(tmp + no, new, ft_strlen(new));
+			no += ft_strlen(new);
+			i += ft_strlen(to_replace);
+			continue ;
+		}
+		tmp[no++] = (*str)[i++];
+	}
+	tmp[len] = 0;
+	return (tmp);
+}
+
+static void	str_replace(char **str, char *to_replace, char *new)
+{
+	char	*tmp;
+	int		i;
+	int		len;
+
+	i = 0;
+	len = ft_strlen(*str);
+	if (!new)
+		new = "";
+	while ((*str)[i])
+	{
+		if (ft_strncmp(*str + i++, to_replace, ft_strlen(to_replace)) == 0)
+		{
+			len -= ft_strlen(to_replace);
+			len += ft_strlen(new);
+		}
+	}
+	tmp = find_and_replace(str, to_replace, new, len);
+	*str = tmp;
+}
+
+static void	remove_space(char *tmp)
 {
 	int	j;
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   remove_quote.c                                     :+:      :+:    :+:   */
+/*   handle_quote.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	count(int no, int i, char *str)
+static int	count(int no, int i, char *str)
 {
 	no--;
 	ft_memmove(str + i, str + 1 + i, ft_strlen(str + 1 + i));
@@ -20,27 +20,24 @@ int	count(int no, int i, char *str)
 	return (no);
 }
 
-void	find_and_remove_quote(char *str, int no_double, int no_single, int i)
+static void	find_and_remove_quote(char *str, int no_double, int no_single)
 {
+	int	i;
+
+	i = 0;
 	while (str[i])
 	{
 		if (str[i] == '"')
 		{
-			if (no_double == 0)
-			{
-				i++;
+			if (no_double == 0 && ++i)
 				continue ;
-			}
 			no_single = count(no_double, i, str);
 			continue ;
 		}
 		if (str[i] == '\'')
 		{
-			if (no_single == 0)
-			{
-				i++;
+			if (no_single == 0 && ++i)
 				continue ;
-			}
 			no_single = count(no_single, i, str);
 			continue ;
 		}
@@ -48,7 +45,7 @@ void	find_and_remove_quote(char *str, int no_double, int no_single, int i)
 	}
 }
 
-void	remove_quote(char *str)
+static void	remove_quote(char *str)
 {
 	int	i;
 	int	no_double;
@@ -69,6 +66,21 @@ void	remove_quote(char *str)
 	no_double -= no_double % 2;
 	no_single -= no_single % 2;
 	final_len = ft_strlen(str) - no_double - no_single;
-	find_and_remove_quote(str, no_double, no_single, 0);
+	find_and_remove_quote(str, no_double, no_single);
 	str[final_len] = 0;
+}
+
+void	handle_quote(char **split, int len)
+{
+	int	i;
+
+	if (split[0])
+		remove_quote(split[0]);
+	i = 1;
+	while (i < len)
+	{
+		if (split[i])
+			remove_quote(split[i]);
+		i++;
+	}
 }

@@ -12,6 +12,33 @@
 
 #include "minishell.h"
 
+/// \brief Remove the first char c in str
+/// \param str the source string
+/// \param c the char to remove
+/// \param index the position of c in str, negative if not specified
+/// \return 0 on SUCCESS, 1 if ERROR
+static int	remove_char(char *str, char c, int index)
+{
+	int	i;
+
+	if (index < 0)
+	{
+		i = 0;
+		while (str[i] && str[i] != c)
+			i++;
+		if (!str[i])
+			return (ERROR);
+	}
+	else
+		i = index;
+	while (str[i])
+	{
+		str[i] = str[i + 1];
+		i++;
+	}
+	return (SUCCESS);
+}
+
 /// \brief Add an environment variable
 /// \param str the name and value of the variable (name=value)
 /// \param nb_variables the total number of variables
@@ -71,8 +98,8 @@ int	export_one_var(char *str, int overwrite)
 	i = 0;
 	append = NO;
 	while (str[i] && str[i] != '=')
-		if (!(ft_isalnum(str[i]) || (str[i] == '+' && str[i + 1] == '=')) \
-			|| i++ < 0)
+		if (!(valid_var_name(str[i], i) \
+			|| (str[i] == '+' && str[i + 1] == '=')) || i++ < 0)
 			return (print_quote_error("minishell: export", str, \
 				"not a valid identifier", ERROR));
 	if (overwrite == NO && str[i] == '=' && str[i - 1] == '+' \

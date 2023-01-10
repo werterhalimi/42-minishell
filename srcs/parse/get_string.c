@@ -12,7 +12,20 @@
 
 #include "minishell.h"
 
-char	*join_and_free(char *current, char *split)
+static char	*join(char *s1, char *s2)
+{
+	char	*buff;
+	char	*ret;
+
+	buff = ft_strjoin(s1, " ");
+	free(s1);
+	ret = ft_strjoin(buff, s2);
+	free(buff);
+	free(s2);
+	return (ret);
+}
+
+static char	*join_and_free(char *current, char *split)
 {
 	char	*tmp;
 
@@ -22,13 +35,11 @@ char	*join_and_free(char *current, char *split)
 	return (current);
 }
 
-char	*remove_str_space(char *current)
+static char	*remove_str_space(char *current)
 {
 	int		i;
-	char	*tmp;
 
 	i = 0;
-	tmp = current;
 	while (current[i])
 	{
 		if (current[i] == ' ' && !is_between_quote(current + i, i))
@@ -38,6 +49,26 @@ char	*remove_str_space(char *current)
 		i++;
 	}
 	return (current);
+}
+
+static char	*ft_backslash(char *str)
+{
+	int	i;
+	int	len;
+
+	len = (int) ft_strlen(str);
+	i = 0;
+	while (i < len)
+	{
+		if (str[i] == '\\')
+		{
+			ft_memcpy(str + i, str + i + 1, ft_strlen(str + i));
+			len -= 1;
+			str[len] = 0;
+		}
+		i++;
+	}
+	return (str);
 }
 
 char	*get_string(char **split, char *current, int i, int len)
@@ -55,7 +86,7 @@ char	*get_string(char **split, char *current, int i, int len)
 			free(split[i]);
 		}
 	}
-	current = ft_baskslash(current);
+	current = ft_backslash(current);
 	if (current[0] == current[ft_strlen(current) - 1] \
 		&& (current[0] == '\'' || current[0] == '"'))
 		current = ft_substr(current, 1, ft_strlen(current) - 2);

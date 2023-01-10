@@ -19,7 +19,7 @@ static void	*ft_free(char **result, int size, int *tab)
 
 	i = 0;
 	while (i < size)
-		free(result[i]);
+		free(result[i++]);
 	free(result);
 	free(tab);
 	return (NULL);
@@ -73,7 +73,7 @@ char	**ft_split(char const *s, char c)
 		{
 			result[i] = ft_substr(s, tab[i * 2], tab[i * 2 + 1]);
 			if (!result[i++])
-				return (ft_free(result, (size + 1), tab));
+				return (ft_free(result, i - 1, tab));
 		}
 		result[i] = NULL;
 	}

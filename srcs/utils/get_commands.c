@@ -13,19 +13,27 @@
 #include "minishell.h"
 
 /// @brief Free allocated memory in result of size elements and tab
+/// \param result an array of char to free
+/// \param size the number of element of result to free
+/// \param tab an array of int to free
+/// \return the NULL pointer
 static void	*ft_free(char **result, int size, int *tab)
 {
 	int	i;
 
 	i = 0;
 	while (i < size)
-		free(result[i]);
+		free(result[i++]);
 	free(result);
 	free(tab);
 	return (NULL);
 }
 
 /// @brief Create an array containing the lengths of sub-string in str between c
+/// \n (not including those between single or double quotes)
+/// \param str the string to parse
+/// \param c the delimiting char
+/// \param size the address of the number of elements of the parse
 /// @return its address, NULL if error
 static int	*ft_parsing(char *str, char c, int *size)
 {
@@ -72,9 +80,8 @@ char	**get_commands(char *s, char c, int *len)
 		while (i < size)
 		{
 			result[i] = ft_substr(s, tab[i * 2], tab[i * 2 + 1]);
-			if (!result[i])
-				return (ft_free(result, size, tab));
-			i++;
+			if (!result[i++])
+				return (ft_free(result, i - 1, tab));
 		}
 		result[i] = NULL;
 		*len = i - 1;

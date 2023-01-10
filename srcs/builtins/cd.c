@@ -21,13 +21,19 @@ static int	update_env(char *new_dir)
 	int		ret;
 
 	str = var_value("PWD");
-	if (!str)
-		return (ERROR);
-	str = ft_strjoin("OLDPWD=", str);
-	if (!str)
-		return (ERROR);
-	ret = export_one_var(str, YES);
-	free(str);
+	if (str)
+	{
+		str = ft_strjoin("OLDPWD=", str);
+		if (!str)
+			return (ERROR);
+		ret = export_one_var(str, YES);
+		free(str);
+	}
+	else
+	{
+		str = "OLDPWD";
+		ret = export_one_var(str, YES);
+	}
 	if (ret)
 		return (ERROR);
 	str = ft_strjoin("PWD=", new_dir);

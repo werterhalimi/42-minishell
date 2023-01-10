@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	map(char *line, int len, t_command *cmd, int *fd)
+static void	map(char *line, int len, t_command *cmd, int *fd)
 {
 	char	c;
 
@@ -36,7 +36,6 @@ void	map(char *line, int len, t_command *cmd, int *fd)
 void	handle_line(char *line, t_command *cmd, int fd[2])
 {
 	int		len;
-	char	c;
 
 	len = ft_strlen(line);
 	while (len >= 0)
@@ -46,13 +45,12 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 			len--;
 			continue ;
 		}
-		c = line[len];
 		map(line, len, cmd, fd);
 		len--;
 	}
 	cmd->fd[0] = fd[0];
 	cmd->fd[1] = fd[1];
 	if (cmd->parse_error == SYNTAX_ERROR * -1)
-		ft_putendl_fd("syntax error near une\
-			xpected token 'newline'", STDERR_FILENO);
+		ft_putendl_fd("syntax error near unexpected token 'newline'", \
+			STDERR_FILENO);
 }
