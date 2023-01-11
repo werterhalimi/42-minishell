@@ -6,7 +6,7 @@
 /*   By: ncotte <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 12:56:18 by ncotte            #+#    #+#             */
-/*   Updated: 2023/01/03 21:17:12 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 18:18:22 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,26 @@
 
 t_global	g_var;
 
-static void	main_loop(char **buf)
+static int	handle_invalid_prompt(char **buf)
 {
 	char	*tmp;
+
+	tmp = *buf;
+	*buf = ft_strtrim(tmp, " \t\n");
+	free(tmp);
+	if (ft_strlen(*buf) != 0 && \
+			ft_strncmp(*buf, "|", ft_strlen(*buf)) == 0)
+	{
+		ft_putstr_fd("minishell: syntax error ", 1);
+		ft_putendl_fd("nearunexpected token `|'", 1);
+		free_buffer(*buf);
+		return (1);
+	}
+	return (0);
+}
+
+static void	main_loop(char **buf)
+{
 	char	**commands;
 	int		len;
 
@@ -29,9 +46,8 @@ static void	main_loop(char **buf)
 			*buf = get_next_line(STDIN_FILENO);
 		if (!(*buf))
 			return ;
-		tmp = *buf;
-		*buf = ft_strtrim(tmp, " \t\n");
-		free(tmp);
+		if (handle_invalid_prompt(buf))
+			continue ;
 		if (*buf && **buf)
 		{
 			if (isatty(STDIN_FILENO))
