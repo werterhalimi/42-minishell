@@ -12,9 +12,12 @@
 
 #include "minishell.h"
 
-void	set_fd(int *fd, int value)
+int	set_fd(int *fd, int value)
 {
 	if (*fd != STDIN_FILENO && *fd != STDOUT_FILENO && *fd != STDERR_FILENO)
-		return ;
+		return (errno);
 	*fd = value;
+	if (value < 0)
+		return (errno);
+	return (0);
 }

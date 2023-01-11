@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	handle_input_file(char *line, int *fd, char *tmp)
+static void	handle_input_file(char *line, int *fd, char *tmp, t_command *cmd)
 {
 	char	**split;
 	int		f[2];
@@ -24,7 +24,7 @@ static void	handle_input_file(char *line, int *fd, char *tmp)
 	split = ft_split(line, ' ');
 	line = ft_strtrim(line, "\t ");
 	tpmp = get_string(split, line, 0, ft_strlen(line));
-	set_fd(&fd[0], open(tpmp, O_RDONLY));
+	cmd->errnum = set_fd(&fd[0], open(tpmp, O_RDONLY));
 	free(tpmp);
 	f[0] = 0;
 	f[1] = 0;
@@ -118,6 +118,6 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 	if (line[1] == '<')
 		cmd->parse_error = handle_input_heredoc(line, fd, tmp);
 	else
-		handle_input_file(line, fd, tmp);
+		handle_input_file(line, fd, tmp, cmd);
 	free(line);
 }

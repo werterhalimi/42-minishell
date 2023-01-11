@@ -104,6 +104,7 @@ typedef struct s_command
 	char	**args;
 	int		len;
 	int		parse_error;
+	int		errnum;
 	int		fd[2];
 }	t_command;
 
@@ -269,7 +270,7 @@ void		handle_tilde(char **line);
 void		handle_var(char **line);
 int			is_between_quote(char const *word, int index);
 int			is_between_single_quote(char const *word, int index);
-void		set_fd(int *fd, int value);
+int			set_fd(int *fd, int value);
 
 /* utils */
 

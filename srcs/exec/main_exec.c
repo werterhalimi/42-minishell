@@ -31,8 +31,10 @@ static int	child_process(t_command cmd, int *out)
 
 	signals();
 	if (cmd.fd[0] < 0)
-		return (print_error("minishell", cmd.command, \
-				"No such file or directory", ERROR));
+	{
+		print_errno("minishell", cmd.command, cmd.errnum);
+		return (ERROR);
+	}
 	close_file(out[0]);
 	paths = env_to_paths();
 	dup2(cmd.fd[0], 0);
