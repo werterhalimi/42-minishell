@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 19:24:49 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/11 18:43:34 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 20:20:07 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	handle_input_file(char *line, int *fd, char *tmp)
 	f[1] = 0;
 	while (f[0] < (int) ft_strlen(tmp))
 	{
-		if (ft_isalnum(tmp[f[0]]))
+		if (tmp[f[0]] != ' ')
 			f[1] = -1;
 		else if (f[1] == -1)
 			break ;

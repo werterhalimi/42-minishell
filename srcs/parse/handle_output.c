@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 20:22:14 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/11 17:43:08 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 20:20:18 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	append_and_clear(char *line, int *fd, int append, char *tmp)
 	i = 0;
 	while (i < (int) ft_strlen(tmp))
 	{
-		if (ft_isalnum(tmp[i]))
+		if (tmp[i] != ' ')
 			append = -1;
 		else if (append == -1)
 			break ;
