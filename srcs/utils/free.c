@@ -42,13 +42,13 @@ int	free_buffer(char *buf)
 	return (g_var.last_er);
 }
 
-int	free_all(char *buf, struct termios *termios_copy)
+int	free_all(char *buf, t_termios *termios_copy)
 {
 	if (!g_var.exit)
 		ft_putendl_fd("exit", STDOUT_FILENO);
 	free_array(g_var.envp);
 	rl_clear_history();
-	if (termios_copy)
+	if (isatty(STDIN_FILENO) && termios_copy)
 		tcsetattr(STDIN_FILENO, TCSANOW, termios_copy);
 	g_var.exit = NO;
 	return (free_buffer(buf));

@@ -62,5 +62,5 @@ void	handle_output(char *line, int *fd, t_command *cmd)
 	while (*line == ' ')
 		line++;
 	append_and_clear(line, fd, append, tmp);
-	free(line - 1 - append);
+	free(line - 1 - append); // TODO ERROR "cat << END > input"
 }

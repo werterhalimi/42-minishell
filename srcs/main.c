@@ -23,15 +23,19 @@ static void	main_loop(char **buf)
 	while (!g_var.exit)
 	{
 		signals();
-		*buf = readline(var_value("PROMPT"));
+		if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
+			*buf = readline(var_value("PROMPT"));
+		else
+			*buf = get_next_line(STDIN_FILENO);
 		if (!(*buf))
-			break ;
+			return ;
 		tmp = *buf;
-		*buf = ft_strtrim(tmp, " 	");
+		*buf = ft_strtrim(tmp, " \t\n");
 		free(tmp);
-		if (**buf)
+		if (*buf && **buf)
 		{
-			add_history(*buf);
+			if (isatty(STDIN_FILENO))
+				add_history(*buf);
 			commands = get_commands(*buf, '|', &len);
 			main_exec(len, commands, (int [2]){0, 1});
 		}
@@ -43,15 +47,19 @@ static void	main_loop(char **buf)
 
 int	main(int argc, char *argv[], char *envp[])
 {
-	char			*buf;
-	struct termios	termios_new;
-	struct termios	termios_copy;
+	char		*buf;
+	t_termios	termios_new;
+	t_termios	termios_copy;
 
 	(void) argv;
 	if (argc != 1)
 		return (print_custom_error("Invalid number of arguments"));
 	if (init(envp, &termios_new, &termios_copy))
 		return (print_custom_error("Error during initialization"));
+	if (!isatty(STDOUT_FILENO) && isatty(STDIN_FILENO))
+		ft_printf_fd(STDERR_FILENO, "%s%s\n%s%s\n", BOLD_MAGENTA, \
+			"Warning : the standard output is not a terminal.", \
+			"The prompt and the history are disabled.", RESET_COLOR);
 	buf = "";
 	main_loop(&buf);
 	return (free_all(buf, &termios_copy));

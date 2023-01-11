@@ -58,8 +58,7 @@ static void	handle_heredoc(char *sep, char *buff, int *fd)
 			if (!buff || (!ft_strncmp(buff, sep, ft_strlen(buff))
 					&& ft_strlen(buff) == ft_strlen(sep)))
 				exit(SUCCESS);
-			write(f[1], buff, ft_strlen(buff));
-			write(f[1], "\n", 1);
+			ft_putendl_fd(buff, f[1]);
 		}
 	}
 	signals();

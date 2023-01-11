@@ -82,7 +82,23 @@ static int	init_global_variable(char *envp[])
 	return (SUCCESS);
 }
 
-int	init(char *envp[], struct termios *termios_new, struct termios *termios_copy)
+/// \brief Create a copy of the current terminal options
+/// \n and prevent control characters to be printed
+/// \param termios_new the structure containing the new options
+/// \param termios_copy the structure containing the original options
+/// \return 0 on SUCCESS, 1 if ERROR
+static int	init_termios(t_termios *termios_new, t_termios *termios_copy)
+{
+	if (tcgetattr(STDIN_FILENO, termios_new))
+		return (ERROR);
+	*termios_copy = *termios_new;
+	termios_new->c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, termios_new))
+		return (ERROR);
+	return (SUCCESS);
+}
+
+int	init(char *envp[], t_termios *termios_new, t_termios *termios_copy)
 {
 	int		res;
 	char	*tmp;
@@ -98,10 +114,8 @@ int	init(char *envp[], struct termios *termios_new, struct termios *termios_copy
 	free(tmp);
 	if (res)
 		return (free_all(NULL, NULL));
-	tcgetattr(STDIN_FILENO, termios_new);
-	*termios_copy = *termios_new;
-	termios_new->c_lflag &= ~ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, termios_new);
+	if (isatty(STDIN_FILENO) && init_termios(termios_new, termios_copy))
+		return (free_all(NULL, NULL));
 	g_var.last_er = SUCCESS;
 	return (SUCCESS);
 }

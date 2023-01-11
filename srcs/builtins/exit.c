@@ -66,6 +66,8 @@ int	ft_exit(char *argv[])
 		return (print_custom_error("minishell: exit: too many arguments"));
 	g_var.exit = YES;
 	ft_putendl_fd("exit", STDOUT_FILENO);
+	if (!argv[1])
+		return (g_var.last_er);
 	if (argv[1] && !ret_value)
 		return (print_error("minishell: exit", argv[1], \
 			"numeric argument required", UNDEFINED_ERROR));

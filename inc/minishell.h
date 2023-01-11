@@ -120,6 +120,9 @@ typedef struct s_pipes
 	int	out[2];
 }	t_pipes;
 
+/// \brief termios structure
+typedef struct termios	t_termios;
+
 /// \brief The global variable
 /// \param envp an array of *char containing the environment variables,
 /// \n ending with NULL
@@ -129,7 +132,7 @@ typedef struct s_pipes
 /// \param status the global status (READ, EXECUTE, HEREDOC)
 /// \param quit_child true if a process was killed
 /// \n or if no process should be launched, false otherwise
-extern t_global	g_var;
+extern t_global			g_var;
 
 /* readline */
 
@@ -194,12 +197,12 @@ int			unset_one_var(char *name, int rearrange);
 
 /* env */
 
-/// \brief Initialize the global variable structure
+/// \brief Initialize the global variable structure and terminal options
 /// \param envp an array of *char containing the starting environment variables
-/// \param termios_new TODO
-/// \param termios_copy TODO
+/// \param termios_new the structure containing the new terminal options
+/// \param termios_copy the structure containing the original terminal options
 /// \return 0 on SUCCESS, 1 if ERROR
-int			init(char *envp[], struct termios *termios_new, struct termios *termios_copy);
+int			init(char *envp[], t_termios *termios_new, t_termios *termios_copy);
 
 /// \brief Search and return the value of an environment variable
 /// \param var_name the variable name
@@ -207,9 +210,9 @@ int			init(char *envp[], struct termios *termios_new, struct termios *termios_co
 /// \n NULL otherwise
 char		*var_value(char const *var_name);
 
-/// \brief
-/// \param c
-/// \param index
+/// \brief Check if the name of a variable is valid
+/// \param c the current char to check
+/// \param index the position of c in the variable name
 /// \return non-zero if it is, 0 otherwise
 int			valid_var_name(char c, int index);
 
@@ -306,11 +309,11 @@ void		free_array(char *argv[]);
 /// \return the last error code ($?)
 int			free_buffer(char *buf);
 
-/// \brief Free all data
+/// \brief Free all data and reset the terminal options
 /// \param buf the buffer containing the input of the user (readline)
-/// \param termios_copy TODO
+/// \param termios_copy the structure containing the original options
 /// \return the last error code ($?)
-int			free_all(char *buf, struct termios *termios_copy);
+int			free_all(char *buf, t_termios *termios_copy);
 
 char		*ft_trim(char *word, char *set);
 

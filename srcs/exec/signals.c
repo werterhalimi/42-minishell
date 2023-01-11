@@ -15,20 +15,23 @@
 /// \brief Signal INT handler (Ctrl + C)
 /// \n when reading the user input commands
 /// \param code the signal code
-static void	sig_int_main(int code)
+static void	sig_int_read(int code)
 {
 	(void)code;
 	write(STDERR_FILENO, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
+	if (isatty(STDIN_FILENO))
+	{
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
 	g_var.last_er = ERROR;
 }
 
 /// \brief Signal INT handler (Ctrl + C)
 /// \n when executing commands
 /// \param code the signal code
-static void	sig_int_child(int code)
+static void	sig_int_exec(int code)
 {
 	(void)code;
 	write(STDERR_FILENO, "\n", 1);
@@ -37,7 +40,7 @@ static void	sig_int_child(int code)
 /// \brief Signal QUIT handler (Ctrl + \)
 /// \n when executing commands
 /// \param code the signal code
-static void	sig_quit_child(int code)
+static void	sig_quit_exec(int code)
 {
 	(void)code;
 	kill(g_var.pid, SIGINT);
@@ -61,28 +64,27 @@ static void	sig_int_heredoc(int code)
 
 void	signals(void)
 {
-	if (g_var.status == READ)
+	if (g_var.status == EXECUTE && g_var.pid)
 	{
-		signal(SIGINT, sig_int_main);
-		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, sig_int_exec);
+		signal(SIGQUIT, sig_quit_exec);
 	}
-	else if (g_var.status == HEREDOC)
+	else if (g_var.status == EXECUTE)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+	}
+	else
 	{
 		signal(SIGQUIT, SIG_IGN);
-		if (g_var.pid)
+		if (g_var.status == READ)
+			signal(SIGINT, sig_int_read);
+		else if (g_var.status == HEREDOC && !g_var.pid)
+			signal(SIGINT, SIG_DFL);
+		else
 		{
 			signal(SIGINT, sig_int_heredoc);
 			wait(NULL);
 		}
-	}
-	else if (g_var.pid)
-	{
-		signal(SIGINT, sig_int_child);
-		signal(SIGQUIT, sig_quit_child);
-	}
-	else
-	{
-		signal(SIGQUIT, SIG_DFL);
-		signal(SIGINT, SIG_DFL);
 	}
 }

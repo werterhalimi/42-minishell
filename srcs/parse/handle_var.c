@@ -50,6 +50,7 @@ static int	str_replace_once(char **str, char *to_replace, char *new, int index)
 		tmp[no++] = (*str)[i++];
 	}
 	tmp[len] = 0;
+	free(*str);
 	*str = tmp;
 	return (index + (int) ft_strlen(new));
 }
