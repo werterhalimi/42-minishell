@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 18:34:37 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/04 18:46:38 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 19:11:44 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ static void	str_replace(char **str, char *to_replace, char *new)
 		new = "";
 	while ((*str)[i])
 	{
-		if (ft_strncmp(*str + i++, to_replace, ft_strlen(to_replace)) == 0)
+		if (ft_strncmp(*str + i++, to_replace, ft_strlen(to_replace)) == 0 \
+				&& !is_between_single_quote(*str + i, i))
 		{
 			len -= ft_strlen(to_replace);
 			len += ft_strlen(new);
@@ -85,7 +86,7 @@ void	handle_tilde(char **line)
 	tmp2 = *line;
 	while (line[0][i])
 	{
-		if (line[0][i] == '~')
+		if (line[0][i] == '~' && !is_between_quote(line[0] + i, i))
 		{
 			tmp = ft_strjoin(var_value("HOME"), line[0] + i + 1);
 			remove_space(tmp);

@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 21:39:04 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/11 18:09:10 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 19:03:00 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static int	get_len(char **str, int index, char *to_replace, char *new)
 	int	len;
 
 	len = ft_strlen(*str);
-	if (!ft_strncmp(*str + index, to_replace, ft_strlen(to_replace)))
+	if (!ft_strncmp(*str + index, to_replace, ft_strlen(to_replace)) \
+				&& !is_between_single_quote(*str + index, index))
 	{
 		len -= ft_strlen(to_replace);
 		len += ft_strlen(new);
