@@ -260,6 +260,16 @@ void		signals(void);
 /* parse */
 
 t_command	parse(char *line, int fd[2]);
+char		*get_string(char **split, char *current, int index, int len);
+void		handle_input(char *line, int *fd, t_command *cmd);
+void		handle_line(char *line, t_command *cmd, int fd[2]);
+void		handle_output(char *line, int *fd, t_command *cmd);
+void		handle_quote(char **split, int len);
+void		handle_tilde(char **line);
+void		handle_var(char **line);
+int			is_between_quote(char const *word, int index);
+int			is_between_single_quote(char const *word, int index);
+void		set_fd(int *fd, int value);
 
 /* utils */
 
@@ -315,32 +325,17 @@ int			free_buffer(char *buf);
 /// \return the last error code ($?)
 int			free_all(char *buf, t_termios *termios_copy);
 
-char		*ft_trim(char *word, char *set);
-
 /// \brief Sort an array of char* using ASCII value
 /// \n from lowest ot biggest (using quicksort)
 /// \param argv the array to sort
 /// \param size the number of elements to sort
 void		sort(char *argv[], long size);
 
+/// \brief Create an array of strings from the original s but splited by c
+/// \param s the original string
+/// \param c the delimiter char
+/// \param len the address of the number of elements
+/// \return its address, NULL if error
 char		**get_commands(char *s, char c, int *len);
 
-/// Parse
-char		*get_string(char **split, char *current, int index, int len);
-void		handle_input(char *line, int *fd, t_command *cmd);
-void		handle_line(char *line, t_command *cmd, int fd[2]);
-void		handle_output(char *line, int *fd, t_command *cmd);
-void		handle_quote(char **split, int len);
-void		handle_tilde(char **line);
-void		handle_var(char **line);
-int			is_between_quote(char const *word, int index);
-int			is_between_single_quote(char const *word, int index);
-void		set_fd(int *fd, int value);
-//int		ft_countchar(const char *s, char c);
-//char		*ft_backslash(char *str);
-//char		*join(char *s1, char *s2);
-//void		str_replace(char **str, char *to_replace, char *n);
-//int		str_replace_once(char **str, char *to_replace, char *n, int index);
-//void		remove_quote(char *str);
-//void		remove_quote(char *str);
 #endif

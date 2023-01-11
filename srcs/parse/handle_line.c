@@ -51,6 +51,6 @@ void	handle_line(char *line, t_command *cmd, int fd[2])
 	cmd->fd[0] = fd[0];
 	cmd->fd[1] = fd[1];
 	if (cmd->parse_error == SYNTAX_ERROR * -1)
-		ft_putendl_fd("syntax error near unexpected token 'newline'", \
+		ft_putendl_fd("syntax error near unexpected token", \
 			STDERR_FILENO);
 }
