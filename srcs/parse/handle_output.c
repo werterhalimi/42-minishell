@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 20:22:14 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/05 22:39:30 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 17:43:08 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,12 @@ static void	append_and_clear(char *line, int *fd, int append, char *tmp)
 void	handle_output(char *line, int *fd, t_command *cmd)
 {
 	int		append;
-	char	*tmp;
+	char	*tmp[2];
 
-	tmp = line;
+	tmp[0] = line;
 	append = 0;
 	line = ft_strtrim(line, "\t ");
+	tmp[1] = line;
 	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
 	{
 		cmd->parse_error = SYNTAX_ERROR * (-1);
@@ -61,6 +62,6 @@ void	handle_output(char *line, int *fd, t_command *cmd)
 	line = &line[1];
 	while (*line == ' ')
 		line++;
-	append_and_clear(line, fd, append, tmp);
-	free(line - 1 - append); // TODO ERROR "cat << END > input"
+	append_and_clear(line, fd, append, tmp[0]);
+	free(tmp[1]);
 }
