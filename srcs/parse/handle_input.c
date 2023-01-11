@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 19:24:49 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/11 18:04:57 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 18:19:38 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static void	handle_heredoc(char *sep, char *buff, int *fd)
 	set_fd(&fd[0], f[0]);
 }
 
-int	is_valid_sep(char *sep)
+static int	is_valid_sep(char *sep)
 {
 	return (ft_strncmp(sep, ">", ft_strlen(sep)) != 0 && \
 			ft_strncmp(sep, "<", ft_strlen(sep)) != 0 && \
