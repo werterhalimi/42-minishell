@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 19:24:49 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/05 22:35:51 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 18:04:57 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,15 @@ static void	handle_heredoc(char *sep, char *buff, int *fd)
 	set_fd(&fd[0], f[0]);
 }
 
-static void	handle_input_heredoc(char *line, int *fd, char *tmp)
+int	is_valid_sep(char *sep)
+{
+	return (ft_strncmp(sep, ">", ft_strlen(sep)) != 0 && \
+			ft_strncmp(sep, "<", ft_strlen(sep)) != 0 && \
+			ft_strncmp(sep, ">>", ft_strlen(sep)) != 0 && \
+			ft_strncmp(sep, "<<", ft_strlen(sep)) != 0);
+}
+
+static int	handle_input_heredoc(char *line, int *fd, char *tmp)
 {
 	char	**split;
 	char	*sep;
@@ -79,17 +87,21 @@ static void	handle_input_heredoc(char *line, int *fd, char *tmp)
 	split = ft_split(line, ' ');
 	line = ft_strtrim(line, "\t ");
 	sep = get_string(split, line, 0, ft_strlen(line));
-	if (!sep)
-		return ;
-	f[0] = 0;
-	while (f[0] < (int) ft_strlen(tmp))
+	if (!sep || !is_valid_sep(sep))
+		return (-258);
+	else
 	{
-		tmp[f[0]] = ' ';
-		f[0]++;
+		f[0] = 0;
+		while (f[0] < (int) ft_strlen(tmp))
+		{
+			tmp[f[0]] = ' ';
+			f[0]++;
+		}
+		handle_heredoc(sep, "", fd);
 	}
-	handle_heredoc(sep, "", fd);
 	free(split);
 	free(line);
+	return (0);
 }
 
 void	handle_input(char *line, int *fd, t_command *cmd)
@@ -104,7 +116,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 		return ;
 	}
 	if (line[1] == '<')
-		handle_input_heredoc(line, fd, tmp);
+		cmd->parse_error = handle_input_heredoc(line, fd, tmp);
 	else
 		handle_input_file(line, fd, tmp);
 	free(line);
