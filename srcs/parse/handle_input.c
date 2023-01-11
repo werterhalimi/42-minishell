@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 19:24:49 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/11 18:19:38 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 18:43:34 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static void	handle_input_file(char *line, int *fd, char *tmp)
 		tmp[f[0]] = ' ';
 		f[0]++;
 	}
-	free(line);
 	free_array(split);
 }
 
@@ -112,6 +111,7 @@ void	handle_input(char *line, int *fd, t_command *cmd)
 	line = ft_strtrim(line, "\t ");
 	if (ft_strlen(line) < 2 || (ft_strlen(line) == 2 && line[0] == line[1]))
 	{
+		free(line);
 		cmd->parse_error = SYNTAX_ERROR * (-1);
 		return ;
 	}

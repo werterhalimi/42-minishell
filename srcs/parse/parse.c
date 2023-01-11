@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 20:11:45 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/04 21:47:15 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 18:35:27 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	parse_line(char **args, char *line, int len)
 	}
 	i = 0;
 	words = 0;
-	while (i < (int) ft_strlen(line))
+	while (i < (int) ft_strlen(line) + len) 
 	{
 		if ((line[i] == ' ' || line[i] == '\t')
 			&& !is_between_quote(&line[i], i))
