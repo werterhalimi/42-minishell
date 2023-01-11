@@ -86,6 +86,7 @@ t_command	parse(char *line, int fd[2])
 	char		*tmp;
 
 	ret.parse_error = 0;
+	ret.errnum = 0;
 	handle_tilde(&line);
 	handle_var(&line);
 	handle_line(line, &ret, fd);
