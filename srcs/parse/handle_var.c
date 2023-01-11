@@ -6,7 +6,7 @@
 /*   By: shalimi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 21:39:04 by shalimi           #+#    #+#             */
-/*   Updated: 2023/01/04 21:42:01 by shalimi          ###   ########.fr       */
+/*   Updated: 2023/01/11 18:09:10 by shalimi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,28 +28,27 @@ static int	get_len(char **str, int index, char *to_replace, char *new)
 static int	str_replace_once(char **str, char *to_replace, char *new, int index)
 {
 	char	*tmp;
-	int		i;
-	int		len;
-	int		no;
+	int		ints[3];
 
 	if (!new)
 		new = "";
-	len = get_len(str, index, to_replace, new);
-	tmp = ft_calloc(sizeof(*tmp), len + 1);
-	i = 0;
-	no = 0;
-	while ((*str)[i])
+	ints[1] = get_len(str, index, to_replace, new);
+	tmp = ft_calloc(sizeof(*tmp), ints[1] + 1);
+	ints[0] = 0;
+	ints[2] = 0;
+	while ((*str)[ints[0]])
 	{
-		if (i == index && !is_between_single_quote(str[0] + i, i))
+		if (ints[0] == index && \
+				!is_between_single_quote(str[0] + ints[0], ints[0]))
 		{
-			ft_memcpy(tmp + no, new, ft_strlen(new));
-			no += ft_strlen(new);
-			i += ft_strlen(to_replace);
+			ft_memcpy(tmp + ints[2], new, ft_strlen(new));
+			ints[2] += ft_strlen(new);
+			ints[0] += ft_strlen(to_replace);
 			continue ;
 		}
-		tmp[no++] = (*str)[i++];
+		tmp[ints[2]++] = (*str)[ints[0]++];
 	}
-	tmp[len] = 0;
+	tmp[ints[1]] = 0;
 	free(*str);
 	*str = tmp;
 	return (index + (int) ft_strlen(new));
